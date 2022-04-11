@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#191926"
-    tools:context=".MovieDetailsActivity">
+    android:background="@color/dark_blue"
+    tools:context=".MoviesDetailsFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
