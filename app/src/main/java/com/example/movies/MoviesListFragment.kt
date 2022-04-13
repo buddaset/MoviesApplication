@@ -6,17 +6,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.movies.adapter.movieAdapter.MovieAdapter
+import com.example.movies.adapter.movieAdapter.MovieListener
 import com.example.movies.databinding.FragmentMoviesListBinding
+import com.example.movies.models.MovieItem
 
-class MoviesListFragment : Fragment() {
+class MoviesListFragment : Fragment(), MovieListener {
 
-    private lateinit var binding : FragmentMoviesListBinding
-
+    private lateinit var binding: FragmentMoviesListBinding
+    private lateinit var movieAdapter: MovieAdapter
     private var listener: ClickMovieListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is ClickMovieListener)
+        if (context is ClickMovieListener)
             listener = context
     }
 
@@ -26,23 +29,27 @@ class MoviesListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentMoviesListBinding.inflate(inflater, container , false)
+        binding = FragmentMoviesListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.cardMovie.setOnClickListener {
-            listener?.clickMovie()
+        movieAdapter = MovieAdapter(this)
 
-        }
+        setupMovieAdapter()
+
+
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        listener = null
+    private fun setupMovieAdapter() {
+        binding.movieRecyclerview?.adapter = movieAdapter
+        val data = AppUtils(requireContext()).fakeData
+        movieAdapter.submitList(data)
+
     }
+
 
     companion object {
 
@@ -50,8 +57,17 @@ class MoviesListFragment : Fragment() {
 
     }
 
-    interface ClickMovieListener {
+    override fun onCLickMovie(movie: MovieItem) {
+        listener?.clickMovie(movie)
 
-        fun clickMovie()
     }
+
 }
+
+
+interface ClickMovieListener {
+
+        fun clickMovie(movie: MovieItem)
+    }
+
+

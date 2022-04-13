@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_movie"
+    android:layout_width="170dp"
+    android:layout_height="300dp"
+    android:layout_marginTop="18dp"
+    android:layout_marginStart="8dp"
+    app:cardBackgroundColor="@color/dark_blue"
+    app:layout_constraintStart_toStartOf="@id/guideline_start"
+    app:layout_constraintTop_toBottomOf="@id/barrier_movies_list"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/movie_poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/avengers_end_game"
+            android:scaleType="fitStart"
+            android:src="@drawable/movie_avengers_endgame" />
+
+        <ImageView
+            android:id="@+id/mask_movie"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitStart"
+            android:src="@drawable/mask_movie" />
+
+
+        <TextView
+            android:id="@+id/movie_pg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="@color/dark_blue"
+            android:padding="4dp"
+            android:text="@string/age"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
+
+        <ImageView
+            android:id="@+id/favorite_movie"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_like"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/genre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="210dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="6dp"
+            android:text="@string/genre"
+            android:textColor="@color/my_red"
+            android:textSize="8sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SmallSp" />
+
+        <RatingBar
+            android:id="@+id/rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stepSize="1"
+            android:progressDrawable="@drawable/custom_ratingbar"
+            android:numStars="5"
+            android:minHeight="4dp"
+            android:rating="4"
+            app:layout_constraintTop_toBottomOf="@id/genre"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+
+
+        <TextView
+            android:id="@+id/count_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            tools:text="125 REVIEWS"
+            android:textColor="@color/my_darkGray"
+            android:textStyle="bold"
+            android:textSize="8sp"
+            app:layout_constraintBottom_toBottomOf="@id/rating_bar"
+            app:layout_constraintStart_toEndOf="@id/rating_bar"
+            app:layout_constraintTop_toTopOf="@id/rating_bar"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/name_movie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:text="@string/avengers_end_game_list_title"
+            android:padding="2dp"
+            android:layout_marginStart="6dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/count_review" />
+
+        <TextView
+            android:id="@+id/duration_movie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name_movie"
+            android:layout_margin="8dp"
+            android:textSize="8sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/movie_minutes"
+            android:textColor="@color/my_darkGray"
+            tools:ignore="SmallSp" />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>
