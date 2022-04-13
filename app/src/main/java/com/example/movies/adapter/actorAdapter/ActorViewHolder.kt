@@ -9,5 +9,8 @@ class ActorViewHolder(private val binding: ViewHolderActorBinding) : RecyclerVie
 
     fun bing(actor: Actor) {
 
+        binding.nameActor.text = actor.name
+        binding.imageActor.setImageResource(actor.image)
+
     }
 }

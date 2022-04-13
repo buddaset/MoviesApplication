@@ -7,15 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.movies.adapter.movieAdapter.MovieAdapter
+import com.example.movies.adapter.movieAdapter.MovieListener
 import com.example.movies.databinding.FragmentMoviesListBinding
+import com.example.movies.models.MovieItem
 
-class MoviesListFragment : Fragment() {
+class MoviesListFragment : Fragment(), MovieListener {
 
-    private lateinit var binding : FragmentMoviesListBinding
-    private lateinit var movieAdapter : MovieAdapter
+    private lateinit var binding: FragmentMoviesListBinding
+    private lateinit var movieAdapter: MovieAdapter
+    private var listener: ClickMovieListener? = null
 
-
-
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is ClickMovieListener)
+            listener = context
+    }
 
 
     override fun onCreateView(
@@ -23,21 +29,19 @@ class MoviesListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentMoviesListBinding.inflate(inflater, container , false)
+        binding = FragmentMoviesListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        movieAdapter= MovieAdapter()
+        movieAdapter = MovieAdapter(this)
 
         setupMovieAdapter()
 
 
-
-
-        }
+    }
 
     private fun setupMovieAdapter() {
         binding.movieRecyclerview?.adapter = movieAdapter
@@ -53,8 +57,17 @@ class MoviesListFragment : Fragment() {
 
     }
 
-    interface ClickMovieListener {
+    override fun onCLickMovie(movie: MovieItem) {
+        listener?.clickMovie(movie)
 
-        fun clickMovie()
     }
+
 }
+
+
+interface ClickMovieListener {
+
+        fun clickMovie(movie: MovieItem)
+    }
+
+

@@ -4,8 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.movies.databinding.ActivityMainBinding
+import com.example.movies.models.MovieItem
 
-class MainActivity : AppCompatActivity(), MoviesListFragment.ClickMovieListener {
+class MainActivity : AppCompatActivity(), ClickMovieListener {
 
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,10 +22,10 @@ class MainActivity : AppCompatActivity(), MoviesListFragment.ClickMovieListener 
 
     }
 
-    override fun clickMovie() {
+    override fun clickMovie(movie: MovieItem) {
         supportFragmentManager.beginTransaction()
             .addToBackStack(null)
-            .replace(R.id.container_fragment, MoviesDetailsFragment.newInstance())
+            .replace(R.id.container_fragment, MoviesDetailsFragment.newInstance(movie))
             .commit()
     }
 
