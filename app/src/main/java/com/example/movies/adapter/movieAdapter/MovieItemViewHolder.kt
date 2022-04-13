@@ -14,6 +14,7 @@ class MovieItemViewHolder(private val binding: ViewHolderMovieBinding) : Recycle
             moviePg.text = movie.pg
             countReview.text= itemView.context.getString(R.string.reviews, movie.countReviews)
             nameMovie.text = movie.name
+            ratingBar.rating= movie.ratingStars.toFloat()
             durationMovie.text = itemView.context.getString(R.string.movie_minutes, movie.duration)
 
 

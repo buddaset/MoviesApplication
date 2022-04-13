@@ -45,6 +45,7 @@ class MoviesDetailsFragment : Fragment() {
             nameMovie.text = movie.name
             countReview.text = getString(R.string.reviews, movie.countReviews)
             textOverview.text = movie.overview
+            ratingBar.rating = movie.ratingStars.toFloat()
             actorAdapter.addData(movie.actors)
 
         }
