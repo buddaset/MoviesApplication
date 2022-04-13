@@ -50,7 +50,7 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@string/avengers_end_game"
                     android:scaleType="fitStart"
-                    android:src="@drawable/movie" />
+                    android:src="@drawable/movie_avengers_endgame" />
 
                 <ImageView
                     android:id="@+id/mask_movie"
@@ -161,7 +161,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="@string/_125_reviews"
+                    tools:text="125 reviews"
                     android:textColor="@color/my_darkGray"
                     android:textStyle="bold"
                     android:textSize="8sp"

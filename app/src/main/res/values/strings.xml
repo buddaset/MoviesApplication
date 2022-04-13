@@ -4,7 +4,7 @@
     <string name="avengers_end_game">Avengers:\nEnd Game</string>
     <string name="age">13+</string>
     <string name="genre">Action, Adventure, Fantasy</string>
-    <string name="_125_reviews">125 REVIEWS</string>
+    <string name="reviews">%d REVIEWS</string>
     <string name="storyline">Storyline</string>
     <string name="overview">Storyline After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos\' actions and restore balance to the universe.</string>
     <string name="cast">Cast</string>
@@ -14,5 +14,5 @@
     <string name="chris_hemsworth">Chris Hemsworth</string>
     <string name="movies_list">Movies list</string>
     <string name="avengers_end_game_list_title">Avengers: End Game</string>
-    <string name="movie_minutes">137 MIN</string>
+    <string name="movie_minutes">%d MIN</string>
 </resources>
