@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.movies.databinding.ViewHolderMovieBinding
-import com.example.movies.models.MovieItem
+import com.example.movies.models.MovieData
 
-class MovieAdapter(private var listener: MovieListener) : ListAdapter<MovieItem, MovieItemViewHolder>(MovieCallback()) {
+class MovieAdapter(private var listener: MovieListener) : ListAdapter<MovieData, MovieItemViewHolder>(MovieCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieItemViewHolder =
@@ -26,5 +26,5 @@ class MovieAdapter(private var listener: MovieListener) : ListAdapter<MovieItem,
 
 interface MovieListener {
 
-    fun onCLickMovie(movie: MovieItem)
+    fun onCLickMovie(movie: MovieData)
 }

@@ -1,10 +1,9 @@
 package com.example.movies
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.movies.databinding.ActivityMainBinding
-import com.example.movies.models.MovieItem
+import com.example.movies.models.MovieData
 
 class MainActivity : AppCompatActivity(), ClickMovieListener {
 
@@ -22,7 +21,7 @@ class MainActivity : AppCompatActivity(), ClickMovieListener {
 
     }
 
-    override fun clickMovie(movie: MovieItem) {
+    override fun clickMovie(movie: MovieData) {
         supportFragmentManager.beginTransaction()
             .addToBackStack(null)
             .replace(R.id.container_fragment, MoviesDetailsFragment.newInstance(movie))

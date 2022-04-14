@@ -6,16 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.movies.adapter.actorAdapter.ActorAdapter
-import com.example.movies.databinding.ActivityMainBinding
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
-import com.example.movies.models.MovieItem
+import com.example.movies.models.MovieData
 import java.lang.IllegalArgumentException
 
 
 class MoviesDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentMoviesDetailsBinding
-    private lateinit var movie : MovieItem
+    private lateinit var movie : MovieData
     private lateinit var actorAdapter: ActorAdapter
 
 
@@ -38,7 +37,7 @@ class MoviesDetailsFragment : Fragment() {
 
     }
 
-    private fun showDetails(movie: MovieItem) {
+    private fun showDetails(movie: MovieData) {
         with(binding) {
             poster.setImageResource(movie.poster)
             pgMovie?.text= movie.pg
@@ -46,7 +45,7 @@ class MoviesDetailsFragment : Fragment() {
             countReview.text = getString(R.string.reviews, movie.countReviews)
             textOverview.text = movie.overview
             ratingBar.rating = movie.ratingStars.toFloat()
-            actorAdapter.addData(movie.actors)
+            actorAdapter.addData(movie.actorData)
 
         }
 
@@ -57,7 +56,7 @@ class MoviesDetailsFragment : Fragment() {
         private const val MOVIE_ITEM = "movieItem"
 
         @JvmStatic
-        fun newInstance(movie: MovieItem) : MoviesDetailsFragment {
+        fun newInstance(movie: MovieData) : MoviesDetailsFragment {
             val instance = MoviesDetailsFragment()
             val bundle = Bundle()
                 bundle.putParcelable(MOVIE_ITEM, movie)

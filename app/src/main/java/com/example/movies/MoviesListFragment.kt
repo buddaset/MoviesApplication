@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import com.example.movies.adapter.movieAdapter.MovieAdapter
 import com.example.movies.adapter.movieAdapter.MovieListener
 import com.example.movies.databinding.FragmentMoviesListBinding
-import com.example.movies.models.MovieItem
+import com.example.movies.models.MovieData
 
 class MoviesListFragment : Fragment(), MovieListener {
 
@@ -57,7 +57,7 @@ class MoviesListFragment : Fragment(), MovieListener {
 
     }
 
-    override fun onCLickMovie(movie: MovieItem) {
+    override fun onCLickMovie(movie: MovieData) {
         listener?.clickMovie(movie)
 
     }
@@ -67,7 +67,7 @@ class MoviesListFragment : Fragment(), MovieListener {
 
 interface ClickMovieListener {
 
-        fun clickMovie(movie: MovieItem)
+        fun clickMovie(movie: MovieData)
     }
 
 

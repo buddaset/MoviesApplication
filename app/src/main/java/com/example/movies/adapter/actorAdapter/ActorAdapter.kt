@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.databinding.ViewHolderActorBinding
-import com.example.movies.models.Actor
+import com.example.movies.models.ActorData
 
 class ActorAdapter : RecyclerView.Adapter<ActorViewHolder>() {
 
-   private val listActor = mutableListOf<Actor>()
+   private val listActor = mutableListOf<ActorData>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActorViewHolder =
         ActorViewHolder(
@@ -22,7 +22,7 @@ class ActorAdapter : RecyclerView.Adapter<ActorViewHolder>() {
 
     override fun getItemCount(): Int = listActor.size
 
-    fun addData(list: List<Actor>) {
+    fun addData(list: List<ActorData>) {
         listActor.clear()
         listActor.addAll(list)
         notifyDataSetChanged()

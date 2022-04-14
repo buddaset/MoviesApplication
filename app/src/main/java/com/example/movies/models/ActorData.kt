@@ -4,7 +4,9 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Actor(
+data class ActorData(
+    val id : Int,
     val name: String,
-    var image: Int
+    val imageUrl: String
+
 ) : Parcelable
