@@ -38,6 +38,10 @@ class MoviesDetailsFragment : Fragment() {
         binding.actorRecycler.adapter = actorAdapter
         showDetails(movie)
 
+        binding.backPress.setOnClickListener {
+            activity?.onBackPressed()
+        }
+
     }
 
     private fun showDetails(movie: MovieData) {

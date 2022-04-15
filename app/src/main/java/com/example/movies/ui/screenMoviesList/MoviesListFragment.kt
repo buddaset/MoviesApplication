@@ -47,7 +47,10 @@ class MoviesListFragment : Fragment(), MovieListener {
         setupMovieAdapter()
 
 
+
     }
+
+
 
     private fun setupMovieAdapter() {
         binding.movieRecyclerview.adapter = movieAdapter
