@@ -99,27 +99,30 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:textColor="@color/my_red"
-            android:textSize="14sp"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/rating_bar"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/title"
             tools:text="@string/genre"/>
 
-        <RatingBar
+        <com.iarcuschin.simpleratingbar.SimpleRatingBar
             android:id="@+id/rating_bar"
+            android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:stepSize="1"
-            android:isIndicator="true"
-            android:progressDrawable="@drawable/custom_ratingbar"
-            android:numStars="5"
-            android:minHeight="10dp"
-            android:maxWidth="15dp"
-            android:rating="4"
+            app:srb_borderColor="@color/dark_blue"
+            app:srb_fillColor="@color/my_red"
+            app:srb_starsSeparation="1dp"
+            app:srb_numberOfStars="5"
+            app:srb_rating="3"
+            app:srb_starSize="20dp"
+            app:srb_stepSize="1"
+            app:srb_starBackgroundColor="@color/gray"
             app:layout_constraintTop_toBottomOf="@id/genre"
-            app:layout_constraintStart_toStartOf="@id/guideline_start"
-            />
+            app:layout_constraintStart_toStartOf="@id/guideline_start"/>
+
+
 
         <TextView
             android:id="@+id/count_review"

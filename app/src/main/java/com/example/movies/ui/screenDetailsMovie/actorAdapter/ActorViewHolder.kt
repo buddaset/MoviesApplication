@@ -13,7 +13,7 @@ class ActorViewHolder(private val binding: ViewHolderActorBinding) : RecyclerVie
 
         binding.nameActor.text = actor.name
         binding.imageActor.load(actor.imageUrl)
-        Log.d("XXX", actor.imageUrl)
+
 
     }
 }

@@ -53,7 +53,7 @@ class MoviesDetailsFragment : Fragment() {
             actorAdapter.submitList(movie.actors)
         }
         Picasso.get()
-            .load(movie.imageUrl)
+            .load(movie.detailImageUrl)
             .into(binding.poster)
 
     }
