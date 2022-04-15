@@ -10,7 +10,6 @@ import com.example.movies.models.ActorData
 class ActorAdapter : ListAdapter<ActorData, ActorViewHolder>(ActorCallback()) {
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActorViewHolder =
         ActorViewHolder(
             ViewHolderActorBinding

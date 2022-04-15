@@ -12,7 +12,6 @@ class MovieDataViewHolder(private val binding: ViewHolderMovieBinding) : Recycle
 
     fun bind(movie: MovieData) {
 
-
         with(binding) {
             title.text = movie.title
             pgAge.text = context.getString(R.string.pg_age,movie.pgAge)

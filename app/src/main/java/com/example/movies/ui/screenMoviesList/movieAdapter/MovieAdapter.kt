@@ -11,8 +11,7 @@ class MovieAdapter(private var listener: MovieListener) : ListAdapter<MovieData,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieDataViewHolder =
         MovieDataViewHolder(ViewHolderMovieBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        ))
+            LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: MovieDataViewHolder, position: Int) {
         holder.bind(getItem(position))
@@ -20,8 +19,6 @@ class MovieAdapter(private var listener: MovieListener) : ListAdapter<MovieData,
             listener.onCLickMovie(getItem(position))
         }
     }
-
-
 }
 
 interface MovieListener {

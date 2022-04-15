@@ -1,18 +1,16 @@
 package com.example.movies.ui.screenDetailsMovie
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.movies.R
-import com.example.movies.ui.screenDetailsMovie.actorAdapter.ActorAdapter
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
 import com.example.movies.models.MovieData
+import com.example.movies.ui.screenDetailsMovie.actorAdapter.ActorAdapter
 import com.example.movies.ui.screenMoviesList.movieAdapter.MovieUtils
-import com.squareup.picasso.Picasso
-import java.lang.IllegalArgumentException
 
 
 class MoviesDetailsFragment : Fragment() {
@@ -56,7 +54,7 @@ class MoviesDetailsFragment : Fragment() {
             storyLine.text = movie.storyLine
             actorAdapter.submitList(movie.actors)
         }
-        Picasso.get()
+        Glide.with(context)
             .load(movie.detailImageUrl)
             .into(binding.poster)
 
@@ -75,9 +73,5 @@ class MoviesDetailsFragment : Fragment() {
             return instance
 
         }
-
-
-
-
     }
 }

@@ -4,7 +4,8 @@ import com.example.movies.models.GenreData
 
 object MovieUtils {
 
-    const val MAX_RATING = 5
+
+    private const val MAX_RATING = 5
 
     fun getGenreOfMovie(listGenre: List<GenreData>) : String =
         listGenre.joinToString { it.name }

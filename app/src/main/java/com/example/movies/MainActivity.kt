@@ -18,8 +18,6 @@ class MainActivity : AppCompatActivity(), ClickMovieListener {
                 .add(R.id.container_fragment, MoviesListFragment.newInstance() )
                 .commit()
         }
-
-
     }
 
     override fun clickMovie(movie: MovieData) {
@@ -28,6 +26,5 @@ class MainActivity : AppCompatActivity(), ClickMovieListener {
             .replace(R.id.container_fragment, MoviesDetailsFragment.newInstance(movie))
             .commit()
     }
-
 
 }

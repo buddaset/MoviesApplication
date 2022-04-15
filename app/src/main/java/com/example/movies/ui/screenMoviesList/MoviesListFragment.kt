@@ -34,7 +34,6 @@ class MoviesListFragment : Fragment(), MovieListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentMoviesListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,38 +42,26 @@ class MoviesListFragment : Fragment(), MovieListener {
         super.onViewCreated(view, savedInstanceState)
 
         movieAdapter = MovieAdapter(this)
-
         setupMovieAdapter()
-
-
-
     }
-
-
 
     private fun setupMovieAdapter() {
         binding.movieRecyclerview.adapter = movieAdapter
         coroutineScope.launch {
             val data = loadMovies(requireContext())
-
             withContext(Dispatchers.Main) {
                 movieAdapter.submitList(data)
             }
-
         }
-
-    }
-
-
-    companion object {
-
-        fun newInstance() = MoviesListFragment()
-
     }
 
     override fun onCLickMovie(movie: MovieData) {
         listener?.clickMovie(movie)
+    }
 
+    companion object {
+
+        fun newInstance() = MoviesListFragment()
     }
 
 }
