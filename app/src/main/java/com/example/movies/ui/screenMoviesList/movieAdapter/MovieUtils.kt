@@ -7,7 +7,7 @@ object MovieUtils {
     const val MAX_RATING = 5
 
     fun getGenreOfMovie(listGenre: List<GenreData>) : String =
-        listGenre.map { it.name  }.joinToString { "," }
+        listGenre.joinToString { it.name }
 
     fun getRating(rating : Int): Float =
         if (rating > MAX_RATING) (rating % MAX_RATING).toFloat()

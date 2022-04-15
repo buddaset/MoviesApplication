@@ -22,14 +22,16 @@
             android:layout_height="match_parent"
             android:contentDescription="@string/avengers_end_game"
             android:scaleType="fitStart"
-            android:src="@drawable/movie_avengers_endgame" />
+            tools:src="@drawable/img"  />
 
-        <ImageView
-            android:id="@+id/mask_movie"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitStart"
-            android:src="@drawable/mask_movie" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/ic_mask"
+            app:layout_constraintBottom_toBottomOf="@+id/movie_poster"
+            app:layout_constraintEnd_toEndOf="@+id/movie_poster"
+            app:layout_constraintStart_toStartOf="@+id/movie_poster"
+            app:layout_constraintTop_toTopOf="@+id/movie_poster" />
 
 
         <TextView
@@ -61,11 +63,13 @@
 
         <TextView
             android:id="@+id/genre"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="210dp"
             android:layout_marginBottom="4dp"
             android:layout_marginStart="6dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text="@string/genre"
             android:textColor="@color/my_red"
             android:textSize="8sp"

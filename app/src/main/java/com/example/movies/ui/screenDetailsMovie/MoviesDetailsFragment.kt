@@ -11,6 +11,7 @@ import com.example.movies.ui.screenDetailsMovie.actorAdapter.ActorAdapter
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
 import com.example.movies.models.MovieData
 import com.example.movies.ui.screenMoviesList.movieAdapter.MovieUtils
+import com.squareup.picasso.Picasso
 import java.lang.IllegalArgumentException
 
 
@@ -37,26 +38,23 @@ class MoviesDetailsFragment : Fragment() {
         binding.actorRecycler.adapter = actorAdapter
         showDetails(movie)
 
-
     }
 
     private fun showDetails(movie: MovieData) {
         val context = requireContext()
         with(binding) {
 
-            title?.text = movie.title
-            pgAge?.text = context.getString(R.string.pg_age,movie.pgAge)
+            title.text = movie.title
+            pgAge.text = context.getString(R.string.pg_age,movie.pgAge)
             genre.text = MovieUtils.getGenreOfMovie(movie.genres)
             ratingBar.rating = MovieUtils.getRating(movie.rating)
             countReview.text = context.getString(R.string.reviews, movie.reviewCount)
             storyLine.text = movie.storyLine
-            Glide.with(requireContext())
-                .load(movie.detailImageUrl)
-                .into(binding.poster)
-
             actorAdapter.submitList(movie.actors)
-
         }
+        Picasso.get()
+            .load(movie.imageUrl)
+            .into(binding.poster)
 
     }
 

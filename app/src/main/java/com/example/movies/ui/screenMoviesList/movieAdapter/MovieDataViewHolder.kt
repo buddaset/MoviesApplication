@@ -24,7 +24,7 @@ class MovieDataViewHolder(private val binding: ViewHolderMovieBinding) : Recycle
             runningTime.text = context.getString(R.string.movie_minutes, movie.runningTime)
             Glide.with(context)
                 .load(movie.imageUrl)
-                .into(binding.moviePoster)
+                .into(moviePoster)
 
 
 
