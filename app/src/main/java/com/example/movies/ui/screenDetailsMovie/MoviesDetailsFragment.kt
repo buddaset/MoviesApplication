@@ -1,13 +1,16 @@
-package com.example.movies
+package com.example.movies.ui.screenDetailsMovie
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.movies.adapter.actorAdapter.ActorAdapter
+import com.bumptech.glide.Glide
+import com.example.movies.R
+import com.example.movies.ui.screenDetailsMovie.actorAdapter.ActorAdapter
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
 import com.example.movies.models.MovieData
+import com.example.movies.ui.screenMoviesList.movieAdapter.MovieUtils
 import java.lang.IllegalArgumentException
 
 
@@ -38,14 +41,20 @@ class MoviesDetailsFragment : Fragment() {
     }
 
     private fun showDetails(movie: MovieData) {
+        val context = requireContext()
         with(binding) {
-            poster.setImageResource(movie.poster)
-            pgMovie?.text= movie.pg
-            nameMovie.text = movie.name
-            countReview.text = getString(R.string.reviews, movie.countReviews)
-            textOverview.text = movie.overview
-            ratingBar.rating = movie.ratingStars.toFloat()
-            actorAdapter.addData(movie.actorData)
+
+            title?.text = movie.title
+            pgAge?.text = context.getString(R.string.pg_age,movie.pgAge)
+            genre.text = MovieUtils.getGenreOfMovie(movie.genres)
+            ratingBar.rating = MovieUtils.getRating(movie.rating)
+            countReview.text = context.getString(R.string.reviews, movie.reviewCount)
+            storyLine.text = movie.storyLine
+            Glide.with(requireContext())
+                .load(movie.detailImageUrl)
+                .into(binding.poster)
+
+            actorAdapter.submitList(movie.actors)
 
         }
 

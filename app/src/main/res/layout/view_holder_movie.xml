@@ -33,7 +33,7 @@
 
 
         <TextView
-            android:id="@+id/movie_pg"
+            android:id="@+id/pg_age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -48,13 +48,13 @@
             />
 
         <ImageView
-            android:id="@+id/favorite_movie"
+            android:id="@+id/liked_movie"
             android:layout_width="20dp"
             android:layout_height="0dp"
             android:layout_gravity="top|end"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_like"
+            android:src="@drawable/ic_like_off"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -78,6 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:stepSize="1"
+            android:isIndicator="true"
             android:progressDrawable="@drawable/custom_ratingbar"
             android:numStars="5"
             android:minHeight="4dp"
@@ -103,7 +104,7 @@
             tools:ignore="SmallSp" />
 
         <TextView
-            android:id="@+id/name_movie"
+            android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -117,11 +118,11 @@
             app:layout_constraintTop_toBottomOf="@id/count_review" />
 
         <TextView
-            android:id="@+id/duration_movie"
+            android:id="@+id/running_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name_movie"
+            app:layout_constraintTop_toBottomOf="@id/title"
             android:layout_margin="8dp"
             android:textSize="8sp"
             app:layout_constraintEnd_toEndOf="parent"

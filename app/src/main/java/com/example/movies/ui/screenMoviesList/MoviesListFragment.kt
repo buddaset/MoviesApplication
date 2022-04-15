@@ -6,16 +6,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.movies.adapter.movieAdapter.MovieAdapter
-import com.example.movies.adapter.movieAdapter.MovieListener
+import com.android.academy.fundamentals.homework.features.data.loadMovies
+import com.example.movies.ui.screenMoviesList.movieAdapter.MovieAdapter
+import com.example.movies.ui.screenMoviesList.movieAdapter.MovieListener
 import com.example.movies.databinding.FragmentMoviesListBinding
 import com.example.movies.models.MovieData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MoviesListFragment : Fragment(), MovieListener {
 
     private lateinit var binding: FragmentMoviesListBinding
     private lateinit var movieAdapter: MovieAdapter
     private var listener: ClickMovieListener? = null
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,9 +50,15 @@ class MoviesListFragment : Fragment(), MovieListener {
     }
 
     private fun setupMovieAdapter() {
-        binding.movieRecyclerview?.adapter = movieAdapter
-        val data = AppUtils(requireContext()).fakeData
-        movieAdapter.submitList(data)
+        binding.movieRecyclerview.adapter = movieAdapter
+        coroutineScope.launch {
+            val data = loadMovies(requireContext())
+
+            withContext(Dispatchers.Main) {
+                movieAdapter.submitList(data)
+            }
+
+        }
 
     }
 

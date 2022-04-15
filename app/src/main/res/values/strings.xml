@@ -15,4 +15,5 @@
     <string name="movies_list">Movies list</string>
     <string name="avengers_end_game_list_title">Avengers: End Game</string>
     <string name="movie_minutes">%d MIN</string>
+    <string name="pg_age">%d+</string>
 </resources>

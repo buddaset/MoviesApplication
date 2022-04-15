@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.movies.databinding.ActivityMainBinding
 import com.example.movies.models.MovieData
+import com.example.movies.ui.screenDetailsMovie.MoviesDetailsFragment
 
 class MainActivity : AppCompatActivity(), ClickMovieListener {
 
