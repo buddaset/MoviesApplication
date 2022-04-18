@@ -1,14 +1,14 @@
-package com.example.movies.adapter.actorAdapter
+package com.example.movies.ui.screenDetailsMovie.actorAdapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.databinding.ViewHolderActorBinding
-import com.example.movies.models.Actor
+import com.example.movies.models.ActorData
 
-class ActorAdapter : RecyclerView.Adapter<ActorViewHolder>() {
+class ActorAdapter : ListAdapter<ActorData, ActorViewHolder>(ActorCallback()) {
 
-   private val listActor = mutableListOf<Actor>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActorViewHolder =
         ActorViewHolder(
@@ -17,14 +17,10 @@ class ActorAdapter : RecyclerView.Adapter<ActorViewHolder>() {
         )
 
     override fun onBindViewHolder(holder: ActorViewHolder, position: Int) {
-       holder.bing(listActor[position])
+       holder.bing(getItem(position))
     }
 
-    override fun getItemCount(): Int = listActor.size
 
-    fun addData(list: List<Actor>) {
-        listActor.clear()
-        listActor.addAll(list)
-        notifyDataSetChanged()
-    }
+
+
 }
