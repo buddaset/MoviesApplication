@@ -1,7 +1,10 @@
-package com.example.movies
+package com.example.movies.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.movies.ClickMovieListener
+import com.example.movies.MoviesListFragment
+import com.example.movies.R
 import com.example.movies.databinding.ActivityMainBinding
 import com.example.movies.models.MovieData
 import com.example.movies.ui.screenDetailsMovie.MoviesDetailsFragment
@@ -15,7 +18,7 @@ class MainActivity : AppCompatActivity(), ClickMovieListener {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .add(R.id.container_fragment, MoviesListFragment.newInstance() )
+                .add(R.id.container_fragment, MoviesListFragment.newInstance())
                 .commit()
         }
     }
