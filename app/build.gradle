@@ -50,9 +50,11 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     // Custom  RatingBar
     implementation 'com.iarcuschin:simpleratingbar:0.1.5'
+    // jetPack
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
 
     // coroutines + parserJson
-
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
 
