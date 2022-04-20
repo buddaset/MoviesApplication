@@ -1,6 +1,6 @@
 package com.example.movies.di
 
-import com.example.movies.data.MovieService
+import com.example.movies.data.remote.MovieService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response

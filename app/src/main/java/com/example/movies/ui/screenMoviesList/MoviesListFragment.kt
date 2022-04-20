@@ -7,17 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.android.academy.fundamentals.homework.features.data.loadMovies
 import com.example.movies.ui.screenMoviesList.movieAdapter.MovieAdapter
 import com.example.movies.ui.screenMoviesList.movieAdapter.MovieListener
 import com.example.movies.databinding.FragmentMoviesListBinding
 import com.example.movies.models.MovieData
 import com.example.movies.ui.ViewModelFactory
 import com.example.movies.ui.screenMoviesList.ListMovieViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
 
 class MoviesListFragment : Fragment(), MovieListener {
 
