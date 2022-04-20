@@ -33,9 +33,8 @@ class ImageUrlAppender(private val service: MovieService) {
         settingImage = service.loadConfiguration().images
         baseUrl = settingImage.secure_base_url
         posterSize = if (MEDIUM_SIZE in settingImage.poster_sizes) MEDIUM_SIZE else DEFAULT_SIZE
-        backDropSize = if (LARGE_SIZE in settingImage.poster_sizes) MEDIUM_SIZE else DEFAULT_SIZE
-        profileActorSize =
-            if (MEDIUM_SIZE in settingImage.poster_sizes) MEDIUM_SIZE else DEFAULT_SIZE
+        backDropSize = if (LARGE_SIZE in settingImage.poster_sizes) LARGE_SIZE else DEFAULT_SIZE
+        profileActorSize = if (SMALL_SIZE in settingImage.poster_sizes) SMALL_SIZE else DEFAULT_SIZE
 
     }
 

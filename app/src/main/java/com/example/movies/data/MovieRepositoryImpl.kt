@@ -1,0 +1,75 @@
+package com.example.movies.data
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.movies.data.remote.ImageUrlAppender
+import com.example.movies.data.remote.MovieService
+import com.example.movies.models.ActorData
+import com.example.movies.models.GenreData
+import com.example.movies.models.MovieData
+import com.example.movies.models.MovieDetails
+import java.util.*
+
+class MovieRepositoryImpl(private val imageUrlAppender: ImageUrlAppender,
+private val movieService: MovieService) : MovieRepository {
+
+
+
+    override suspend fun getListMovie(): LiveData<List<MovieData>> {
+        val resultLiveData = MutableLiveData<List<MovieData>>()
+        val genresResponse = movieService.loadGenres().genres
+        val response = movieService.loadMoviesPopular().results.map { movie ->
+            MovieData(
+                id = movie.id,
+                title = movie.title,
+                pgAge = setPgAge(movie.adult),
+                imageUrl = imageUrlAppender.getPosterImageUrl(movie.poster_path),
+                detailImageUrl = imageUrlAppender.getDetailImageUrl(movie.backdrop_path),
+                runningTime = 0 ,
+                rating = movie.vote_average.toInt(),
+                reviewCount = movie.vote_count,
+                storyLine = movie.overview,
+                isLiked = Random().nextBoolean(),
+                genres = genresResponse.filter { genreResponse ->
+                    movie.genre_ids.contains(genreResponse.id) }
+                    .map { GenreData(id = it.id , name = it.name) } )
+                }
+        resultLiveData.value = response
+        return resultLiveData
+        }
+
+
+
+    override suspend fun getMovieDetails(idMovie: Int): LiveData<MovieDetails> {
+        val resultLiveData = MutableLiveData<MovieDetails>()
+        val movie = movieService.loadMovieDetails(idMovie)
+        val movieDetails = MovieDetails(
+            id = movie.id,
+            title = movie.title,
+            pgAge = setPgAge(movie.adult),
+            detailImageUrl = imageUrlAppender.getDetailImageUrl(movie.backdrop_path),
+            runningTime = movie.runtime,
+            rating = movie.vote_average.toInt(),
+            reviewCount = movie.vote_count,
+             storyLine = movie.overview,
+            isLiked= false,
+           genres = movie.genreResponses.map { GenreData(id=it.id, name = it.name)},
+            actors = movieService.loadMovieCredits(idMovie).cast.map { actorResponse ->
+                ActorData(
+                    id = actorResponse.id,
+                    name = actorResponse.name,
+                    imageUrl = imageUrlAppender.getActorImageUrl(actorResponse.profile_path))
+            })
+        resultLiveData.value = movieDetails
+        return resultLiveData
+    }
+
+    private fun setPgAge(isAdult : Boolean) : Int =
+       if (isAdult) PG_ADULT else PG_CHILDREN
+
+    companion object {
+
+        const val PG_ADULT = 16
+        const val PG_CHILDREN = 13
+    }
+}
