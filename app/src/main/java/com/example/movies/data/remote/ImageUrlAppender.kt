@@ -4,31 +4,32 @@ import com.example.movies.data.remote.response.ImageSettingResponse
 
 class ImageUrlAppender(private val service: MovieService) {
 
-    lateinit var baseUrl: String
-    lateinit var settingImage: ImageSettingResponse
-    lateinit var posterSize: String
-    lateinit var backDropSize: String
-    lateinit var profileActorSize: String
+    private var baseUrl: String? = null
+    private lateinit var settingImage: ImageSettingResponse
+    private lateinit var posterSize: String
+   private lateinit var backDropSize: String
+   private lateinit var profileActorSize: String
 
 
-    suspend fun getDetailImageUrl(pathImage: String): String {
+    suspend fun getDetailImageUrl(pathImage: String): String? {
         getConfiguration()
         return joinFullUrl(backDropSize, pathImage)
     }
 
-    suspend fun getPosterImageUrl(pathImage: String): String {
+    suspend fun getPosterImageUrl(pathImage: String): String? {
         getConfiguration()
         return joinFullUrl(posterSize, pathImage)
     }
 
-    suspend fun getActorImageUrl(pathImage: String): String {
+    suspend fun getActorImageUrl(pathImage: String?): String? {
         getConfiguration()
+
         return joinFullUrl(profileActorSize, pathImage)
     }
 
 
     private suspend fun getConfiguration() {
-        if (baseUrl.isNotBlank()) return
+        if (baseUrl != null) return
 
         settingImage = service.loadConfiguration().images
         baseUrl = settingImage.secure_base_url
@@ -38,8 +39,8 @@ class ImageUrlAppender(private val service: MovieService) {
 
     }
 
-    private fun joinFullUrl(size: String, pathImage: String): String =
-        baseUrl + size + pathImage
+    private fun joinFullUrl(size: String, pathImage: String?): String? =
+        if (pathImage.isNullOrEmpty()) null else baseUrl + size + pathImage
 
 
     companion object {

@@ -11,7 +11,7 @@ import com.example.movies.models.MovieDetails
 import java.util.*
 
 class MovieRepositoryImpl(private val imageUrlAppender: ImageUrlAppender,
-private val movieService: MovieService) : MovieRepository {
+                          private val movieService: MovieService) : MovieRepository {
 
 
 
@@ -24,7 +24,6 @@ private val movieService: MovieService) : MovieRepository {
                 title = movie.title,
                 pgAge = setPgAge(movie.adult),
                 imageUrl = imageUrlAppender.getPosterImageUrl(movie.poster_path),
-                detailImageUrl = imageUrlAppender.getDetailImageUrl(movie.backdrop_path),
                 runningTime = 0 ,
                 rating = movie.vote_average.toInt(),
                 reviewCount = movie.vote_count,
@@ -53,15 +52,23 @@ private val movieService: MovieService) : MovieRepository {
             reviewCount = movie.vote_count,
              storyLine = movie.overview,
             isLiked= false,
-           genres = movie.genreResponses.map { GenreData(id=it.id, name = it.name)},
-            actors = movieService.loadMovieCredits(idMovie).cast.map { actorResponse ->
-                ActorData(
-                    id = actorResponse.id,
-                    name = actorResponse.name,
-                    imageUrl = imageUrlAppender.getActorImageUrl(actorResponse.profile_path))
-            })
+           genres = movie.genres.map { GenreData(id=it.id, name = it.name)},
+            actors = getActors(idMovie))
         resultLiveData.value = movieDetails
         return resultLiveData
+    }
+
+    private suspend fun getActors(idMovie: Int) : List<ActorData> {
+        val actorsMode = movieService.loadMovieCredits(idMovie).cast
+                if( actorsMode.isEmpty()) return emptyList<ActorData>()
+
+         return   actorsMode.map { actorResponse ->
+            ActorData(
+                id = actorResponse.id,
+                name = actorResponse.name,
+                imageUrl = imageUrlAppender.getActorImageUrl(actorResponse.profile_path ))
+        }
+
     }
 
     private fun setPgAge(isAdult : Boolean) : Int =

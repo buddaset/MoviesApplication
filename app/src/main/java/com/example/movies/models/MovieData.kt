@@ -4,13 +4,12 @@ import android.os.MessageQueue
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
+
 data class MovieData(
     val id: Int,
     val title: String,
     val pgAge: Int,
-    val imageUrl : String,
-    val detailImageUrl: String,
+    var imageUrl : String?,
     val runningTime: Int,
     val rating: Int,
     val reviewCount : Int,
@@ -19,4 +18,4 @@ data class MovieData(
     val genres: List<GenreData>,
 
 
-) : Parcelable
+)

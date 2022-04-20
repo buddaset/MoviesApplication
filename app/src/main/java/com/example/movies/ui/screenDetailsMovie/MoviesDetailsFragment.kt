@@ -5,10 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
+import com.example.movies.App
 import com.example.movies.R
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
 import com.example.movies.models.MovieData
+import com.example.movies.models.MovieDetails
+import com.example.movies.ui.ViewModelFactory
 import com.example.movies.ui.screenDetailsMovie.actorAdapter.ActorAdapter
 import com.example.movies.ui.screenMoviesList.movieAdapter.MovieUtils
 
@@ -16,8 +20,18 @@ import com.example.movies.ui.screenMoviesList.movieAdapter.MovieUtils
 class MoviesDetailsFragment : Fragment() {
 
     private lateinit var binding: FragmentMoviesDetailsBinding
-    private lateinit var movie : MovieData
+
     private lateinit var actorAdapter: ActorAdapter
+    private var movieId = UNDEFINED_ID
+
+    private val viewModel : DetailsMovieViewModel by viewModels {  ViewModelFactory(
+        (requireActivity().application as App).repository
+    )  }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        movieId = arguments?.getInt(MOVIE_ID) ?: throw IllegalArgumentException("Unknown movie ID")
+    }
 
 
     override fun onCreateView(
@@ -26,7 +40,6 @@ class MoviesDetailsFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding= FragmentMoviesDetailsBinding.inflate(inflater, container, false)
-        movie = arguments?.getParcelable(MOVIE_ITEM) ?: throw IllegalArgumentException("Not have movieItem")
         return binding.root
     }
 
@@ -34,7 +47,8 @@ class MoviesDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         actorAdapter = ActorAdapter()
         binding.actorRecycler.adapter = actorAdapter
-        showDetails(movie)
+
+        viewModel.getMovieDetail(movieId).observe(viewLifecycleOwner, this::showDetails)
 
         binding.backPress.setOnClickListener {
             activity?.onBackPressed()
@@ -42,7 +56,7 @@ class MoviesDetailsFragment : Fragment() {
 
     }
 
-    private fun showDetails(movie: MovieData) {
+    private fun showDetails(movie: MovieDetails) {
         val context = requireContext()
         with(binding) {
 
@@ -62,13 +76,14 @@ class MoviesDetailsFragment : Fragment() {
 
     companion object {
 
-        private const val MOVIE_ITEM = "movieItem"
+        private const val MOVIE_ID = "movieId"
+        private const val UNDEFINED_ID = -1
 
         @JvmStatic
-        fun newInstance(movie: MovieData) : MoviesDetailsFragment {
+        fun newInstance(movieId: Int) : MoviesDetailsFragment {
             val instance = MoviesDetailsFragment()
             val bundle = Bundle()
-                bundle.putParcelable(MOVIE_ITEM, movie)
+                bundle.putInt(MOVIE_ID, movieId)
             instance.arguments = bundle
             return instance
 

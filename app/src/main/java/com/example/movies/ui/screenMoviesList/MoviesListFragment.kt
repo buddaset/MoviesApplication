@@ -20,7 +20,8 @@ class MoviesListFragment : Fragment(), MovieListener {
     private lateinit var binding: FragmentMoviesListBinding
     private lateinit var movieAdapter: MovieAdapter
     private var listener: ClickMovieListener? = null
-    private val viewModel: ListMovieViewModel by viewModels { ViewModelFactory(requireActivity().application) }
+    private val viewModel: ListMovieViewModel by viewModels { ViewModelFactory(
+        (requireActivity().application as App).repository )}
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -55,7 +56,7 @@ class MoviesListFragment : Fragment(), MovieListener {
 
 
     override fun onCLickMovie(movie: MovieData) {
-        listener?.clickMovie(movie)
+        listener?.clickMovie(movie.id)
     }
 
     companion object {
@@ -67,7 +68,7 @@ class MoviesListFragment : Fragment(), MovieListener {
 
 interface ClickMovieListener {
 
-    fun clickMovie(movie: MovieData)
+    fun clickMovie(movieId: Int)
 }
 
 

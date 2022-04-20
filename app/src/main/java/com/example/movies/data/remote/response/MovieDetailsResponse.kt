@@ -5,7 +5,7 @@ data class MovieDetailsResponse(
     val backdrop_path: String,
     val belongs_to_collection: Any,
     val budget: Int,
-    val genreResponses: List<GenreResponse>,
+    val genres: List<GenreResponse>,
     val homepage: String,
     val id: Int,
     val imdb_id: String,

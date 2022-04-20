@@ -23,10 +23,10 @@ class MainActivity : AppCompatActivity(), ClickMovieListener {
         }
     }
 
-    override fun clickMovie(movie: MovieData) {
+    override fun clickMovie(movieId: Int) {
         supportFragmentManager.beginTransaction()
             .addToBackStack(null)
-            .replace(R.id.container_fragment, MoviesDetailsFragment.newInstance(movie))
+            .replace(R.id.container_fragment, MoviesDetailsFragment.newInstance(movieId))
             .commit()
     }
 
