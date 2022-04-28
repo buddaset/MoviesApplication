@@ -1,14 +1,13 @@
 package com.example.movies.ui.screenMoviesList
 
 
-import android.app.Application
 import androidx.lifecycle.*
-import com.android.academy.fundamentals.homework.features.data.loadMovies
+import com.example.movies.data.MovieRepository
 import com.example.movies.models.MovieData
 import kotlinx.coroutines.launch
 
 
-class ListMovieViewModel(application: Application) : AndroidViewModel(application) {
+class ListMovieViewModel(private val movieRepository: MovieRepository) : ViewModel() {
 
 
 
@@ -19,11 +18,9 @@ class ListMovieViewModel(application: Application) : AndroidViewModel(applicatio
         getListMovie()
     }
 
-    private fun getListMovie() {
+    private fun getListMovie()  {
         viewModelScope.launch {
-            val list = loadMovies(getApplication())
-            _listMovie.value = list
-
+            _listMovie.value= movieRepository.getListMovie().value
         }
     }
 

@@ -7,24 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.android.academy.fundamentals.homework.features.data.loadMovies
 import com.example.movies.ui.screenMoviesList.movieAdapter.MovieAdapter
 import com.example.movies.ui.screenMoviesList.movieAdapter.MovieListener
 import com.example.movies.databinding.FragmentMoviesListBinding
 import com.example.movies.models.MovieData
 import com.example.movies.ui.ViewModelFactory
 import com.example.movies.ui.screenMoviesList.ListMovieViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
 
 class MoviesListFragment : Fragment(), MovieListener {
 
     private lateinit var binding: FragmentMoviesListBinding
     private lateinit var movieAdapter: MovieAdapter
     private var listener: ClickMovieListener? = null
-    private val viewModel: ListMovieViewModel by viewModels { ViewModelFactory(requireActivity().application) }
+    private val viewModel: ListMovieViewModel by viewModels { ViewModelFactory(
+        (requireActivity().application as App).repository )}
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -59,7 +56,7 @@ class MoviesListFragment : Fragment(), MovieListener {
 
 
     override fun onCLickMovie(movie: MovieData) {
-        listener?.clickMovie(movie)
+        listener?.clickMovie(movie.id)
     }
 
     companion object {
@@ -71,7 +68,7 @@ class MoviesListFragment : Fragment(), MovieListener {
 
 interface ClickMovieListener {
 
-    fun clickMovie(movie: MovieData)
+    fun clickMovie(movieId: Int)
 }
 
 

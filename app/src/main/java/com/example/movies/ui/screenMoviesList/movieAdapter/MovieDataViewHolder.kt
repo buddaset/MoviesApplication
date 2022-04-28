@@ -1,6 +1,8 @@
 package com.example.movies.ui.screenMoviesList.movieAdapter
 
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.bumptech.glide.Glide
 import com.example.movies.R
 import com.example.movies.databinding.ViewHolderMovieBinding
@@ -21,9 +23,8 @@ class MovieDataViewHolder(private val binding: ViewHolderMovieBinding) : Recycle
             ratingBar.rating = MovieUtils.getRating(movie.rating)
             countReview.text = context.getString(R.string.reviews, movie.reviewCount)
             runningTime.text = context.getString(R.string.movie_minutes, movie.runningTime)
-            Glide.with(context)
-                .load(movie.imageUrl)
-                .into(moviePoster)
+            Log.d("XXX", "${movie.title}   ->>>    ${movie.imageUrl}")
+            moviePoster.load(movie.imageUrl)
 
 
 
