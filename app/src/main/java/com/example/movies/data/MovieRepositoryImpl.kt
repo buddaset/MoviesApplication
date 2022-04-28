@@ -65,7 +65,7 @@ class MovieRepositoryImpl(private val imageUrlAppender: ImageUrlAppender,
             ActorData(
                 id = actorResponse.id,
                 name = actorResponse.name,
-                imageUrl = imageUrlAppender.getActorImageUrl(actorResponse.profile_path ))
+                imageUrl = imageUrlAppender.getActorImageUrl(actorResponse.imageActorPath ))
         }
 
     }
