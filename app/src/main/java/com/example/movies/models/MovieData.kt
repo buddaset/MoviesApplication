@@ -10,7 +10,6 @@ data class MovieData(
     val title: String,
     val pgAge: Int,
     var imageUrl : String?,
-    val runningTime: Int,
     val rating: Int,
     val reviewCount : Int,
     val storyLine: String,
