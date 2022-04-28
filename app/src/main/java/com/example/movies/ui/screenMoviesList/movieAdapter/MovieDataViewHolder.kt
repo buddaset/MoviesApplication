@@ -22,7 +22,8 @@ class MovieDataViewHolder(private val binding: ViewHolderMovieBinding) : Recycle
             genre.text = MovieUtils.getGenreOfMovie(movie.genres)
             ratingBar.rating = MovieUtils.getRating(movie.rating)
             countReview.text = context.getString(R.string.reviews, movie.reviewCount)
-            runningTime.text = context.getString(R.string.movie_minutes, movie.runningTime)
+            //todo correct runningTime
+            runningTime.text = context.getString(R.string.movie_minutes, 100)
             Log.d("XXX", "${movie.title}   ->>>    ${movie.imageUrl}")
             moviePoster.load(movie.imageUrl)
 

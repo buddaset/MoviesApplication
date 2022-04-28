@@ -23,13 +23,13 @@ class MovieRepositoryImpl(private val imageUrlAppender: ImageUrlAppender,
                 id = movie.id,
                 title = movie.title,
                 pgAge = setPgAge(movie.adult),
-                imageUrl = imageUrlAppender.getPosterImageUrl(movie.poster_path),
-                rating = movie.vote_average.toInt(),
-                reviewCount = movie.vote_count,
-                storyLine = movie.overview,
+                imageUrl = imageUrlAppender.getPosterImageUrl(movie.imagePath),
+                rating = movie.rating.toInt(),
+                reviewCount = movie.reviewCount,
+                storyLine = movie.storyLine,
                 isLiked = Random().nextBoolean(),
                 genres = genresResponse.filter { genreResponse ->
-                    movie.genre_ids.contains(genreResponse.id) }
+                    movie.genresId.contains(genreResponse.id) }
                     .map { GenreData(id = it.id , name = it.name) } )
                 }
         resultLiveData.value = response
