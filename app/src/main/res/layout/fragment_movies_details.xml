@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/dark_blue"
-        tools:context=".ui.screenDetailsMovie.MoviesDetailsFragment">
+        tools:context=".ui.screen_moviedetails.MoviesDetailsFragment">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_start"

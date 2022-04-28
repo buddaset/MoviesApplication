@@ -1,9 +1,8 @@
-package com.example.movies.ui.screenMoviesList.movieAdapter
+package com.example.movies.ui.screen_movieslist.movieAdapter
 
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.bumptech.glide.Glide
 import com.example.movies.R
 import com.example.movies.databinding.ViewHolderMovieBinding
 import com.example.movies.models.MovieData

@@ -1,36 +1,42 @@
-package com.example.movies.ui.screenDetailsMovie
+package com.example.movies.ui.screen_moviedetails
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.movies.App
 import com.example.movies.R
+import com.example.movies.data.Result
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
-import com.example.movies.models.MovieData
 import com.example.movies.models.MovieDetails
+import com.example.movies.ui.BaseFragment
 import com.example.movies.ui.ViewModelFactory
-import com.example.movies.ui.screenDetailsMovie.actorAdapter.ActorAdapter
-import com.example.movies.ui.screenMoviesList.movieAdapter.MovieUtils
+import com.example.movies.ui.collectFlow
+import com.example.movies.ui.screen_moviedetails.actorAdapter.ActorAdapter
+import com.example.movies.ui.screen_movieslist.movieAdapter.MovieUtils
 
 
-class MoviesDetailsFragment : Fragment() {
+class MoviesDetailsFragment : BaseFragment() {
 
     private lateinit var binding: FragmentMoviesDetailsBinding
 
     private lateinit var actorAdapter: ActorAdapter
     private var movieId = UNDEFINED_ID
 
-    private val viewModel : DetailsMovieViewModel by viewModels {  ViewModelFactory(
-        (requireActivity().application as App).repository
-    )  }
+    private val viewModel: DetailsMovieViewModel by viewModels {
+        ViewModelFactory(
+            (requireActivity().application as App).repository
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         movieId = arguments?.getInt(MOVIE_ID) ?: throw IllegalArgumentException("Unknown movie ID")
+        viewModel.getMovieDetail(movieId)
     }
 
 
@@ -39,7 +45,7 @@ class MoviesDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding= FragmentMoviesDetailsBinding.inflate(inflater, container, false)
+        binding = FragmentMoviesDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -48,24 +54,39 @@ class MoviesDetailsFragment : Fragment() {
         actorAdapter = ActorAdapter()
         binding.actorRecycler.adapter = actorAdapter
 
-        viewModel.getMovieDetail(movieId).observe(viewLifecycleOwner, this::showDetails)
+
 
         binding.backPress.setOnClickListener {
             activity?.onBackPressed()
         }
 
+        collectFlow(viewModel.movieDetails) { result ->
+            when (result) {
+                is Result.Success -> showDetails(result.data)
+                is Result.Error -> showError()
+                is Result.Loading -> {}
+
+            }
+        }
+
     }
 
-    private fun showDetails(movie: MovieDetails) {
+    private fun showError() {
+        Toast.makeText(requireContext(), "Mistake Detail", Toast.LENGTH_LONG).show()
+    }
+
+
+        private fun showDetails(movie: MovieDetails) {
         val context = requireContext()
         with(binding) {
 
             title.text = movie.title
-            pgAge.text = context.getString(R.string.pg_age,movie.pgAge)
+            pgAge.text = context.getString(R.string.pg_age, movie.pgAge)
             genre.text = MovieUtils.getGenreOfMovie(movie.genres)
             ratingBar.rating = MovieUtils.getRating(movie.rating)
             countReview.text = context.getString(R.string.reviews, movie.reviewCount)
             storyLine.text = movie.storyLine
+            Log.d("AAA", "frarment \n ${movie.actors}  }")
             actorAdapter.submitList(movie.actors)
         }
         Glide.with(context)
@@ -80,10 +101,10 @@ class MoviesDetailsFragment : Fragment() {
         private const val UNDEFINED_ID = -1
 
         @JvmStatic
-        fun newInstance(movieId: Int) : MoviesDetailsFragment {
+        fun newInstance(movieId: Int): MoviesDetailsFragment {
             val instance = MoviesDetailsFragment()
             val bundle = Bundle()
-                bundle.putInt(MOVIE_ID, movieId)
+            bundle.putInt(MOVIE_ID, movieId)
             instance.arguments = bundle
             return instance
 

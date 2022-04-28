@@ -1,4 +1,4 @@
-package com.example.movies.ui.screenDetailsMovie.actorAdapter
+package com.example.movies.ui.screen_moviedetails.actorAdapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.movies.models.ActorData
