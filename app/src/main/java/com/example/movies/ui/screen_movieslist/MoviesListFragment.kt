@@ -55,9 +55,9 @@ class MoviesListFragment : BaseFragment(), MovieListener {
 
         collectFlow(viewModel.listMovie) { result ->
             when (result) {
-                is Result.Success -> updateAdapter(result.data)
+                is Result.Success -> showSuccess(result.data)
                 is Result.Error -> showError()
-                is Result.Loading -> {}
+                is Result.Loading -> {showLoading()}
 
             }
         }
@@ -69,6 +69,18 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         Toast.makeText(requireContext(), "Mistake", Toast.LENGTH_LONG).show()
 
 
+    }
+
+    private fun showSuccess(list: List<MovieData>) {
+        binding.progressBar.isVisible = false
+        binding.movieRecyclerview.isVisible =true
+        updateAdapter(list)
+
+    }
+
+    private fun  showLoading(){
+        binding.movieRecyclerview.isVisible = false
+        binding.progressBar.isVisible = true
     }
 
 
