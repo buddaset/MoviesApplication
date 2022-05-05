@@ -12,7 +12,6 @@ open class BaseFragment: Fragment() {
 
 
 
-
 }
 
 

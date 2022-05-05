@@ -1,6 +1,7 @@
 package com.example.movies.ui.screen_movieslist
 
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.movies.data.MovieRepository
 import com.example.movies.models.MovieData
@@ -23,10 +24,17 @@ class ListMovieViewModel(private val movieRepository: MovieRepository) : ViewMod
 
     private fun getListMovie()  {
         viewModelScope.launch {
+            Log.d("Try" , " Try again")
             movieRepository.getListMovies().collect {
                 _listMovie.value = it
             }
         }
+    }
+
+
+    fun tryAgain(){
+        _listMovie.value = Result.Loading()
+        getListMovie()
     }
 
 }

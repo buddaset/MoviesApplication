@@ -2,6 +2,7 @@ package com.example.movies
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.example.movies.data.Result
 import com.example.movies.ui.screen_movieslist.movieAdapter.MovieAdapter
 import com.example.movies.ui.screen_movieslist.movieAdapter.MovieListener
 import com.example.movies.databinding.FragmentMoviesListBinding
+import com.example.movies.databinding.PartResultBinding
 import com.example.movies.models.MovieData
 import com.example.movies.ui.BaseFragment
 import com.example.movies.ui.ViewModelFactory
@@ -25,6 +27,7 @@ import com.example.movies.ui.screen_movieslist.ListMovieViewModel
 class MoviesListFragment : BaseFragment(), MovieListener {
 
     private lateinit var binding: FragmentMoviesListBinding
+    private lateinit var bindingError: PartResultBinding
     private lateinit var movieAdapter: MovieAdapter
     private var listener: ClickMovieListener? = null
     private val viewModel: ListMovieViewModel by viewModels {
@@ -45,6 +48,8 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMoviesListBinding.inflate(inflater, container, false)
+        bindingError= PartResultBinding.bind(binding.root)
+
         return binding.root
     }
 
@@ -56,20 +61,33 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         collectFlow(viewModel.listMovie) { result ->
             when (result) {
                 is Result.Success -> showSuccess(result.data)
-                is Result.Error -> showError()
+                is Result.Error -> {
+                    Log.d("Error", "${result.error}")
+                    showError()}
                 is Result.Loading -> {showLoading()}
 
             }
         }
+
+        bindingError.tryAgainButton.setOnClickListener {
+            bindingError.errorContainer.isVisible = false
+            viewModel.tryAgain()
+        }
+
+
     }
+
+
 
 
     private fun showError() {
         binding.movieRecyclerview.isVisible = false
-        Toast.makeText(requireContext(), "Mistake", Toast.LENGTH_LONG).show()
-
+        binding.progressBar.isVisible = false
+        bindingError.errorContainer.isVisible = true
 
     }
+
+
 
     private fun showSuccess(list: List<MovieData>) {
         binding.progressBar.isVisible = false

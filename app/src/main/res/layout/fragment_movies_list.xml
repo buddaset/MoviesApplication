@@ -73,6 +73,9 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="Movies_list_text" />
 
+    <include layout="@layout/part_result"
+       />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
