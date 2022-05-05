@@ -73,12 +73,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
             bindingError.errorContainer.isVisible = false
             viewModel.tryAgain()
         }
-
-
     }
-
-
-
 
     private fun showError() {
         binding.movieRecyclerview.isVisible = false
@@ -86,8 +81,6 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         bindingError.errorContainer.isVisible = true
 
     }
-
-
 
     private fun showSuccess(list: List<MovieData>) {
         binding.progressBar.isVisible = false

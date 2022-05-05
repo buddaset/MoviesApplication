@@ -11,20 +11,28 @@ import kotlinx.coroutines.launch
 import com.example.movies.data.Result
 import com.example.movies.models.ActorData
 import kotlinx.coroutines.flow.*
+import kotlin.properties.Delegates
 
 class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel() {
 
     private val _movie = MutableStateFlow<Result<MovieDetails>>(Result.Loading())
     private val _actorsMovie = MutableStateFlow<Result<List<ActorData>>>(Result.Loading())
+    private var lastMovieId by Delegates.notNull<Int>()
 
     val movieDetails: StateFlow<Result<MovieDetails>> = combine(
         _movie,
         _actorsMovie,
         ::mergeSource
-    ).stateIn(viewModelScope, started = SharingStarted.WhileSubscribed(5000L), initialValue = Result.Loading())
+    ).stateIn(
+        viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = Result.Loading()
+    )
 
 
     fun getMovieDetail(idMovie: Int) {
+        lastMovieId = idMovie
+
         viewModelScope.launch {
 
             repository.getMovieDetails(idMovie).collect {
@@ -38,6 +46,11 @@ class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel
         }
     }
 
+    fun tryAgain(){
+        _movie.value = Result.Loading()
+        getMovieDetail(lastMovieId)
+    }
+
 
     private fun mergeSource(
         movie: Result<MovieDetails>,
@@ -46,27 +59,30 @@ class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel
 
         when (movie) {
             is Result.Success -> {
-                val newMovie =movie.data.copy(actors = getResultActors(actors))
+                val newMovie = movie.data.copy(actors = getResultActors(actors))
                 Log.d("AAA", "MERGE \n ${movie.data.actors}  }")
                 Result.Success(newMovie)
             }
 
             else -> movie
         }
-}
 
-private fun getResultActors(actors: Result<List<ActorData>>): List<ActorData> {
 
-   return when (actors) {
+    private fun getResultActors(actors: Result<List<ActorData>>): List<ActorData> {
 
-        is Result.Success -> {
-            Log.d("AAA", "actor \n ${actors.data}  }")
-            val list = actors.data
-            list
+        return when (actors) {
+
+            is Result.Success -> {
+                Log.d("AAA", "actor \n ${actors.data}  }")
+                val list = actors.data
+                list
+            }
+
+            else -> emptyList()
         }
-
-        else -> emptyList()
     }
+
+
 }
 
 

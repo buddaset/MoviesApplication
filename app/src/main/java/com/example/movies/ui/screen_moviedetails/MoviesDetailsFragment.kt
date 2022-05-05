@@ -13,9 +13,7 @@ import com.example.movies.R
 import com.example.movies.data.Result
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
 import com.example.movies.models.MovieDetails
-import com.example.movies.ui.BaseFragment
-import com.example.movies.ui.ViewModelFactory
-import com.example.movies.ui.collectFlow
+import com.example.movies.ui.*
 import com.example.movies.ui.screen_moviedetails.actorAdapter.ActorAdapter
 import com.example.movies.ui.screen_movieslist.movieAdapter.MovieUtils
 
@@ -60,23 +58,21 @@ class MoviesDetailsFragment : BaseFragment() {
             activity?.onBackPressed()
         }
 
-        collectFlow(viewModel.movieDetails) { result ->
-            when (result) {
-                is Result.Success -> showDetails(result.data)
-                is Result.Error -> showError()
-                is Result.Loading -> {}
 
-            }
+
+        collectFlow(viewModel.movieDetails) { result ->
+            renderState(root = binding.movieDetailConstraint, result, ::showDetails)
         }
 
+        onTryAgain(binding.root) {
+            viewModel.tryAgain()
+        }
+
+
     }
 
-    private fun showError() {
-        Toast.makeText(requireContext(), "Mistake Detail", Toast.LENGTH_LONG).show()
-    }
 
-
-        private fun showDetails(movie: MovieDetails) {
+    private fun showDetails(movie: MovieDetails) {
         val context = requireContext()
         with(binding) {
 
@@ -91,6 +87,7 @@ class MoviesDetailsFragment : BaseFragment() {
         }
         Glide.with(context)
             .load(movie.detailImageUrl)
+            .placeholder(R.drawable.ic_placeholder)
             .into(binding.poster)
 
     }

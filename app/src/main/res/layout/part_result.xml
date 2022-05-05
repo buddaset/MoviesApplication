@@ -16,6 +16,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:background="@color/dark_blue"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
