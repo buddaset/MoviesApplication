@@ -16,4 +16,6 @@
     <string name="avengers_end_game_list_title">Avengers: End Game</string>
     <string name="movie_minutes">%d MIN</string>
     <string name="pg_age">%d+</string>
+    <string name="error_try_again_later">Error. Try again later</string>
+    <string name="try_again">try_again</string>
 </resources>

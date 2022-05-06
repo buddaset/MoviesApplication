@@ -1,16 +1,9 @@
 package com.example.movies.data.remote.response
 
+import com.google.gson.annotations.SerializedName
+
 data class ActorResponse(
-    val adult: Boolean,
-    val cast_id: Int,
-    val character: String,
-    val credit_id: String,
-    val gender: Int,
-    val id: Int,
-    val known_for_department: String,
-    val name: String,
-    val order: Int,
-    val original_name: String,
-    val popularity: Double,
-    val profile_path: String?
+    @SerializedName("id") val id: Int,
+    @SerializedName("name")  val name: String,
+    @SerializedName("profile_path") var imageActorPath: String?
 )

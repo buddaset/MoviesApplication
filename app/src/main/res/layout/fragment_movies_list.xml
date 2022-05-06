@@ -1,74 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    android:background="@color/dark_blue"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    tools:context=".MoviesListFragment"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/dark_blue"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-
-        android:layout_width="match_parent"
+    <TextView
+        android:drawablePadding="8dp"
+        android:id="@+id/Movies_list_text"
         android:layout_height="wrap_content"
-        android:background="@color/dark_blue"
-        tools:context=".MoviesListFragment">
+        android:layout_marginTop="55dp"
+        android:layout_width="0dp"
+        android:lineSpacingExtra="4sp"
+        android:padding="4dp"
+        android:text="@string/movies_list"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/ic_combined_shape"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/Movies_list_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="55dp"
-            android:drawablePadding="8dp"
-            android:lineSpacingExtra="4sp"
-            android:padding="4dp"
-            android:text="@string/movies_list"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:drawableStartCompat="@drawable/ic_combined_shape"
-            app:layout_constraintEnd_toEndOf="@id/guideline_end"
-            app:layout_constraintStart_toStartOf="@id/guideline_start"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/movie_recyclerview"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:foregroundGravity="center"
-            app:layout_constraintStart_toStartOf="@id/guideline_start"
-            app:layout_constraintEnd_toEndOf="@id/guideline_end"
-            app:layout_constraintTop_toBottomOf="@id/barrier_movies_list"
-
-            tools:listitem="@layout/view_holder_movie"
-            app:spanCount="2"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="14dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:foregroundGravity="center"
+        android:id="@+id/movie_recyclerview"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="14dp" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier_movies_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="Movies_list_text" />
+        app:layout_constraintTop_toBottomOf="@id/barrier_movies_list"
+        app:spanCount="2"
+        tools:listitem="@layout/view_holder_movie" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="14dp" />
 
-</ScrollView>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="14dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_movies_list"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="Movies_list_text" />
+
+    <include layout="@layout/part_result"
+       />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
 

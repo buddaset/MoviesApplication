@@ -1,18 +1,15 @@
 package com.example.movies.data.remote.response
 
+import com.google.gson.annotations.SerializedName
+
 data class MovieResponse(
-    val adult: Boolean,
-    val backdrop_path: String,
-    val genre_ids: List<Int>,
-    val id: Int,
-    val original_language: String,
-    val original_title: String,
-    val overview: String,
-    val popularity: Double,
-    val poster_path: String,
-    val release_date: String,
-    val title: String,
-    val video: Boolean,
-    val vote_average: Double,
-    val vote_count: Int
+    @SerializedName("id") val id: Int,
+    @SerializedName("title") val title: String,
+    @SerializedName("adult")  val adult: Boolean,
+    @SerializedName("poster_path")  val imagePath: String,
+    @SerializedName("vote_average") val rating: Double,
+    @SerializedName("vote_count") val reviewCount: Int,
+    @SerializedName("overview")  val storyLine: String,
+    @SerializedName("genre_ids") val genresId: List<Int>,
+    @SerializedName("release_date")  val releaseDate: String,
 )

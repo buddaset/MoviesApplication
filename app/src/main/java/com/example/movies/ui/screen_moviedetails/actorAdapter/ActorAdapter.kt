@@ -1,9 +1,8 @@
-package com.example.movies.ui.screenDetailsMovie.actorAdapter
+package com.example.movies.ui.screen_moviedetails.actorAdapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.databinding.ViewHolderActorBinding
 import com.example.movies.models.ActorData
 

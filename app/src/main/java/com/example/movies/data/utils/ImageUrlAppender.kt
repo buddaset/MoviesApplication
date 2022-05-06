@@ -1,5 +1,6 @@
-package com.example.movies.data.remote
+package com.example.movies.data.utils
 
+import com.example.movies.data.remote.MovieService
 import com.example.movies.data.remote.response.ImageSettingResponse
 
 class ImageUrlAppender(private val service: MovieService) {
@@ -11,12 +12,12 @@ class ImageUrlAppender(private val service: MovieService) {
    private lateinit var profileActorSize: String
 
 
-    suspend fun getDetailImageUrl(pathImage: String): String? {
+    suspend fun getDetailImageUrl(pathImage: String?): String? {
         getConfiguration()
         return joinFullUrl(backDropSize, pathImage)
     }
 
-    suspend fun getPosterImageUrl(pathImage: String): String? {
+    suspend fun getPosterImageUrl(pathImage: String?): String? {
         getConfiguration()
         return joinFullUrl(posterSize, pathImage)
     }
