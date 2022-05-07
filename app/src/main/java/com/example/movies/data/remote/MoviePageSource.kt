@@ -1,5 +1,6 @@
 package com.example.movies.data.remote
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.movies.data.remote.response.MovieResponse
@@ -25,6 +26,7 @@ class MoviePageSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieData> {
 
         val pageIndex: Int = params.key ?: 1  // todo check int = 0
+        Log.d("page", " $pageIndex")
         val pageSize = params.loadSize.coerceAtMost(MovieService.MAX_PAGE_SIZE)
         return try {
             val movies = loader(pageIndex, pageSize)

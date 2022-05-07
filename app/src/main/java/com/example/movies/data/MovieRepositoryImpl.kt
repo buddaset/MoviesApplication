@@ -36,6 +36,7 @@ class MovieRepositoryImpl(
         }
         return Pager(
             config = PagingConfig( pageSize = PAGE_SIZE, enablePlaceholders = false),
+
             pagingSourceFactory = { MoviePageSource(loader) }
             ).flow
     }
@@ -45,7 +46,7 @@ class MovieRepositoryImpl(
     private suspend fun loadListMovies(pageIndex: Int, pageSize: Int)
     : List<MovieData> = withContext(dispatcher.value){
 
-        val moviesResponse = movieService.loadMoviesPopular().results
+        val moviesResponse = movieService.loadMoviesPopular(pageIndex, pageSize).results
 
         val genres = loadGenres()
          val moviesData = moviesResponse.map { it.toMovieData(genres) }

@@ -10,6 +10,7 @@ import com.example.movies.models.MovieDetails
 import kotlinx.coroutines.launch
 import com.example.movies.data.Result
 import com.example.movies.models.ActorData
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlin.properties.Delegates
 
@@ -34,6 +35,7 @@ class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel
         lastMovieId = idMovie
 
         viewModelScope.launch {
+            delay(2000)
 
             repository.getMovieDetails(idMovie).collect {
                 _movie.value = it

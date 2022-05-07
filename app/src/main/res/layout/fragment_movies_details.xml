@@ -15,16 +15,18 @@
         android:background="@color/dark_blue"
         tools:context=".ui.screen_moviedetails.MoviesDetailsFragment">
 
-        <ProgressBar
-            android:id="@+id/progressBarMovieDetail"
-            android:layout_width="wrap_content"
+
+
+        <include
+
+            android:id="@+id/loadStateView"
+            layout="@layout/part_result"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <include layout="@layout/part_result"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_start"

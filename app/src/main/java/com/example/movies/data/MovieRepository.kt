@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface MovieRepository {
 
 
+
     suspend fun getMovieDetails(idMovie: Int): Flow<Result<MovieDetails>>
 
     suspend fun getActorsMovie(idMovie: Int) : Flow<Result<List<ActorData>>>
