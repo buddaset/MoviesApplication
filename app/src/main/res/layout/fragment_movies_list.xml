@@ -11,6 +11,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+
     <TextView
         android:drawablePadding="8dp"
         android:id="@+id/Movies_list_text"

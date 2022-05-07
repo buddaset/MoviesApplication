@@ -13,6 +13,13 @@ interface MovieService {
     @GET("configuration")
     suspend fun loadConfiguration(): ConfigurationResponse
 
+    @GET("search/movie")
+    suspend fun searchMovie (
+        @Query("query") query: String? = null,
+        @Query("page") @IntRange(from = 1) page: Int = 1,
+        @Query("pageSize") @IntRange(from = 1, to = MAX_PAGE_SIZE.toLong()) pageSize: Int = DEFAULT_PAGE_SIZE,
+    ) : PopularMoviesResponse
+
     @GET("movie/popular")
     suspend fun loadMoviesPopular(
         @Query("page") @IntRange(from = 1) page: Int = 1,

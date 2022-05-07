@@ -60,6 +60,7 @@ class MoviesDetailsFragment : BaseFragment() {
 
 
 
+
         collectFlow(viewModel.movieDetails) { result ->
             renderState(root = binding.movieDetailConstraint, result, ::showDetails)
         }
@@ -67,6 +68,7 @@ class MoviesDetailsFragment : BaseFragment() {
         onTryAgain(binding.root) {
             viewModel.tryAgain()
         }
+
 
 
     }

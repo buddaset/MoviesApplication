@@ -30,23 +30,26 @@ class MovieRepositoryImpl(
 
 
 
-    override fun getPagedMovies(): Flow<PagingData<MovieData>> {
-        val loader: MoviePageLoader = {pageIndex, pageSize ->
-            loadListMovies(pageIndex,pageSize)
+
+
+    override fun searchMovie(query: String): Flow<PagingData<MovieData>> {
+        val loader: MoviePageLoader = { pageIndex, pageSize ->
+            loadListMovies(pageIndex,pageSize, query)
         }
         return Pager(
             config = PagingConfig( pageSize = PAGE_SIZE, enablePlaceholders = false),
 
             pagingSourceFactory = { MoviePageSource(loader) }
-            ).flow
+        ).flow
+
     }
 
 
 
-    private suspend fun loadListMovies(pageIndex: Int, pageSize: Int)
+    private suspend fun loadListMovies(pageIndex: Int, pageSize: Int, query: String)
     : List<MovieData> = withContext(dispatcher.value){
-
-        val moviesResponse = movieService.loadMoviesPopular(pageIndex, pageSize).results
+       val moviesResponse =  if(query.isBlank())  movieService.loadMoviesPopular(pageIndex,pageSize).results
+        else movieService.searchMovie(query,pageIndex, pageSize).results
 
         val genres = loadGenres()
          val moviesData = moviesResponse.map { it.toMovieData(genres) }
