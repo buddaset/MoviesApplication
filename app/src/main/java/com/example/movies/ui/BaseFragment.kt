@@ -42,24 +42,21 @@ fun <T> BaseFragment.collectFlow(flow: Flow<T>, onCollect: (T) -> Unit)  {
 fun <T> BaseFragment.renderState(root: ViewGroup, result: Result<T>, onSuccess: (T) -> Unit) {
     val bindingError = PartResultBinding.bind(root)
 
-    root.children.forEach { it.isVisible = false }
-    Log.d("Detail", "render")
+    root.children
+        .filter { it.id != R.id.loadStateView }
+        .forEach { it.isVisible = result is Result.Success }
 
-    when(result){
-        is Result.Loading -> {
-            root.findViewById<ProgressBar>(R.id.progressBarMovieDetail).isVisible = true
-        }
+    bindingError.progressBar.isVisible = result is Result.Loading
+    bindingError.tryAgainButton.isVisible = result is Result.Error
+    bindingError.messageTextView.isVisible = result is Result.Error
 
-        is Result.Error -> {
-            bindingError.errorContainer.isVisible = true
-        }
+    if (result is Result.Success) {
 
-        is Result.Success -> {
-            root.children
-                .filter { it.id != R.id.progressBarMovieDetail && it.id != R.id.errorContainer }
-                .forEach { it.isVisible = true }
-            onSuccess(result.data)
-        }
+        onSuccess(result.data)
+
+
+
+
     }
 
 }

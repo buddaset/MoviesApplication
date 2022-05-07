@@ -1,6 +1,11 @@
 package com.example.movies.data
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.movies.data.dispatchers.IoDispatcher
+import com.example.movies.data.remote.MoviePageLoader
+import com.example.movies.data.remote.MoviePageSource
 import com.example.movies.data.remote.MovieService
 import com.example.movies.data.remote.response.MovieDetailsResponse
 import com.example.movies.data.utils.ImageUrlAppender
@@ -14,6 +19,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 class MovieRepositoryImpl(
     private val imageUrlAppender: ImageUrlAppender,
@@ -24,23 +30,28 @@ class MovieRepositoryImpl(
 
 
 
-    override suspend fun getListMovies(): Flow<Result<List<MovieData>>> = flow{
-        emit(loadListMovies())
-    }
-        .flowOn(dispatcher.value)
-
-
-
-    private suspend fun loadListMovies() : Result<List<MovieData>> {
-        val moviesResponse = try {
-             movieService.loadMoviesPopular().results
-        } catch (ex: Exception) {
-            return Result.Error(error = ex)
+    override fun getPagedMovies(): Flow<PagingData<MovieData>> {
+        val loader: MoviePageLoader = {pageIndex, pageSize ->
+            loadListMovies(pageIndex,pageSize)
         }
+        return Pager(
+            config = PagingConfig( pageSize = PAGE_SIZE, enablePlaceholders = false),
+
+            pagingSourceFactory = { MoviePageSource(loader) }
+            ).flow
+    }
+
+
+
+    private suspend fun loadListMovies(pageIndex: Int, pageSize: Int)
+    : List<MovieData> = withContext(dispatcher.value){
+
+        val moviesResponse = movieService.loadMoviesPopular(pageIndex, pageSize).results
+
         val genres = loadGenres()
          val moviesData = moviesResponse.map { it.toMovieData(genres) }
          moviesData.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl)}
-            return  Result.Success(data = moviesData)
+        return@withContext moviesData
 
         }
 
@@ -98,6 +109,10 @@ class MovieRepositoryImpl(
        return Result.Success(data = actorsData)
 
 
+    }
+
+    companion object {
+        private const val PAGE_SIZE = 10
     }
 
 
