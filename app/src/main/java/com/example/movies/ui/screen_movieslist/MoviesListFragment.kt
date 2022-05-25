@@ -2,9 +2,8 @@ package com.example.movies
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
@@ -38,6 +37,11 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         )
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is ClickMovieListener)
@@ -51,7 +55,6 @@ class MoviesListFragment : BaseFragment(), MovieListener {
     ): View {
         binding = FragmentMoviesListBinding.inflate(inflater, container, false)
 
-
         return binding.root
     }
 
@@ -63,6 +66,39 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         onTryAgain(binding.root) {
             viewModel.tryAgain()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.isSubmitButtonEnabled = true
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null)
+                    queryMovie(query)
+            return    true
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                if (query != null)
+                    queryMovie(query)
+            return true
+            }
+
+        })
+
+    }
+
+    private fun queryMovie(query: String) {
+        viewModel.setSearchBy(query)
+
+
+    }
+
+    private fun scrollStartList() {
+        binding.movieRecyclerview.scrollToPosition(0)
     }
 
 
@@ -85,6 +121,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
             binding.swipeRefreshLayout,
             tryAgainAction
         )
+
 
         observeMovies()
         observeLoadState()
@@ -120,6 +157,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
       lifecycleScope.launch {
           viewModel.listMovie.collectLatest { pagingData ->
               movieAdapter.submitData(pagingData)
+              scrollStartList()
           }
       }
     }
