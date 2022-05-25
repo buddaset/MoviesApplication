@@ -55,7 +55,6 @@ class MoviesListFragment : BaseFragment(), MovieListener {
     ): View {
         binding = FragmentMoviesListBinding.inflate(inflater, container, false)
 
-
         return binding.root
     }
 
@@ -94,6 +93,12 @@ class MoviesListFragment : BaseFragment(), MovieListener {
 
     private fun queryMovie(query: String) {
         viewModel.setSearchBy(query)
+
+
+    }
+
+    private fun scrollStartList() {
+        binding.movieRecyclerview.scrollToPosition(0)
     }
 
 
@@ -116,6 +121,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
             binding.swipeRefreshLayout,
             tryAgainAction
         )
+
 
         observeMovies()
         observeLoadState()
@@ -151,6 +157,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
       lifecycleScope.launch {
           viewModel.listMovie.collectLatest { pagingData ->
               movieAdapter.submitData(pagingData)
+              scrollStartList()
           }
       }
     }
