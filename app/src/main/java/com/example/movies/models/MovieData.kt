@@ -1,8 +1,6 @@
 package com.example.movies.models
 
-import android.os.MessageQueue
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.example.movies.data.local.entity.MovieEntityDb
 
 
 data class MovieData(
@@ -15,4 +13,19 @@ data class MovieData(
     val storyLine: String,
     val isLiked: Boolean,
     val genres: List<GenreData>
-)
+){
+
+    fun fromMovieDataToMovieEntityDb() : MovieEntityDb =
+        MovieEntityDb(
+            dbId = 0,
+            id = this.id,
+            title = this.title,
+            pgAge = this.pgAge,
+            imageUrl = this.imageUrl,
+            rating = this.rating,
+            reviewCount =this.reviewCount,
+            storyLine = this.storyLine,
+            isLiked = this.isLiked,
+            genres = this.genres
+        )
+}

@@ -1,9 +1,11 @@
 package com.example.movies.data
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import androidx.paging.*
 import com.example.movies.data.dispatchers.IoDispatcher
+import com.example.movies.data.local.MovieDatabase
+import com.example.movies.data.local.entity.MovieEntityDb
+import com.example.movies.data.local.entity.toMovieData
+import com.example.movies.data.paging.MovieRemoteMediator
 import com.example.movies.data.remote.MoviePageLoader
 import com.example.movies.data.remote.MoviePageSource
 import com.example.movies.data.remote.MovieService
@@ -16,45 +18,58 @@ import com.example.movies.models.GenreData
 import com.example.movies.models.MovieData
 import com.example.movies.models.MovieDetails
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 class MovieRepositoryImpl(
     private val imageUrlAppender: ImageUrlAppender,
     private val movieService: MovieService,
-    private val dispatcher: IoDispatcher
+    private val dispatcher: IoDispatcher,
+    private val movieDatabase: MovieDatabase
 ) : MovieRepository {
 
+     @OptIn(ExperimentalPagingApi::class)
+     override fun searchMovie(query: String): Flow<PagingData<MovieData>> {
+         val pagingSourceFactory = { movieDatabase.movieDao().getAllMovies(query) }
 
-    override fun searchMovie(query: String): Flow<PagingData<MovieData>> {
-        val loader: MoviePageLoader = { pageIndex, pageSize ->
-            loadListMovies(pageIndex,pageSize, query)
-        }
-        return Pager(
-            config = PagingConfig( pageSize = PAGE_SIZE, enablePlaceholders = false),
+         val loader: MoviePageLoader = { pageIndex, pageSize ->
+             loadListMovies(pageIndex, pageSize, query)
+         }
+         return Pager(
+             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+             remoteMediator = MovieRemoteMediator(
+                 loader = loader,
+                 movieDatabase = movieDatabase
+             ),
+             pagingSourceFactory =  pagingSourceFactory
+         ).flow
+             .map { paging ->
+                 paging.map {
+                     it.toMovieData()
+                 }
+             }
 
-            pagingSourceFactory = { MoviePageSource(loader) }
-        ).flow
-    }
+     }
+
+
 
 
     private suspend fun loadListMovies(pageIndex: Int, pageSize: Int, query: String)
-    : List<MovieData> = withContext(dispatcher.value){
-       val moviesResponse =  if(query.isBlank())  movieService.loadMoviesPopular(pageIndex,pageSize).results
-        else movieService.searchMovie(query,pageIndex, pageSize).results
+            : List<MovieData> = withContext(dispatcher.value) {
+
+        val moviesResponse =
+            if (query.isBlank()) movieService.loadMoviesPopular(pageIndex, pageSize).results
+            else movieService.searchMovie(query, pageIndex, pageSize).results
 
         val genres = loadGenres()
-         val moviesData = moviesResponse.map { it.toMovieData(genres) }
-         moviesData.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl)}
+        val moviesData = moviesResponse.map { it.toMovieData(genres) }
+        moviesData.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl) }
         return@withContext moviesData
-        }
+    }
 
     private suspend fun loadGenres(): List<GenreData> =
         movieService.loadGenres().genres
-            .map { GenreData(id = it.id, name = it.name)}
-
+            .map { GenreData(id = it.id, name = it.name) }
 
 
     override suspend fun getMovieDetails(idMovie: Int): Flow<Result<MovieDetails>> = flow {
@@ -63,8 +78,7 @@ class MovieRepositoryImpl(
         .flowOn(dispatcher.value)
 
 
-
-    private suspend fun loadMovieDetails(idMovie: Int) : Result<MovieDetails> {
+    private suspend fun loadMovieDetails(idMovie: Int): Result<MovieDetails> {
         val movieDetailsResponse = try {
             movieService.loadMovieDetails(idMovie)
         } catch (ex: Exception) {
@@ -76,28 +90,29 @@ class MovieRepositoryImpl(
 
 
     private suspend fun transformToMovieDetails(movie: MovieDetailsResponse): MovieDetails =
-    movie.toMovieData().also {
-        it.detailImageUrl = imageUrlAppender.getDetailImageUrl(it.detailImageUrl)
-    }
+        movie.toMovieData().also {
+            it.detailImageUrl = imageUrlAppender.getDetailImageUrl(it.detailImageUrl)
+        }
 
 
-
-    override  suspend fun getActorsMovie(idMovie: Int): Flow<Result<List<ActorData>>> = flow {
+    override suspend fun getActorsMovie(idMovie: Int): Flow<Result<List<ActorData>>> = flow {
         emit(loadActorsMovie(idMovie))
     }
         .flowOn(dispatcher.value)
 
 
-   private  suspend fun loadActorsMovie(idMovie: Int): Result<List<ActorData>> {
+    private suspend fun loadActorsMovie(idMovie: Int): Result<List<ActorData>> {
 
-       val actorsResponse = try {
-           movieService.loadMovieCredits(idMovie).cast
-       } catch (ex: Exception) {
-           return Result.Error(error = ex)
-       }
-       actorsResponse.forEach { it.imageActorPath = imageUrlAppender.getActorImageUrl(it.imageActorPath) }
-       val actorsData = actorsResponse.map { it.toActorData() }
-       return Result.Success(data = actorsData)
+        val actorsResponse = try {
+            movieService.loadMovieCredits(idMovie).cast
+        } catch (ex: Exception) {
+            return Result.Error(error = ex)
+        }
+        actorsResponse.forEach {
+            it.imageActorPath = imageUrlAppender.getActorImageUrl(it.imageActorPath)
+        }
+        val actorsData = actorsResponse.map { it.toActorData() }
+        return Result.Success(data = actorsData)
     }
 
     companion object {

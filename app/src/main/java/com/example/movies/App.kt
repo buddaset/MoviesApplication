@@ -5,6 +5,7 @@ import com.example.movies.data.MovieRepository
 import com.example.movies.data.MovieRepositoryImpl
 import com.example.movies.data.dispatchers.IoDispatcher
 import com.example.movies.data.utils.ImageUrlAppender
+import com.example.movies.di.DatabaseModule
 import com.example.movies.di.NetworkModule
 import kotlinx.coroutines.Dispatchers
 
@@ -19,8 +20,9 @@ class App : Application() {
         val networkModule = NetworkModule()
         val service = networkModule.movieService
         val urlAppender = ImageUrlAppender(service)
+        val movieDatabase = DatabaseModule().provideDatabase(context = applicationContext)
 
 
-        repository = MovieRepositoryImpl( urlAppender, service, dispatcher)
+        repository = MovieRepositoryImpl( urlAppender, service, dispatcher, movieDatabase)
     }
 }
