@@ -28,10 +28,6 @@ class MovieRepositoryImpl(
 ) : MovieRepository {
 
 
-
-
-
-
     override fun searchMovie(query: String): Flow<PagingData<MovieData>> {
         val loader: MoviePageLoader = { pageIndex, pageSize ->
             loadListMovies(pageIndex,pageSize, query)
@@ -41,9 +37,7 @@ class MovieRepositoryImpl(
 
             pagingSourceFactory = { MoviePageSource(loader) }
         ).flow
-
     }
-
 
 
     private suspend fun loadListMovies(pageIndex: Int, pageSize: Int, query: String)
@@ -55,16 +49,11 @@ class MovieRepositoryImpl(
          val moviesData = moviesResponse.map { it.toMovieData(genres) }
          moviesData.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl)}
         return@withContext moviesData
-
         }
 
     private suspend fun loadGenres(): List<GenreData> =
         movieService.loadGenres().genres
             .map { GenreData(id = it.id, name = it.name)}
-
-
-
-
 
 
 
@@ -99,7 +88,6 @@ class MovieRepositoryImpl(
         .flowOn(dispatcher.value)
 
 
-
    private  suspend fun loadActorsMovie(idMovie: Int): Result<List<ActorData>> {
 
        val actorsResponse = try {
@@ -110,14 +98,11 @@ class MovieRepositoryImpl(
        actorsResponse.forEach { it.imageActorPath = imageUrlAppender.getActorImageUrl(it.imageActorPath) }
        val actorsData = actorsResponse.map { it.toActorData() }
        return Result.Success(data = actorsData)
-
-
     }
 
     companion object {
         private const val PAGE_SIZE = 10
     }
-
 
 
 }

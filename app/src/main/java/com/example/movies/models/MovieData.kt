@@ -14,7 +14,5 @@ data class MovieData(
     val reviewCount : Int,
     val storyLine: String,
     val isLiked: Boolean,
-    val genres: List<GenreData>,
-
-
+    val genres: List<GenreData>
 )

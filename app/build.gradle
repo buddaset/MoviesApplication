@@ -5,6 +5,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization'
 
 
+
 }
 
 android {
@@ -52,9 +53,6 @@ dependencies {
     implementation 'com.iarcuschin:simpleratingbar:0.1.5'
     // jetPack
     implementation "androidx.fragment:fragment-ktx:1.4.1"
-
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-
     // coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
@@ -69,10 +67,15 @@ dependencies {
     // paging library v3
     implementation 'androidx.paging:paging-runtime-ktx:3.1.1'
     // lifecycle
-
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
+    // room database
+    def room_version = "2.4.2"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
 
 
 }

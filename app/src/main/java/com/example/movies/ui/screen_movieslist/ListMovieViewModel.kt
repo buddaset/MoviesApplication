@@ -1,7 +1,6 @@
 package com.example.movies.ui.screen_movieslist
 
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
@@ -10,7 +9,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.movies.data.MovieRepository
 import com.example.movies.models.MovieData
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -44,9 +42,7 @@ class ListMovieViewModel(private val movieRepository: MovieRepository) : ViewMod
                 .collectLatest {
                     _listMovie.value = it
                 }
-
         }
-
 
     }
 
@@ -55,7 +51,6 @@ class ListMovieViewModel(private val movieRepository: MovieRepository) : ViewMod
     fun tryAgain() {
         _listMovie.value = PagingData.empty()
         getSearchMovie()
-
 
     }
 
