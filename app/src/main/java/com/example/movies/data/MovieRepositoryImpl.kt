@@ -5,19 +5,19 @@ import com.example.movies.data.dispatchers.IoDispatcher
 import com.example.movies.data.local.MovieDatabase
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.toMovieData
+import com.example.movies.data.paging.MoviePageLoader
 import com.example.movies.data.paging.MovieRemoteMediator
-import com.example.movies.data.remote.MoviePageLoader
-import com.example.movies.data.remote.MoviePageSource
 import com.example.movies.data.remote.MovieService
 import com.example.movies.data.remote.response.MovieDetailsResponse
 import com.example.movies.data.utils.ImageUrlAppender
 import com.example.movies.data.utils.toActorData
 import com.example.movies.data.utils.toMovieData
+import com.example.movies.data.utils.toMovieEntityDb
 import com.example.movies.models.ActorData
 import com.example.movies.models.GenreData
 import com.example.movies.models.MovieData
 import com.example.movies.models.MovieDetails
-import kotlinx.coroutines.CoroutineDispatcher
+
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
@@ -30,10 +30,10 @@ class MovieRepositoryImpl(
 
      @OptIn(ExperimentalPagingApi::class)
      override fun searchMovie(query: String): Flow<PagingData<MovieData>> {
-         val pagingSourceFactory = { movieDatabase.movieDao().getAllMovies(query) }
+         val pagingSourceFactory = { movieDatabase.movieDao().getAllMovies() }
 
          val loader: MoviePageLoader = { pageIndex, pageSize ->
-             loadListMovies(pageIndex, pageSize, query)
+             loadListMovies(pageIndex, pageSize)
          }
          return Pager(
              config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
@@ -54,17 +54,15 @@ class MovieRepositoryImpl(
 
 
 
-    private suspend fun loadListMovies(pageIndex: Int, pageSize: Int, query: String)
-            : List<MovieData> = withContext(dispatcher.value) {
+    private suspend fun loadListMovies(pageIndex: Int, pageSize: Int): List<MovieEntityDb> =
+        withContext(dispatcher.value) {
 
-        val moviesResponse =
-            if (query.isBlank()) movieService.loadMoviesPopular(pageIndex, pageSize).results
-            else movieService.searchMovie(query, pageIndex, pageSize).results
+        val moviesResponse = movieService.loadMoviesPopular(pageIndex, pageSize).results
 
         val genres = loadGenres()
-        val moviesData = moviesResponse.map { it.toMovieData(genres) }
-        moviesData.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl) }
-        return@withContext moviesData
+        val moviesEntityDb = moviesResponse.map { it.toMovieEntityDb(genres) }
+        moviesEntityDb.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl) }
+        return@withContext moviesEntityDb
     }
 
     private suspend fun loadGenres(): List<GenreData> =
@@ -116,7 +114,7 @@ class MovieRepositoryImpl(
     }
 
     companion object {
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 20
     }
 
 

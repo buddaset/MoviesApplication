@@ -7,9 +7,8 @@ import com.example.movies.models.MovieData
 
 @Entity(tableName = "movies")
 data class MovieEntityDb(
-    @PrimaryKey(autoGenerate = true)
-    val dbId: Int,
-    val id: Int,
+    @PrimaryKey
+    val id: String,
     val title: String,
     val pgAge: Int,
     var imageUrl : String?,
@@ -24,7 +23,7 @@ data class MovieEntityDb(
 
 fun MovieEntityDb.toMovieData() : MovieData =
     MovieData(
-        id = this.id,
+        id = this.id.toInt(),
         title = this.title,
         pgAge = this.pgAge,
         imageUrl = this.imageUrl,

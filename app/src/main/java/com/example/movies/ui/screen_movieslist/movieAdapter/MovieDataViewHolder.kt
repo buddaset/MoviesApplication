@@ -25,7 +25,7 @@ class MovieDataViewHolder(private val binding: ViewHolderMovieBinding) :
             countReview.text = context.getString(R.string.reviews, movie.reviewCount)
             //todo correct runningTime
             runningTime.text = context.getString(R.string.movie_minutes, 100)
-            Log.d("Image", "${movie.title}   ->>>    ${movie.imageUrl}")
+//            Log.d("Image", "${movie.title}   ->>>    ${movie.imageUrl}")
 
             Glide
                 .with(context)

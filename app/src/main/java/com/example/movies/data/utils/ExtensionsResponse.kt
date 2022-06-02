@@ -1,6 +1,7 @@
 package com.example.movies.data.utils
 
 
+import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.remote.response.ActorResponse
 import com.example.movies.data.remote.response.MovieDetailsResponse
 import com.example.movies.data.remote.response.MovieResponse
@@ -12,8 +13,8 @@ import com.example.movies.models.MovieDetails
 const val PG_ADULT = 16
 const val PG_CHILDREN = 13
 
-fun MovieResponse.toMovieData(genres: List<GenreData>) : MovieData =
-    MovieData(
+fun MovieResponse.toMovieEntityDb(genres: List<GenreData>) : MovieEntityDb =
+    MovieEntityDb(
         id = id,
         title = title,
         pgAge = setPgAge(adult),

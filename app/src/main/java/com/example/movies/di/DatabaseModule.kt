@@ -10,6 +10,7 @@ class DatabaseModule {
     fun provideDatabase(context: Context) : MovieDatabase {
         return INSTANCE ?: synchronized(this) {
             val instance =  Room.databaseBuilder(context, MovieDatabase::class.java, "movie_db")
+                .fallbackToDestructiveMigration()
                 .build()
             INSTANCE = instance
             instance
