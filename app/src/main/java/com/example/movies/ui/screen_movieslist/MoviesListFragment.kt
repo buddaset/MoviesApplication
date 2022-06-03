@@ -35,7 +35,6 @@ class MoviesListFragment : BaseFragment(), MovieListener {
     private lateinit var binding: FragmentMoviesListBinding
 
     private lateinit var movieAdapter: MovieAdapter
-    private lateinit var mainLoadStateHolder: DefaultLoadingStateAdapter.Holder
     private var listener: ClickMovieListener? = null
     private val viewModel: ListMovieViewModel by viewModels {
         ViewModelFactory(
