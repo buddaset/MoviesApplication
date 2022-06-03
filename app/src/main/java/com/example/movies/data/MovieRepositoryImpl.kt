@@ -36,7 +36,7 @@ class MovieRepositoryImpl(
          val pagingSourceFactory = { movieDatabase.movieDao().getAllMovies() }
 
          val loader: MoviePageLoader = { pageIndex, pageSize ->
-             loadListMovies(pageIndex, pageSize)
+             loadListMovies(pageIndex, pageSize, query)
          }
          return Pager(
              config = PagingConfig(
@@ -59,10 +59,13 @@ class MovieRepositoryImpl(
 
 
 
-    private suspend fun loadListMovies(pageIndex: Int, pageSize: Int): List<MovieEntityDb> =
+    private suspend fun loadListMovies(pageIndex: Int, pageSize: Int, query: String): List<MovieEntityDb> =
         withContext(dispatcher.value) {
 
-        val moviesResponse = movieService.loadMoviesPopular(pageIndex, pageSize).results
+
+        val moviesResponse =if(query.isBlank()) movieService.loadMoviesPopular(pageIndex, pageSize).results
+            else movieService.searchMovie(query, page = pageIndex, pageSize = pageSize).results
+
         val genres = getGenres()
         val moviesEntityDb = moviesResponse.map { it.toMovieEntityDb(genres) }
         moviesEntityDb.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl) }
