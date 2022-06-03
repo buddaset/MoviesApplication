@@ -37,7 +37,9 @@ class MovieRepositoryImpl(
              loadListMovies(pageIndex, pageSize)
          }
          return Pager(
-             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+             config = PagingConfig(
+                 pageSize = PAGE_SIZE,
+                 enablePlaceholders = false),
              remoteMediator = MovieRemoteMediator(
                  loader = loader,
                  movieDatabase = movieDatabase
@@ -45,10 +47,7 @@ class MovieRepositoryImpl(
              pagingSourceFactory =  pagingSourceFactory
          ).flow
              .map { paging ->
-
                  paging.map {
-                     Log.d("MovieEntity"," movuieDb --- ${it.genres}")
-                     print(it.genres)
                      it.toMovieData()
                  }
              }
@@ -62,21 +61,15 @@ class MovieRepositoryImpl(
         withContext(dispatcher.value) {
 
         val moviesResponse = movieService.loadMoviesPopular(pageIndex, pageSize).results
-
         val genres = getGenres()
-            Log.d("MovieEntity","genres ---- $genres")
-
         val moviesEntityDb = moviesResponse.map { it.toMovieEntityDb(genres) }
-            Log.d("MovieEntity","movieEntityDb -- $moviesEntityDb")
         moviesEntityDb.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl) }
-            Log.d("MovieEntity","movieEntityDb -- $moviesEntityDb")
         return@withContext moviesEntityDb
     }
 
 
     private suspend fun getGenres(): List<GenreEntityDb> {
         var genres= movieDatabase.genreDao().getAllGenres()
-        Log.d("TestDb", "genres from DB --- $genres" )
         if (genres.isEmpty()) {
            genres =  loadGenres()
             movieDatabase.genreDao().insertAll(genres)
