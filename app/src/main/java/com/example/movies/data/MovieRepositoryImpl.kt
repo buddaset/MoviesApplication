@@ -1,23 +1,24 @@
 package com.example.movies.data
 
+import android.util.Log
 import androidx.paging.*
 import com.example.movies.data.dispatchers.IoDispatcher
 import com.example.movies.data.local.MovieDatabase
+import com.example.movies.data.local.entity.GenreEntityDb
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.toMovieData
 import com.example.movies.data.paging.MoviePageLoader
 import com.example.movies.data.paging.MovieRemoteMediator
 import com.example.movies.data.remote.MovieService
 import com.example.movies.data.remote.response.MovieDetailsResponse
+import com.example.movies.data.remote.response.toGenreEntityDb
 import com.example.movies.data.utils.ImageUrlAppender
 import com.example.movies.data.utils.toActorData
 import com.example.movies.data.utils.toMovieData
 import com.example.movies.data.utils.toMovieEntityDb
 import com.example.movies.models.ActorData
-import com.example.movies.models.GenreData
 import com.example.movies.models.MovieData
 import com.example.movies.models.MovieDetails
-
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
@@ -44,7 +45,10 @@ class MovieRepositoryImpl(
              pagingSourceFactory =  pagingSourceFactory
          ).flow
              .map { paging ->
+
                  paging.map {
+                     Log.d("MovieEntity"," movuieDb --- ${it.genres}")
+                     print(it.genres)
                      it.toMovieData()
                  }
              }
@@ -59,15 +63,31 @@ class MovieRepositoryImpl(
 
         val moviesResponse = movieService.loadMoviesPopular(pageIndex, pageSize).results
 
-        val genres = loadGenres()
+        val genres = getGenres()
+            Log.d("MovieEntity","genres ---- $genres")
+
         val moviesEntityDb = moviesResponse.map { it.toMovieEntityDb(genres) }
+            Log.d("MovieEntity","movieEntityDb -- $moviesEntityDb")
         moviesEntityDb.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl) }
+            Log.d("MovieEntity","movieEntityDb -- $moviesEntityDb")
         return@withContext moviesEntityDb
     }
 
-    private suspend fun loadGenres(): List<GenreData> =
+
+    private suspend fun getGenres(): List<GenreEntityDb> {
+        var genres= movieDatabase.genreDao().getAllGenres()
+        Log.d("TestDb", "genres from DB --- $genres" )
+        if (genres.isEmpty()) {
+           genres =  loadGenres()
+            movieDatabase.genreDao().insertAll(genres)
+        }
+        return genres
+    }
+
+
+    private suspend fun loadGenres(): List<GenreEntityDb> =
         movieService.loadGenres().genres
-            .map { GenreData(id = it.id, name = it.name) }
+            .map { it.toGenreEntityDb() }
 
 
     override suspend fun getMovieDetails(idMovie: Int): Flow<Result<MovieDetails>> = flow {

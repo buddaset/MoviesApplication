@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.databinding.FragmentMoviesListBinding
 import com.example.movies.models.MovieData
@@ -115,7 +116,8 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         )
 
         binding.movieRecyclerview.adapter = adapterWithLoadState
-        binding.movieRecyclerview.layoutManager = getLayoutManager(adapterWithLoadState, footerAdapter)
+        binding.movieRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+//            getLayoutManager(adapterWithLoadState, footerAdapter)
         mainLoadStateHolder = DefaultLoadingStateAdapter.Holder(
             binding.loadStateView,
             binding.swipeRefreshLayout,
@@ -157,7 +159,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
       lifecycleScope.launch {
           viewModel.listMovie.collectLatest { pagingData ->
               movieAdapter.submitData(pagingData)
-              scrollStartList()
+//              scrollStartList()
           }
       }
     }

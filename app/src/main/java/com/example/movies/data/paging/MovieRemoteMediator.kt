@@ -8,7 +8,6 @@ import androidx.paging.RemoteMediator
 import com.example.movies.data.local.MovieDatabase
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.MovieRemoteKeys
-import com.example.movies.models.MovieData
 import androidx.room.withTransaction
 
 typealias MoviePageLoader = suspend (pageIndex: Int, pageSize: Int) -> List<MovieEntityDb>

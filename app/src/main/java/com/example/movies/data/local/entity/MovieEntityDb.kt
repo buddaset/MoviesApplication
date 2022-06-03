@@ -3,6 +3,7 @@ package com.example.movies.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.movies.models.GenreData
+
 import com.example.movies.models.MovieData
 
 @Entity(tableName = "movies")
@@ -16,10 +17,10 @@ data class MovieEntityDb(
     val reviewCount : Int,
     val storyLine: String,
     val isLiked: Boolean,
-    val genres: List<GenreData>
-) {
+    val genres: List<GenreEntityDb>
+)
 
-}
+
 
 fun MovieEntityDb.toMovieData() : MovieData =
     MovieData(
@@ -31,7 +32,9 @@ fun MovieEntityDb.toMovieData() : MovieData =
         reviewCount =this.reviewCount,
         storyLine = this.storyLine,
         isLiked = this.isLiked,
-        genres = this.genres
+        genres = genres.map {
+            GenreData(id = it.id , name = it.name)
+        }
     )
 
 
