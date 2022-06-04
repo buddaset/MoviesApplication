@@ -2,12 +2,18 @@ package com.example.movies
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.databinding.FragmentMoviesListBinding
 import com.example.movies.models.MovieData
@@ -29,7 +35,6 @@ class MoviesListFragment : BaseFragment(), MovieListener {
     private lateinit var binding: FragmentMoviesListBinding
 
     private lateinit var movieAdapter: MovieAdapter
-    private lateinit var mainLoadStateHolder: DefaultLoadingStateAdapter.Holder
     private var listener: ClickMovieListener? = null
     private val viewModel: ListMovieViewModel by viewModels {
         ViewModelFactory(
@@ -54,18 +59,12 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMoviesListBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupMovieAdapter()
-
-        onTryAgain(binding.root) {
-            viewModel.tryAgain()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -74,21 +73,19 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null)
-                    queryMovie(query)
-            return    true
-            }
 
-            override fun onQueryTextChange(query: String?): Boolean {
-                if (query != null)
-                    queryMovie(query)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) queryMovie(query)
             return true
             }
 
+            override fun onQueryTextChange(query: String?): Boolean {
+                if (query != null) queryMovie(query)
+            return true
+            }
         })
-
     }
 
     private fun queryMovie(query: String) {
@@ -97,37 +94,25 @@ class MoviesListFragment : BaseFragment(), MovieListener {
 
     }
 
-    private fun scrollStartList() {
-        binding.movieRecyclerview.scrollToPosition(0)
-    }
+
 
 
     private fun setupMovieAdapter() {
         movieAdapter = MovieAdapter(this)
 
-        val tryAgainAction: TryAgainAction = { movieAdapter.retry() }
-        val footerAdapter = DefaultLoadingStateAdapter(tryAgainAction)
-        val headerAdapter = DefaultLoadingStateAdapter(tryAgainAction)
-
+        val footerAdapter = DefaultLoadingStateAdapter{ movieAdapter.retry() }
+        val headerAdapter =  DefaultLoadingStateAdapter{ movieAdapter.retry() }
         val adapterWithLoadState = movieAdapter.withLoadStateHeaderAndFooter(
             footer = footerAdapter,
             header = headerAdapter
         )
-
         binding.movieRecyclerview.adapter = adapterWithLoadState
-        binding.movieRecyclerview.layoutManager = getLayoutManager(adapterWithLoadState, footerAdapter)
-        mainLoadStateHolder = DefaultLoadingStateAdapter.Holder(
-            binding.loadStateView,
-            binding.swipeRefreshLayout,
-            tryAgainAction
-        )
+        binding.movieRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
+//            getLayoutManager(adapterWithLoadState, footerAdapter)
 
-
+        binding.loadStateView.tryAgainButton.setOnClickListener { movieAdapter.retry() }
         observeMovies()
         observeLoadState()
-
-
-
     }
 
     private fun  getLayoutManager(concatAdapter: ConcatAdapter, footerAdapter: DefaultLoadingStateAdapter) : RecyclerView.LayoutManager {
@@ -137,27 +122,37 @@ class MoviesListFragment : BaseFragment(), MovieListener {
                  if (position == 0 && footerAdapter.itemCount > 0) ITEM_SPAN_SIZE
                 else if (position == concatAdapter.itemCount - 1 && footerAdapter.itemCount > 0) ITEM_SPAN_SIZE
                 else ERROR_LOADING_SPAN_SIZE
-
         }
             return layoutManager
     }
 
-
-
     private fun observeLoadState() {
-        lifecycleScope.launch {
-            movieAdapter.loadStateFlow.debounce(200).collectLatest { state ->
-                mainLoadStateHolder.bind(state.refresh)
-            }
+
+        movieAdapter.addLoadStateListener { loadState ->
+            val refreshState = loadState.mediator?.refresh
+            Log.d("StateUI", "$refreshState")
+            binding.movieRecyclerview.isVisible = refreshState is LoadState.NotLoading
+            binding.loadStateView.progressBar.isVisible = refreshState is LoadState.Loading
+            binding.loadStateView.tryAgainButton.isVisible = refreshState is LoadState.Error
+            binding.loadStateView.messageTextView.isVisible = refreshState is LoadState.Error
+            handleError(loadState)
         }
 
+    }
+
+    private fun handleError(loadState: CombinedLoadStates) {
+        val errorState = loadState.source.append as? LoadState.Error
+            ?: loadState.source.prepend as? LoadState.Error
+
+        errorState?.let {
+            Toast.makeText(requireContext(), "${it.error}", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun observeMovies(){
       lifecycleScope.launch {
           viewModel.listMovie.collectLatest { pagingData ->
               movieAdapter.submitData(pagingData)
-              scrollStartList()
           }
       }
     }
@@ -177,7 +172,6 @@ class MoviesListFragment : BaseFragment(), MovieListener {
 
 
 interface ClickMovieListener {
-
     fun clickMovie(movieId: Int)
 }
 

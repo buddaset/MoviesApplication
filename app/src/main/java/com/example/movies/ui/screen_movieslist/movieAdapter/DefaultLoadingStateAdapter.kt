@@ -26,13 +26,12 @@ class DefaultLoadingStateAdapter(
     ): Holder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = PartResultBinding.inflate(inflater, parent, false)
-        return  Holder(binding, null, tryAgainAction)
+        return  Holder(binding, tryAgainAction)
     }
 
 
     class Holder(
         private val binding: PartResultBinding,
-        private val swipeRefreshLayout: SwipeRefreshLayout?,
         private val tryAgainAction: TryAgainAction
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -41,20 +40,13 @@ class DefaultLoadingStateAdapter(
         }
 
         fun bind(loadState: LoadState) = with(binding) {
-            messageTextView.isVisible = loadState is LoadState.Error
-            tryAgainButton.isVisible = loadState is LoadState.Error
-            if (swipeRefreshLayout != null) {
-                swipeRefreshLayout.isRefreshing = loadState is LoadState.Loading
-                progressBar.isVisible = false
-            } else {
-                progressBar.isVisible = loadState is LoadState.Loading
-            }
+            progressBar.isVisible = loadState is LoadState.Loading
+            tryAgainButton.isVisible = loadState !is LoadState.Loading
+            messageTextView.isVisible = loadState !is LoadState.Loading
+
         }
     }
 
-    companion object {
-        const val ITEM = 0
 
-    }
 
 }

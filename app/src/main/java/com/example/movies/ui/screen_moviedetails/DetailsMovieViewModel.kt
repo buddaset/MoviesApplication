@@ -1,17 +1,13 @@
 package com.example.movies.ui.screen_moviedetails
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.movies.data.MovieRepository
-import com.example.movies.models.MovieDetails
-import kotlinx.coroutines.launch
 import com.example.movies.data.Result
 import com.example.movies.models.ActorData
-import kotlinx.coroutines.delay
+import com.example.movies.models.MovieDetails
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
 class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel() {
@@ -35,16 +31,10 @@ class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel
         lastMovieId = idMovie
 
         viewModelScope.launch {
-            delay(2000)
 
-            repository.getMovieDetails(idMovie).collect {
-                _movie.value = it
-            }
+            repository.getMovieDetails(idMovie).collect { _movie.value = it }
 
-            repository.getActorsMovie(idMovie).collect {
-                _actorsMovie.value = it
-            }
-
+            repository.getActorsMovie(idMovie).collect { _actorsMovie.value = it }
         }
     }
 
@@ -62,7 +52,6 @@ class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel
         when (movie) {
             is Result.Success -> {
                 val newMovie = movie.data.copy(actors = getResultActors(actors))
-                Log.d("AAA", "MERGE \n ${movie.data.actors}  }")
                 Result.Success(newMovie)
             }
 
@@ -75,7 +64,7 @@ class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel
         return when (actors) {
 
             is Result.Success -> {
-                Log.d("AAA", "actor \n ${actors.data}  }")
+
                 val list = actors.data
                 list
             }

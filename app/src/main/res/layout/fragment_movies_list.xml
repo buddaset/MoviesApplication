@@ -2,7 +2,6 @@
 
 
 <androidx.constraintlayout.widget.ConstraintLayout
-
     android:background="@color/dark_blue"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -12,11 +11,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-
     <TextView
-        android:drawablePadding="8dp"
-        android:id="@+id/Movies_list_text"
+        android:id="@+id/movies_list_text"
         android:layout_height="wrap_content"
+        android:drawablePadding="8dp"
         android:layout_marginTop="55dp"
         android:layout_width="0dp"
         android:lineSpacingExtra="4sp"
@@ -31,26 +29,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/movie_recyclerview"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="2dp"
-        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        app:layout_constraintTop_toBottomOf="@id/Movies_list_text"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/movie_recyclerview"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="2"
-            tools:listitem="@layout/view_holder_movie" />
+        android:scrollbarThumbVertical="@drawable/scrollbar_track"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@id/movies_list_text"
+        android:scrollbars="vertical"
+        tools:itemCount="10"
+        tools:listitem="@layout/view_holder_movie" />
 
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -67,12 +60,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="14dp" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_movies_list"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="Movies_list_text" />
+
 
     <include
 
