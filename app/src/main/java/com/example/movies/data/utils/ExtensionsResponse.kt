@@ -1,6 +1,7 @@
 package com.example.movies.data.utils
 
 
+import com.example.movies.data.local.entity.ActorEntityDb
 import com.example.movies.data.local.entity.GenreEntityDb
 import com.example.movies.data.local.entity.MovieDetailsEntityDb
 import com.example.movies.data.local.entity.MovieEntityDb
@@ -78,6 +79,14 @@ fun ActorResponse.toActorData(): ActorData =
 
     ActorData(
         id = id,
+        name = name,
+        imageUrl = imageActorPath
+    )
+
+fun ActorResponse.toActorEntityDb(movieId: Int) : ActorEntityDb =
+    ActorEntityDb(
+        movieId = movieId,
+        actorId = id,
         name = name,
         imageUrl = imageActorPath
     )

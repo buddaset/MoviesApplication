@@ -52,14 +52,9 @@ class MoviesDetailsFragment : BaseFragment() {
         actorAdapter = ActorAdapter()
         binding.actorRecycler.adapter = actorAdapter
 
-
-
         binding.backPress.setOnClickListener {
             activity?.onBackPressed()
         }
-
-
-
 
         collectFlow(viewModel.movieDetails) { result ->
             renderState(root = binding.movieDetailConstraint, result, ::showDetails)
@@ -68,9 +63,6 @@ class MoviesDetailsFragment : BaseFragment() {
         onTryAgain(binding.root) {
             viewModel.tryAgain()
         }
-
-
-
     }
 
 

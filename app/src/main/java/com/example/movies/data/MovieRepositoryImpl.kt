@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.paging.*
 import com.example.movies.data.dispatchers.IoDispatcher
 import com.example.movies.data.local.MovieDatabase
+import com.example.movies.data.local.entity.ActorEntityDb
 import com.example.movies.data.local.entity.GenreEntityDb
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.toMovieData
@@ -83,16 +84,15 @@ class MovieRepositoryImpl(
 
 
     private suspend fun loadGenres(): List<GenreEntityDb> =
-        movieService.loadGenres().genres
-            .map { it.toGenreEntityDb() }
+        movieService.loadGenres().genres.map { it.toGenreEntityDb() }
 
 
-    override suspend fun getMovieDetails(idMovie: Int): Flow<Result<MovieDetails>> = flow {
+    override  fun getMovieDetails(idMovie: Int): Flow<Result<MovieDetails>> = flow {
         emit(getMovieDetailsFromDb(idMovie))
-
         emit(loadMovieDetails(idMovie))
     }
         .flowOn(dispatcher.value)
+
 
     private suspend fun getMovieDetailsFromDb(idMovie: Int) : Result<MovieDetails> {
         return try {
@@ -100,10 +100,7 @@ class MovieRepositoryImpl(
         } catch (ex: NullPointerException) {
             loadMovieDetails(idMovie)
         }
-
     }
-
-
 
 
     private suspend fun loadMovieDetails(idMovie: Int): Result<MovieDetails> {
@@ -128,10 +125,17 @@ class MovieRepositoryImpl(
     }
 
 
-    override suspend fun getActorsMovie(idMovie: Int): Flow<Result<List<ActorData>>> = flow {
+    override  fun getActorsMovie(idMovie: Int): Flow<Result<List<ActorData>>> = flow {
+        emit(getActorsFromDb(idMovie))
         emit(loadActorsMovie(idMovie))
     }
         .flowOn(dispatcher.value)
+
+    private suspend fun getActorsFromDb(idMovie: Int) : Result<List<ActorData>> {
+        val actorsEntityDb = movieDatabase.actorDao().getActorsByMovieId(idMovie)
+        if (actorsEntityDb.isEmpty()) return loadActorsMovie(idMovie)
+        return Result.Success(data = actorsEntityDb.map { it.toActorData() })
+    }
 
 
     private suspend fun loadActorsMovie(idMovie: Int): Result<List<ActorData>> {
@@ -144,8 +148,13 @@ class MovieRepositoryImpl(
         actorsResponse.forEach {
             it.imageActorPath = imageUrlAppender.getActorImageUrl(it.imageActorPath)
         }
+        cacheActors(actorsResponse.map { it.toActorEntityDb(idMovie) })
         val actorsData = actorsResponse.map { it.toActorData() }
         return Result.Success(data = actorsData)
+    }
+
+    private suspend fun cacheActors(actorsEntityDb: List<ActorEntityDb>) {
+        movieDatabase.actorDao().insertAllActors(actorsEntityDb)
     }
 
     companion object {
