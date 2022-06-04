@@ -1,5 +1,6 @@
 package com.example.movies.data
 
+import android.util.Log
 import androidx.paging.*
 import com.example.movies.data.dispatchers.IoDispatcher
 import com.example.movies.data.local.MovieDatabase
@@ -11,10 +12,7 @@ import com.example.movies.data.paging.MovieRemoteMediator
 import com.example.movies.data.remote.MovieService
 import com.example.movies.data.remote.response.MovieDetailsResponse
 import com.example.movies.data.remote.response.toGenreEntityDb
-import com.example.movies.data.utils.ImageUrlAppender
-import com.example.movies.data.utils.toActorData
-import com.example.movies.data.utils.toMovieData
-import com.example.movies.data.utils.toMovieEntityDb
+import com.example.movies.data.utils.*
 import com.example.movies.models.ActorData
 import com.example.movies.models.MovieData
 import com.example.movies.models.MovieDetails
@@ -23,6 +21,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.lang.NullPointerException
 
 class MovieRepositoryImpl(
     private val imageUrlAppender: ImageUrlAppender,
@@ -62,9 +61,9 @@ class MovieRepositoryImpl(
     private suspend fun loadListMovies(pageIndex: Int, pageSize: Int, query: String): List<MovieEntityDb> =
         withContext(dispatcher.value) {
 
-
-        val moviesResponse =if(query.isBlank()) movieService.loadMoviesPopular(pageIndex, pageSize).results
-            else movieService.searchMovie(query, page = pageIndex, pageSize = pageSize).results
+        val moviesResponse = if(query.isBlank())
+            movieService.loadMoviesPopular(pageIndex, pageSize).results
+            else movieService.searchMovie(query, pageIndex,  pageSize).results
 
         val genres = getGenres()
         val moviesEntityDb = moviesResponse.map { it.toMovieEntityDb(genres) }
@@ -89,9 +88,22 @@ class MovieRepositoryImpl(
 
 
     override suspend fun getMovieDetails(idMovie: Int): Flow<Result<MovieDetails>> = flow {
+        emit(getMovieDetailsFromDb(idMovie))
+
         emit(loadMovieDetails(idMovie))
     }
         .flowOn(dispatcher.value)
+
+    private suspend fun getMovieDetailsFromDb(idMovie: Int) : Result<MovieDetails> {
+        return try {
+            Result.Success(movieDatabase.movieDetailDao().getMovieById(idMovie).toMovieDetail())
+        } catch (ex: NullPointerException) {
+            loadMovieDetails(idMovie)
+        }
+
+    }
+
+
 
 
     private suspend fun loadMovieDetails(idMovie: Int): Result<MovieDetails> {
@@ -100,15 +112,20 @@ class MovieRepositoryImpl(
         } catch (ex: Exception) {
             return Result.Error(error = ex)
         }
+        cacheMovieDetails(movieDetailsResponse)
         val movieDetails = transformToMovieDetails(movieDetailsResponse)
         return Result.Success(data = movieDetails)
     }
 
+    private suspend fun cacheMovieDetails(movieResponse: MovieDetailsResponse) {
+        movieDatabase.movieDetailDao().insertMovie(movieResponse.toMovieDetailEntityDb())
+    }
 
-    private suspend fun transformToMovieDetails(movie: MovieDetailsResponse): MovieDetails =
-        movie.toMovieData().also {
+
+    private suspend fun transformToMovieDetails(movie: MovieDetailsResponse): MovieDetails  =
+        movie.toMovieDetails().also {
             it.detailImageUrl = imageUrlAppender.getDetailImageUrl(it.detailImageUrl)
-        }
+    }
 
 
     override suspend fun getActorsMovie(idMovie: Int): Flow<Result<List<ActorData>>> = flow {

@@ -94,9 +94,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
 
     }
 
-    private fun scrollStartList() {
-        binding.movieRecyclerview.scrollToPosition(0)
-    }
+
 
 
     private fun setupMovieAdapter() {
