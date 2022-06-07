@@ -19,4 +19,5 @@
     <string name="error_try_again_later">Error. Try again later</string>
     <string name="try_again">try_again</string>
     <string name="search_hint">Search movie</string>
+    <string name="no_results">Empty movie list</string>
 </resources>

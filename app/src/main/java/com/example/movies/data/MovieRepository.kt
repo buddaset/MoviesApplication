@@ -1,6 +1,5 @@
 package com.example.movies.data
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import com.example.movies.models.ActorData
 import com.example.movies.models.MovieData

@@ -129,15 +129,21 @@ class MoviesListFragment : BaseFragment(), MovieListener {
     private fun observeLoadState() {
 
         movieAdapter.addLoadStateListener { loadState ->
-            val refreshState = loadState.mediator?.refresh
+            val refreshState = loadState.source.refresh
+            val isListEmpty = loadState.refresh is LoadState.NotLoading && movieAdapter.itemCount == 0
             Log.d("StateUI", "$refreshState")
-            binding.movieRecyclerview.isVisible = refreshState is LoadState.NotLoading
+            binding.movieRecyclerview.isVisible = !isListEmpty
             binding.loadStateView.progressBar.isVisible = refreshState is LoadState.Loading
             binding.loadStateView.tryAgainButton.isVisible = refreshState is LoadState.Error
             binding.loadStateView.messageTextView.isVisible = refreshState is LoadState.Error
             handleError(loadState)
         }
 
+//        lifecycleScope.launch {
+//            movieAdapter.loadStateFlow.collectLatest {  loadState
+//                binding.loadStateView.progressBar.isVisible =
+//            }
+//        }
     }
 
     private fun handleError(loadState: CombinedLoadStates) {

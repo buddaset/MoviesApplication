@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.lang.NullPointerException
 
 class MovieRepositoryImpl(
     private val imageUrlAppender: ImageUrlAppender,
@@ -42,10 +41,7 @@ class MovieRepositoryImpl(
              config = PagingConfig(
                  pageSize = PAGE_SIZE,
                  enablePlaceholders = false),
-             remoteMediator = MovieRemoteMediator(
-                 loader = loader,
-                 movieDatabase = movieDatabase
-             ),
+             remoteMediator = MovieRemoteMediator(loader = loader, movieDatabase = movieDatabase),
              pagingSourceFactory =  pagingSourceFactory
          ).flow
              .map { paging ->
@@ -105,6 +101,7 @@ class MovieRepositoryImpl(
 
     private suspend fun loadMovieDetails(idMovie: Int): Result<MovieDetails> {
         val movieDetailsResponse = try {
+
             movieService.loadMovieDetails(idMovie)
         } catch (ex: Exception) {
             return Result.Error(error = ex)

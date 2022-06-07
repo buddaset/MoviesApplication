@@ -25,7 +25,7 @@ class MovieRemoteMediator(
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, MovieEntityDb>): MediatorResult {
 
-            val currentKey = when(loadType) {
+            val currentKey : Int = when(loadType) {
                 LoadType.REFRESH -> {
                     val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                     remoteKeys?.nextKey?.minus(1) ?: START_KEY
@@ -44,10 +44,10 @@ class MovieRemoteMediator(
                 }
             }
         return try {
-
+            Log.d("Mediator", " page ---- $currentKey.  loadType ---- $loadType" )
             val movies = loader( currentKey, state.config.pageSize)
             val endOfPaginationReached = movies.isEmpty()
-            Log.d("Mediator", "End of paging ---- $endOfPaginationReached")
+
 
 
             val prevKey = if( currentKey == START_KEY) null else currentKey - 1
@@ -55,15 +55,11 @@ class MovieRemoteMediator(
 
             movieDatabase.withTransaction {
                     if (loadType == LoadType.REFRESH) {
-                        movieDatabase.movieDao().clearAllMovie()
+                        movieDao.clearAllMovie()
                         remoteKeysDao.deleteAllRemoteKeys()
                     }
                 val keys = movies.map { movie ->
-                    MovieRemoteKeys(
-                        id = movie.id,
-                        prevKey = prevKey,
-                        nextKey = nextKey
-                    )
+                    MovieRemoteKeys(id = movie.id, prevKey = prevKey, nextKey = nextKey)
                 }
                 movieDao.insertAllMovie(movies)
                 remoteKeysDao.addAllRemoteKeys(keys)
