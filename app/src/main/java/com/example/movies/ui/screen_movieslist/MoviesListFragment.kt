@@ -74,16 +74,16 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         val searchView = searchItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) queryMovie(query)
-            return true
+                return true
             }
 
             override fun onQueryTextChange(query: String?): Boolean {
                 if (query != null) queryMovie(query)
-            return true
+                return true
             }
         })
     }
@@ -95,13 +95,11 @@ class MoviesListFragment : BaseFragment(), MovieListener {
     }
 
 
-
-
     private fun setupMovieAdapter() {
         movieAdapter = MovieAdapter(this)
 
-        val footerAdapter = DefaultLoadingStateAdapter{ movieAdapter.retry() }
-        val headerAdapter =  DefaultLoadingStateAdapter{ movieAdapter.retry() }
+        val footerAdapter = DefaultLoadingStateAdapter { movieAdapter.retry() }
+        val headerAdapter = DefaultLoadingStateAdapter { movieAdapter.retry() }
         val adapterWithLoadState = movieAdapter.withLoadStateHeaderAndFooter(
             footer = footerAdapter,
             header = headerAdapter
@@ -115,36 +113,37 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         observeLoadState()
     }
 
-    private fun  getLayoutManager(concatAdapter: ConcatAdapter, footerAdapter: DefaultLoadingStateAdapter) : RecyclerView.LayoutManager {
+    private fun getLayoutManager(
+        concatAdapter: ConcatAdapter,
+        footerAdapter: DefaultLoadingStateAdapter
+    ): RecyclerView.LayoutManager {
         val layoutManager = GridLayoutManager(requireContext(), 2)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int =
-                 if (position == 0 && footerAdapter.itemCount > 0) ITEM_SPAN_SIZE
+                if (position == 0 && footerAdapter.itemCount > 0) ITEM_SPAN_SIZE
                 else if (position == concatAdapter.itemCount - 1 && footerAdapter.itemCount > 0) ITEM_SPAN_SIZE
                 else ERROR_LOADING_SPAN_SIZE
         }
-            return layoutManager
+        return layoutManager
     }
 
     private fun observeLoadState() {
 
         movieAdapter.addLoadStateListener { loadState ->
             val refreshState = loadState.source.refresh
-            val isListEmpty = loadState.refresh is LoadState.NotLoading && movieAdapter.itemCount == 0
-            Log.d("StateUI", "$refreshState")
+            val isListEmpty =
+                loadState.refresh is LoadState.NotLoading && movieAdapter.itemCount == 0
+            Log.d("StateUI", "$isListEmpty")
             binding.movieRecyclerview.isVisible = !isListEmpty
+            binding.emptyList.isVisible = isListEmpty
             binding.loadStateView.progressBar.isVisible = refreshState is LoadState.Loading
             binding.loadStateView.tryAgainButton.isVisible = refreshState is LoadState.Error
             binding.loadStateView.messageTextView.isVisible = refreshState is LoadState.Error
             handleError(loadState)
         }
 
-//        lifecycleScope.launch {
-//            movieAdapter.loadStateFlow.collectLatest {  loadState
-//                binding.loadStateView.progressBar.isVisible =
-//            }
-//        }
     }
+
 
     private fun handleError(loadState: CombinedLoadStates) {
         val errorState = loadState.source.append as? LoadState.Error
@@ -155,12 +154,12 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         }
     }
 
-    private fun observeMovies(){
-      lifecycleScope.launch {
-          viewModel.listMovie.collectLatest { pagingData ->
-              movieAdapter.submitData(pagingData)
-          }
-      }
+    private fun observeMovies() {
+        lifecycleScope.launch {
+            viewModel.listMovie.collectLatest { pagingData ->
+                movieAdapter.submitData(pagingData)
+            }
+        }
     }
 
 

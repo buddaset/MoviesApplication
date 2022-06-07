@@ -11,8 +11,8 @@ import com.example.movies.data.local.entity.MovieEntityDb
 @Dao
 interface MovieDao {
 
-    @Query("SELECT * FROM movies ")
-    fun getAllMovies() : PagingSource<Int, MovieEntityDb>
+    @Query("SELECT * FROM movies WHERE :query =  '' OR title LIKE '%' || :query || '%' " )
+    fun getMovies(query: String) : PagingSource<Int, MovieEntityDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllMovie(list: List<MovieEntityDb>)

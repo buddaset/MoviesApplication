@@ -32,7 +32,7 @@ class MovieRepositoryImpl(
 
      @OptIn(ExperimentalPagingApi::class)
      override fun searchMovie(query: String): Flow<PagingData<MovieData>> {
-         val pagingSourceFactory = { movieDatabase.movieDao().getAllMovies() }
+         val pagingSourceFactory = { movieDatabase.movieDao().getMovies(query) }
 
          val loader: MoviePageLoader = { pageIndex, pageSize ->
              loadListMovies(pageIndex, pageSize, query)
