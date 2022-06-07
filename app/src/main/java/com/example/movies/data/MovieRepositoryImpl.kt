@@ -85,7 +85,8 @@ class MovieRepositoryImpl(
 
     override  fun getMovieDetails(idMovie: Int): Flow<Result<MovieDetails>> = flow {
         emit(getMovieDetailsFromDb(idMovie))
-        emit(loadMovieDetails(idMovie))
+        val movieDetails = loadMovieDetails(idMovie)
+        if(movieDetails is Result.Success) emit(movieDetails)
     }
         .flowOn(dispatcher.value)
 
@@ -124,7 +125,8 @@ class MovieRepositoryImpl(
 
     override  fun getActorsMovie(idMovie: Int): Flow<Result<List<ActorData>>> = flow {
         emit(getActorsFromDb(idMovie))
-        emit(loadActorsMovie(idMovie))
+        val actors = loadActorsMovie(idMovie)
+        if(actors is Result.Success) emit(actors)
     }
         .flowOn(dispatcher.value)
 
