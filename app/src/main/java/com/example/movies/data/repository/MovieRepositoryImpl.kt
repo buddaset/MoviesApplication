@@ -1,7 +1,11 @@
-package com.example.movies.data
+package com.example.movies.data.repository
 
-import android.util.Log
+import android.content.Context
 import androidx.paging.*
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.WorkManager
+import com.example.movies.data.MovieRepository
+import com.example.movies.data.Result
 import com.example.movies.data.dispatchers.IoDispatcher
 import com.example.movies.data.local.MovieDatabase
 import com.example.movies.data.local.entity.ActorEntityDb
@@ -14,6 +18,7 @@ import com.example.movies.data.remote.MovieService
 import com.example.movies.data.remote.response.MovieDetailsResponse
 import com.example.movies.data.remote.response.toGenreEntityDb
 import com.example.movies.data.utils.*
+import com.example.movies.data.workers.RefreshMoviesWorker
 import com.example.movies.models.ActorData
 import com.example.movies.models.MovieData
 import com.example.movies.models.MovieDetails
@@ -27,7 +32,8 @@ class MovieRepositoryImpl(
     private val imageUrlAppender: ImageUrlAppender,
     private val movieService: MovieService,
     private val dispatcher: IoDispatcher,
-    private val movieDatabase: MovieDatabase
+    private val movieDatabase: MovieDatabase,
+    private val applicationContext: Context
 ) : MovieRepository {
 
      @OptIn(ExperimentalPagingApi::class)
@@ -154,6 +160,18 @@ class MovieRepositoryImpl(
 
     private suspend fun cacheActors(actorsEntityDb: List<ActorEntityDb>) {
         movieDatabase.actorDao().insertAllActors(actorsEntityDb)
+    }
+
+    override fun periodicalBackgroundUpdateMovie() {
+        val workManager  = WorkManager.getInstance(applicationContext)
+        workManager.enqueueUniquePeriodicWork(
+            RefreshMoviesWorker.WORKER_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            RefreshMoviesWorker.makePeriodicWorkRequest())
+
+
+
+
     }
 
     companion object {

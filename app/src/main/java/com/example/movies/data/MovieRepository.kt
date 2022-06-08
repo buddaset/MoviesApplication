@@ -16,4 +16,6 @@ interface MovieRepository {
 
 
     fun searchMovie(query: String) : Flow<PagingData<MovieData>>
+
+    fun periodicalBackgroundUpdateMovie()
 }
