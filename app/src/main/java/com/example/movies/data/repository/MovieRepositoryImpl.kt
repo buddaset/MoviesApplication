@@ -164,6 +164,9 @@ class MovieRepositoryImpl(
 
     override fun periodicalBackgroundUpdateMovie() {
         val workManager  = WorkManager.getInstance(applicationContext)
+
+
+
         workManager.enqueueUniquePeriodicWork(
             RefreshMoviesWorker.WORKER_NAME,
             ExistingPeriodicWorkPolicy.KEEP,

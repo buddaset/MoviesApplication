@@ -59,7 +59,7 @@ class RefreshMoviesWorker(
             Log.d("Worker", "movies  --- $movies")
             return Result.success()
         } catch (ex: Exception) {
-            Log.d("Worker", "exeption")
+            Log.d("Worker", "exception")
             return Result.failure()
         }
     }
@@ -69,10 +69,15 @@ class RefreshMoviesWorker(
         private const val REFRESH_WORKER_TAG ="RefreshMovieWorkerTag"
         const val WORKER_NAME = "refreshMovieWorker"
 
+//        fun makeOneTimeRequest(): OneTimeWorkRequest  =
+//            OneTimeWorkRequestBuilder<RefreshMoviesWorker>()
+//                .setInitialDelay(40,TimeUnit.SECONDS)
+//                .build()
+
         fun makePeriodicWorkRequest() : PeriodicWorkRequest =
-            PeriodicWorkRequest.Builder(RefreshMoviesWorker::class.java, 15 ,TimeUnit.MINUTES, 2, TimeUnit.MINUTES)
+            PeriodicWorkRequest.Builder(RefreshMoviesWorker::class.java, 8 ,TimeUnit.HOURS)
                 .addTag(REFRESH_WORKER_TAG)
-//                .setConstraints(constraints())
+                .setConstraints(constraints())
                 .build()
 
 
