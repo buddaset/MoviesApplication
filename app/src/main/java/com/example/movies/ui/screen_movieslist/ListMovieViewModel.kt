@@ -10,9 +10,7 @@ import androidx.paging.cachedIn
 import com.example.movies.data.MovieRepository
 import com.example.movies.models.MovieData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 
 class ListMovieViewModel(private val movieRepository: MovieRepository) : ViewModel() {
@@ -20,6 +18,10 @@ class ListMovieViewModel(private val movieRepository: MovieRepository) : ViewMod
     private val searchBy = MutableLiveData("")
 
     val listMovie: Flow<PagingData<MovieData>> = getSearchMovie()
+
+    init {
+        movieRepository.periodicalBackgroundUpdateMovie()
+    }
 
 
     fun setSearchBy(value: String) {
