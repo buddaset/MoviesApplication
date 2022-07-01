@@ -1,10 +1,10 @@
-package com.example.movies.ui
+package com.example.movies.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.movies.data.MovieRepository
-import com.example.movies.ui.screen_moviedetails.DetailsMovieViewModel
-import com.example.movies.ui.screen_movieslist.ListMovieViewModel
+import com.example.movies.domain.repository.MovieRepository
+import com.example.movies.presentation.screen_moviedetails.DetailsMovieViewModel
+import com.example.movies.presentation.screen_movieslist.ListMovieViewModel
 
 class ViewModelFactory(private val repository: MovieRepository) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")

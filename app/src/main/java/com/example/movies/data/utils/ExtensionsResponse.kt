@@ -8,9 +8,9 @@ import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.remote.response.ActorResponse
 import com.example.movies.data.remote.response.MovieDetailsResponse
 import com.example.movies.data.remote.response.MovieResponse
-import com.example.movies.models.ActorData
-import com.example.movies.models.GenreData
-import com.example.movies.models.MovieDetails
+import com.example.movies.domain.model.Actor
+import com.example.movies.domain.model.Genre
+import com.example.movies.domain.model.MovieDetails
 
 const val PG_ADULT = 16
 const val PG_CHILDREN = 13
@@ -42,7 +42,7 @@ fun MovieDetailsResponse.toMovieDetails() : MovieDetails =
         reviewCount = reviewCount,
         storyLine = storyLine,
         isLiked = false,
-        genres = genres.map { GenreData(id = it.id, name = it.name) },
+        genres = genres.map { Genre(id = it.id, name = it.name) },
     )
 
 fun MovieDetailsResponse.toMovieDetailEntityDb() : MovieDetailsEntityDb =
@@ -71,13 +71,13 @@ fun MovieDetailsEntityDb.toMovieDetail(): MovieDetails =
         reviewCount = reviewCount,
         storyLine = storyLine,
         isLiked = isLiked,
-        genres = genres.map { GenreData(id = it.id, name = it.name) }
+        genres = genres.map { Genre(id = it.id, name = it.name) }
     )
 
 
-fun ActorResponse.toActorData(): ActorData =
+fun ActorResponse.toActorData(): Actor =
 
-    ActorData(
+    Actor(
         id = id,
         name = name,
         imageUrl = imageActorPath

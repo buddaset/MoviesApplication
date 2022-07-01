@@ -2,7 +2,6 @@ package com.example.movies.data.local
 
 import androidx.room.TypeConverter
 import com.example.movies.data.local.entity.GenreEntityDb
-import com.example.movies.models.GenreData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

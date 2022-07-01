@@ -1,16 +1,5 @@
 package com.example.movies.data.paging
 
-import android.util.Log
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
-import com.example.movies.data.remote.response.MovieResponse
-import com.example.movies.data.remote.response.PopularMoviesResponse
-import com.example.movies.models.MovieData
-import retrofit2.HttpException
-import retrofit2.Response
-
-
-
 
 //class MoviePageSource(
 //    private val loader: MoviePageLoader,

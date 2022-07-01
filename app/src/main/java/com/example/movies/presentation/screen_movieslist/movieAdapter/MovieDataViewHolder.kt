@@ -1,19 +1,18 @@
-package com.example.movies.ui.screen_movieslist.movieAdapter
+package com.example.movies.presentation.screen_movieslist.movieAdapter
 
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 
 import com.bumptech.glide.Glide
 import com.example.movies.R
 import com.example.movies.databinding.ViewHolderMovieBinding
-import com.example.movies.models.MovieData
+import com.example.movies.domain.model.Movie
 
 class MovieDataViewHolder(private val binding: ViewHolderMovieBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     private val context = itemView.context
 
-    fun bind(movie: MovieData) {
+    fun bind(movie: Movie) {
 
         with(binding) {
             title.text = movie.title

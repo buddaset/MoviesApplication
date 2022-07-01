@@ -1,21 +1,19 @@
-package com.example.movies.ui.screen_moviedetails
+package com.example.movies.presentation.screen_moviedetails
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
-import com.example.movies.App
+import com.example.movies.core.application.App
 import com.example.movies.R
-import com.example.movies.data.Result
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
-import com.example.movies.models.MovieDetails
-import com.example.movies.ui.*
-import com.example.movies.ui.screen_moviedetails.actorAdapter.ActorAdapter
-import com.example.movies.ui.screen_movieslist.movieAdapter.MovieUtils
+import com.example.movies.domain.model.MovieDetails
+import com.example.movies.presentation.*
+import com.example.movies.presentation.screen_moviedetails.actorAdapter.ActorAdapter
+import com.example.movies.presentation.screen_movieslist.movieAdapter.MovieUtils
 
 
 class MoviesDetailsFragment : BaseFragment() {

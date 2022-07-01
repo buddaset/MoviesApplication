@@ -13,20 +13,17 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.movies.core.application.App
 import com.example.movies.databinding.FragmentMoviesListBinding
-import com.example.movies.models.MovieData
-import com.example.movies.ui.BaseFragment
-import com.example.movies.ui.ViewModelFactory
-import com.example.movies.ui.onTryAgain
-import com.example.movies.ui.screen_movieslist.ListMovieViewModel
-import com.example.movies.ui.screen_movieslist.movieAdapter.DefaultLoadingStateAdapter
-import com.example.movies.ui.screen_movieslist.movieAdapter.MovieAdapter
-import com.example.movies.ui.screen_movieslist.movieAdapter.MovieListener
-import com.example.movies.ui.screen_movieslist.movieAdapter.TryAgainAction
+import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.BaseFragment
+import com.example.movies.presentation.ViewModelFactory
+import com.example.movies.presentation.screen_movieslist.ListMovieViewModel
+import com.example.movies.presentation.screen_movieslist.movieAdapter.DefaultLoadingStateAdapter
+import com.example.movies.presentation.screen_movieslist.movieAdapter.MovieAdapter
+import com.example.movies.presentation.screen_movieslist.movieAdapter.MovieListener
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 
@@ -163,7 +160,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
     }
 
 
-    override fun onCLickMovie(movie: MovieData) {
+    override fun onCLickMovie(movie: Movie) {
         listener?.clickMovie(movie.id)
     }
 

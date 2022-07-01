@@ -1,13 +1,13 @@
-package com.example.movies.ui.screen_movieslist.movieAdapter
+package com.example.movies.presentation.screen_movieslist.movieAdapter
 
-import com.example.movies.models.GenreData
+import com.example.movies.domain.model.Genre
 
 object MovieUtils {
 
 
     private const val MAX_RATING = 5
 
-    fun getGenreOfMovie(listGenre: List<GenreData>) : String =
+    fun getGenreOfMovie(listGenre: List<Genre>) : String =
         listGenre.joinToString { it.name }
 
     fun getRating(rating : Int): Float =

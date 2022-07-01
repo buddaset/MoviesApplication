@@ -2,9 +2,9 @@ package com.example.movies.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.movies.models.GenreData
+import com.example.movies.domain.model.Genre
 
-import com.example.movies.models.MovieData
+import com.example.movies.domain.model.Movie
 
 @Entity(tableName = "movies")
 data class MovieEntityDb(
@@ -22,8 +22,8 @@ data class MovieEntityDb(
 
 
 
-fun MovieEntityDb.toMovieData() : MovieData =
-    MovieData(
+fun MovieEntityDb.toMovieData() : Movie =
+    Movie(
         id = this.id.toInt(),
         title = this.title,
         pgAge = this.pgAge,
@@ -33,7 +33,7 @@ fun MovieEntityDb.toMovieData() : MovieData =
         storyLine = this.storyLine,
         isLiked = this.isLiked,
         genres = genres.map {
-            GenreData(id = it.id , name = it.name)
+            Genre(id = it.id , name = it.name)
         }
     )
 

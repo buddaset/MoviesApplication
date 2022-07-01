@@ -1,8 +1,8 @@
-package com.example.movies
+package com.example.movies.core.application
 
 import android.app.Application
 import androidx.work.Configuration
-import com.example.movies.data.MovieRepository
+import com.example.movies.domain.repository.MovieRepository
 import com.example.movies.data.repository.MovieRepositoryImpl
 import com.example.movies.data.dispatchers.IoDispatcher
 import com.example.movies.data.local.MovieDatabase

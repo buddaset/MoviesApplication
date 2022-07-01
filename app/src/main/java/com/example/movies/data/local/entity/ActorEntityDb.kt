@@ -3,7 +3,7 @@ package com.example.movies.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 
-import com.example.movies.models.ActorData
+import com.example.movies.domain.model.Actor
 
 @Entity(tableName = "actors",
 primaryKeys = ["movie_id", "actor_id"])
@@ -16,8 +16,8 @@ data class ActorEntityDb(
     val imageUrl: String?
 
 ) {
-    fun toActorData() : ActorData =
-        ActorData(
+    fun toActorData() : Actor =
+        Actor(
             id = actorId,
             name = name,
             imageUrl = imageUrl

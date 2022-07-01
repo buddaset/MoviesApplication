@@ -1,13 +1,12 @@
-package com.example.movies.ui.screen_movieslist.movieAdapter
+package com.example.movies.presentation.screen_movieslist.movieAdapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.ListAdapter
 import com.example.movies.databinding.ViewHolderMovieBinding
-import com.example.movies.models.MovieData
+import com.example.movies.domain.model.Movie
 
-class MovieAdapter(private var listener: MovieListener) : PagingDataAdapter<MovieData, MovieDataViewHolder>(MovieCallback()) {
+class MovieAdapter(private var listener: MovieListener) : PagingDataAdapter<Movie, MovieDataViewHolder>(MovieCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieDataViewHolder =
@@ -25,5 +24,5 @@ class MovieAdapter(private var listener: MovieListener) : PagingDataAdapter<Movi
 
 interface MovieListener {
 
-    fun onCLickMovie(movie: MovieData)
+    fun onCLickMovie(movie: Movie)
 }

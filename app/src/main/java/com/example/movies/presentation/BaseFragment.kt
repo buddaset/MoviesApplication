@@ -1,4 +1,4 @@
-package com.example.movies.ui
+package com.example.movies.presentation
 
 import android.view.View
 import android.view.ViewGroup

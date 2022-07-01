@@ -3,7 +3,6 @@ package com.example.movies.di
 import android.content.Context
 import androidx.room.Room
 import com.example.movies.data.local.MovieDatabase
-import com.example.movies.models.MovieData
 
 class DatabaseModule {
         private var INSTANCE : MovieDatabase? = null

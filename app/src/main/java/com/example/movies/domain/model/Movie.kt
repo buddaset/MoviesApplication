@@ -1,9 +1,7 @@
-package com.example.movies.models
-
-import com.example.movies.data.local.entity.MovieEntityDb
+package com.example.movies.domain.model
 
 
-data class MovieData(
+data class Movie(
     val id: Int,
     val title: String,
     val pgAge: Int,
@@ -12,7 +10,7 @@ data class MovieData(
     val reviewCount : Int,
     val storyLine: String,
     val isLiked: Boolean,
-    val genres: List<GenreData>
+    val genres: List<Genre>
 )
 
 

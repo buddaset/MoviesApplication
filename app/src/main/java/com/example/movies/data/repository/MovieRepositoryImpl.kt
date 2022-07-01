@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.paging.*
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
-import com.example.movies.data.MovieRepository
+import com.example.movies.domain.repository.MovieRepository
 import com.example.movies.data.Result
 import com.example.movies.data.dispatchers.IoDispatcher
 import com.example.movies.data.local.MovieDatabase
@@ -19,9 +19,9 @@ import com.example.movies.data.remote.response.MovieDetailsResponse
 import com.example.movies.data.remote.response.toGenreEntityDb
 import com.example.movies.data.utils.*
 import com.example.movies.data.workers.RefreshMoviesWorker
-import com.example.movies.models.ActorData
-import com.example.movies.models.MovieData
-import com.example.movies.models.MovieDetails
+import com.example.movies.domain.model.Actor
+import com.example.movies.domain.model.Movie
+import com.example.movies.domain.model.MovieDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -37,7 +37,7 @@ class MovieRepositoryImpl(
 ) : MovieRepository {
 
      @OptIn(ExperimentalPagingApi::class)
-     override fun searchMovie(query: String): Flow<PagingData<MovieData>> {
+     override fun getMoviesBySearch(query: String): Flow<PagingData<Movie>> {
          val pagingSourceFactory = { movieDatabase.movieDao().getMovies(query) }
 
          val loader: MoviePageLoader = { pageIndex, pageSize ->
@@ -129,21 +129,21 @@ class MovieRepositoryImpl(
     }
 
 
-    override  fun getActorsMovie(idMovie: Int): Flow<Result<List<ActorData>>> = flow {
+    override  fun getActorsMovie(idMovie: Int): Flow<Result<List<Actor>>> = flow {
         emit(getActorsFromDb(idMovie))
         val actors = loadActorsMovie(idMovie)
         if(actors is Result.Success) emit(actors)
     }
         .flowOn(dispatcher.value)
 
-    private suspend fun getActorsFromDb(idMovie: Int) : Result<List<ActorData>> {
+    private suspend fun getActorsFromDb(idMovie: Int) : Result<List<Actor>> {
         val actorsEntityDb = movieDatabase.actorDao().getActorsByMovieId(idMovie)
         if (actorsEntityDb.isEmpty()) return loadActorsMovie(idMovie)
         return Result.Success(data = actorsEntityDb.map { it.toActorData() })
     }
 
 
-    private suspend fun loadActorsMovie(idMovie: Int): Result<List<ActorData>> {
+    private suspend fun loadActorsMovie(idMovie: Int): Result<List<Actor>> {
 
         val actorsResponse = try {
             movieService.loadMovieCredits(idMovie).cast

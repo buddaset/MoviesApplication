@@ -1,11 +1,11 @@
-package com.example.movies.ui.screen_moviedetails
+package com.example.movies.presentation.screen_moviedetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movies.data.MovieRepository
+import com.example.movies.domain.repository.MovieRepository
 import com.example.movies.data.Result
-import com.example.movies.models.ActorData
-import com.example.movies.models.MovieDetails
+import com.example.movies.domain.model.Actor
+import com.example.movies.domain.model.MovieDetails
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
@@ -13,7 +13,7 @@ import kotlin.properties.Delegates
 class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel() {
 
     private val _movie = MutableStateFlow<Result<MovieDetails>>(Result.Loading())
-    private val _actorsMovie = MutableStateFlow<Result<List<ActorData>>>(Result.Loading())
+    private val _actorsMovie = MutableStateFlow<Result<List<Actor>>>(Result.Loading())
     private var lastMovieId by Delegates.notNull<Int>()
 
     val movieDetails: StateFlow<Result<MovieDetails>> = combine(
@@ -46,7 +46,7 @@ class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel
 
     private fun mergeSource(
         movie: Result<MovieDetails>,
-        actors: Result<List<ActorData>>
+        actors: Result<List<Actor>>
     ): Result<MovieDetails> =
 
         when (movie) {
@@ -59,7 +59,7 @@ class DetailsMovieViewModel(private val repository: MovieRepository) : ViewModel
         }
 
 
-    private fun getResultActors(actors: Result<List<ActorData>>): List<ActorData> {
+    private fun getResultActors(actors: Result<List<Actor>>): List<Actor> {
 
         return when (actors) {
 

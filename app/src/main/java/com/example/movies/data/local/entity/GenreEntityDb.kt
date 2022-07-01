@@ -2,7 +2,7 @@ package com.example.movies.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.movies.models.GenreData
+import com.example.movies.domain.model.Genre
 
 
 @Entity(tableName = "genres")
@@ -12,6 +12,6 @@ data class GenreEntityDb(
     val name: String
 ) {
 
-   fun toGenreData() : GenreData =
-       GenreData(id = id , name = name)
+   fun toGenreData() : Genre =
+       Genre(id = id , name = name)
 }

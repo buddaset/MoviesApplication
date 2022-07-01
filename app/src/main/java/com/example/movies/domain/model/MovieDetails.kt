@@ -1,4 +1,4 @@
-package com.example.movies.models
+package com.example.movies.domain.model
 
 data class MovieDetails(
     val id: Int,
@@ -10,6 +10,6 @@ data class MovieDetails(
     val reviewCount : Int,
     val storyLine: String,
     val isLiked: Boolean,
-    val genres: List<GenreData>,
-    var actors: List<ActorData> = emptyList()
+    val genres: List<Genre>,
+    var actors: List<Actor> = emptyList()
 )

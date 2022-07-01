@@ -1,7 +1,7 @@
-package com.example.movies.models
+package com.example.movies.domain.model
 
 
-data class ActorData(
+data class Actor(
     val id : Int,
     val name: String,
     val imageUrl: String?

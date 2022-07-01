@@ -1,4 +1,4 @@
-package com.example.movies.ui.screen_movieslist.movieAdapter
+package com.example.movies.presentation.screen_movieslist.movieAdapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,9 +6,7 @@ import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.movies.databinding.PartResultBinding
-import com.google.android.material.behavior.SwipeDismissBehavior
 
 typealias TryAgainAction = () -> Unit
 
