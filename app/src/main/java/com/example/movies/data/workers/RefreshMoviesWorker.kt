@@ -8,9 +8,9 @@ import androidx.work.*
 import com.example.movies.data.local.MovieDatabase
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.MovieRemoteKeys
-import com.example.movies.data.remote.MovieService
-import com.example.movies.data.remote.MovieService.Companion.MAX_PAGE_SIZE
-import com.example.movies.data.utils.toMovieEntityDb
+import com.example.movies.data.remote.MovieApi
+import com.example.movies.data.remote.MovieApi.Companion.MAX_PAGE_SIZE
+import com.example.movies.core.utils.toMovieEntityDb
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
@@ -19,7 +19,7 @@ class RefreshMoviesWorker(
     context: Context,
     workerParameters: WorkerParameters,
     private val movieDatabase: MovieDatabase,
-    private val movieService: MovieService
+    private val movieApi: MovieApi
 ) : CoroutineWorker(context, workerParameters) {
 
     private val movieDao = movieDatabase.movieDao()
@@ -38,7 +38,7 @@ class RefreshMoviesWorker(
             for (i in START_PAGE..countPage) {
                 Log.d("Worker", "start loader")
                 val moviesEntityDb =
-                    movieService.loadMoviesPopular(page = i).results.map { it.toMovieEntityDb(genres) }
+                    movieApi.loadMoviesPopular(page = i).results.map { it.toMovieEntityDb(genres) }
                 val keysPage = moviesEntityDb.map {
                     MovieRemoteKeys(
                         id = it.id,

@@ -1,9 +1,9 @@
-package com.example.movies.data.utils
+package com.example.movies.core.utils
 
-import com.example.movies.data.remote.MovieService
+import com.example.movies.data.remote.MovieApi
 import com.example.movies.data.remote.response.ImageSettingResponse
 
-class ImageUrlAppender(private val service: MovieService) {
+class ImageUrlAppender(private val service: MovieApi) {
 
     private var baseUrl: String? = null
     private lateinit var settingImage: ImageSettingResponse

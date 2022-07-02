@@ -1,13 +1,13 @@
-package com.example.movies.data.utils
+package com.example.movies.core.utils
 
 
 import com.example.movies.data.local.entity.ActorEntityDb
 import com.example.movies.data.local.entity.GenreEntityDb
 import com.example.movies.data.local.entity.MovieDetailsEntityDb
 import com.example.movies.data.local.entity.MovieEntityDb
-import com.example.movies.data.remote.response.ActorResponse
-import com.example.movies.data.remote.response.MovieDetailsResponse
-import com.example.movies.data.remote.response.MovieResponse
+import com.example.movies.data.remote.model.ActorDto
+import com.example.movies.data.remote.model.MovieDetailsDto
+import com.example.movies.data.remote.model.MovieDto
 import com.example.movies.domain.model.Actor
 import com.example.movies.domain.model.Genre
 import com.example.movies.domain.model.MovieDetails
@@ -15,7 +15,7 @@ import com.example.movies.domain.model.MovieDetails
 const val PG_ADULT = 16
 const val PG_CHILDREN = 13
 
-fun MovieResponse.toMovieEntityDb(genres: List<GenreEntityDb>) : MovieEntityDb =
+fun MovieDto.toMovieEntityDb(genres: List<GenreEntityDb>) : MovieEntityDb =
     MovieEntityDb(
         id = id,
         title = title,
@@ -31,12 +31,12 @@ fun MovieResponse.toMovieEntityDb(genres: List<GenreEntityDb>) : MovieEntityDb =
 
 
 
-fun MovieDetailsResponse.toMovieDetails() : MovieDetails =
+fun MovieDetailsDto.toMovieDetails() : MovieDetails =
     MovieDetails(
         id = id,
         title = title,
         pgAge = setPgAge(adult),
-        detailImageUrl = imageDatailPath,
+        detailImageUrl = imageDetailPath,
         runningTime = runningTime,
         rating = rating.toInt(),
         reviewCount = reviewCount,
@@ -45,12 +45,12 @@ fun MovieDetailsResponse.toMovieDetails() : MovieDetails =
         genres = genres.map { Genre(id = it.id, name = it.name) },
     )
 
-fun MovieDetailsResponse.toMovieDetailEntityDb() : MovieDetailsEntityDb =
+fun MovieDetailsDto.toMovieDetailEntityDb() : MovieDetailsEntityDb =
     MovieDetailsEntityDb(
         id = id,
         title = title,
         pgAge = setPgAge(adult),
-        detailImageUrl = imageDatailPath,
+        detailImageUrl = imageDetailPath,
         runningTime = runningTime,
         rating = rating.toInt(),
         reviewCount = reviewCount,
@@ -75,7 +75,7 @@ fun MovieDetailsEntityDb.toMovieDetail(): MovieDetails =
     )
 
 
-fun ActorResponse.toActorData(): Actor =
+fun ActorDto.toActorData(): Actor =
 
     Actor(
         id = id,
@@ -83,7 +83,7 @@ fun ActorResponse.toActorData(): Actor =
         imageUrl = imageActorPath
     )
 
-fun ActorResponse.toActorEntityDb(movieId: Int) : ActorEntityDb =
+fun ActorDto.toActorEntityDb(movieId: Int) : ActorEntityDb =
     ActorEntityDb(
         movieId = movieId,
         actorId = id,

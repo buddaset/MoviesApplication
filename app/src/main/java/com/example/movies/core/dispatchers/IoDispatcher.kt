@@ -1,4 +1,4 @@
-package com.example.movies.data.dispatchers
+package com.example.movies.core.dispatchers
 
 import kotlinx.coroutines.CoroutineDispatcher
 

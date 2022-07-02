@@ -1,6 +1,6 @@
 package com.example.movies.di
 
-import com.example.movies.data.remote.MovieService
+import com.example.movies.data.remote.MovieApi
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -34,7 +34,7 @@ class NetworkModule {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val movieService: MovieService by lazy { retrofit.create() }
+    val movieApi: MovieApi by lazy { retrofit.create() }
 }
 
 

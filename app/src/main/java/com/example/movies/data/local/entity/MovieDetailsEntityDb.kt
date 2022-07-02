@@ -2,8 +2,6 @@ package com.example.movies.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.movies.data.remote.response.GenreResponse
-
 
 
 @Entity(tableName = "movies_detail")
