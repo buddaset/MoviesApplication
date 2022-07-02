@@ -1,7 +1,11 @@
 package com.example.movies.data.remote.response
 
-data class ActorsResponse(
+import com.example.movies.data.remote.model.ActorDto
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-    val cast: List<ActorResponse>,
-    val id: Int
+@Serializable
+data class ActorsResponse(
+    @SerialName("cast") val actors: List<ActorDto>,
+
 )
