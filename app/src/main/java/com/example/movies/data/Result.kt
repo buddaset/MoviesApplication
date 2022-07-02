@@ -1,16 +1,20 @@
 package com.example.movies.data
 
 
-sealed class Result<T> {
+sealed class Result<out S,  out E> {
 
-    class Loading<T> : Result<T>()
+    data class Success< S>(val data: S) : Result<S, Nothing>()
 
-    class Success<T>(val data: T) : Result<T>()
+    data class Error< E>(val error: E) : Result<Nothing, E>()
 
+}
 
-
-    class Error<T>(val error: Throwable) : Result<T>()
-
+inline fun <R> runOperationCatching(block : () -> R ) : Result<R, Throwable> {
+    return try {
+        Result.Success(block())
+    } catch (e: Throwable) {
+        Result.Error(e)
+    }
 }
 
 
