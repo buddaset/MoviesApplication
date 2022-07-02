@@ -7,7 +7,9 @@ import com.example.movies.data.repository.MovieRepositoryImpl
 import com.example.movies.core.dispatchers.IoDispatcher
 import com.example.movies.data.local.MovieDatabase
 import com.example.movies.data.remote.MovieApi
-import com.example.movies.core.utils.ImageUrlAppender
+import com.example.movies.core.util.ImageUrlAppender
+import com.example.movies.data.remote.MoviesRemoteDataSource
+import com.example.movies.data.remote.MoviesRemoteDataSourceImpl
 import com.example.movies.data.workers.RefreshMovieWorkerFactory
 import com.example.movies.di.DatabaseModule
 import com.example.movies.di.NetworkModule
@@ -28,10 +30,12 @@ class App : Application(), Configuration.Provider {
         val urlAppender = ImageUrlAppender(service)
         movieDatabase = DatabaseModule().provideDatabase(context = applicationContext)
 
+        val moviesRemoteDataSource : MoviesRemoteDataSource = MoviesRemoteDataSourceImpl(service)
+
 
 
         repository =
-            MovieRepositoryImpl(urlAppender, service, dispatcher, movieDatabase, applicationContext)
+            MovieRepositoryImpl(urlAppender, dispatcher, movieDatabase, applicationContext, moviesRemoteDataSource)
     }
 
     override fun getWorkManagerConfiguration(): Configuration {

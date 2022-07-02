@@ -1,4 +1,4 @@
-package com.example.movies.core.utils
+package com.example.movies.core.util
 
 import com.example.movies.data.remote.MovieApi
 import com.example.movies.data.remote.response.ImageSettingResponse

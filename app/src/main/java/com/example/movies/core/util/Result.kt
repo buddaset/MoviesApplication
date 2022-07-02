@@ -1,4 +1,4 @@
-package com.example.movies.data
+package com.example.movies.core.util
 
 
 sealed class Result<out S, out E> {

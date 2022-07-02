@@ -1,11 +1,11 @@
 package com.example.movies.data.remote
 
-import com.example.movies.data.Result
+import com.example.movies.core.util.Result
+import com.example.movies.core.util.runOperationCatching
 import com.example.movies.data.remote.model.ActorDto
 import com.example.movies.data.remote.model.GenreDto
 import com.example.movies.data.remote.model.MovieDetailsDto
 import com.example.movies.data.remote.model.MovieDto
-import com.example.movies.data.runOperationCatching
 
 
 interface MoviesRemoteDataSource {

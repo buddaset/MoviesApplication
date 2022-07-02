@@ -10,7 +10,7 @@ import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.MovieRemoteKeys
 import com.example.movies.data.remote.MovieApi
 import com.example.movies.data.remote.MovieApi.Companion.MAX_PAGE_SIZE
-import com.example.movies.core.utils.toEntity
+import com.example.movies.core.util.toEntity
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
@@ -38,7 +38,7 @@ class RefreshMoviesWorker(
             for (i in START_PAGE..countPage) {
                 Log.d("Worker", "start loader")
                 val moviesEntityDb =
-                    movieApi.loadMoviesPopular(page = i).results.map { it.toEntity(genres) }
+                    movieApi.loadMoviesPopular(page = i).results.map { it.toEntity(genres, "test") } // todo  change baseUrl
                 val keysPage = moviesEntityDb.map {
                     MovieRemoteKeys(
                         id = it.id,

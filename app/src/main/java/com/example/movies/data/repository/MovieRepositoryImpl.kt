@@ -5,19 +5,13 @@ import androidx.paging.*
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import com.example.movies.core.dispatchers.IoDispatcher
-import com.example.movies.core.utils.*
-import com.example.movies.data.Result
+import com.example.movies.core.util.*
 import com.example.movies.data.local.MovieDatabase
-
 import com.example.movies.data.local.entity.GenreEntityDb
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.toDomain
-import com.example.movies.data.mapResult
-import com.example.movies.data.onSuccess
-
 import com.example.movies.data.paging.MoviePageLoader
 import com.example.movies.data.paging.MovieRemoteMediator
-import com.example.movies.data.remote.MovieApi
 import com.example.movies.data.remote.MoviesRemoteDataSource
 import com.example.movies.data.remote.model.toEntity
 import com.example.movies.data.workers.RefreshMoviesWorker

@@ -5,13 +5,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import androidx.room.withTransaction
+import com.example.movies.core.util.Result
+import com.example.movies.core.util.getData
 import com.example.movies.data.local.MovieDatabase
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.MovieRemoteKeys
-import androidx.room.withTransaction
-import com.example.movies.data.Result
-import com.example.movies.data.getData
-import com.example.movies.data.remote.model.MovieDto
 
 typealias MoviePageLoader = suspend (pageIndex: Int, pageSize: Int) -> Result<List<MovieEntityDb>, Throwable>
 
