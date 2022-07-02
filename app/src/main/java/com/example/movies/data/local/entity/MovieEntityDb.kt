@@ -22,7 +22,7 @@ data class MovieEntityDb(
 
 
 
-fun MovieEntityDb.toMovieData() : Movie =
+fun MovieEntityDb.toDomain() : Movie =
     Movie(
         id = this.id.toInt(),
         title = this.title,

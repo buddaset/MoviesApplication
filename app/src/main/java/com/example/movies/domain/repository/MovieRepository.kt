@@ -11,14 +11,15 @@ interface MovieRepository {
 
 
 
-    fun getMovieDetails(idMovie: Int): Flow<Result<MovieDetails, Throwable>>
+
 
     fun getPopularMovies() : Flow<PagingData<Movie>>
 
-    fun getActorsMovie(idMovie: Int) : Flow<Result<List<Actor>,Throwable>>
+    suspend fun getMoviesBySearch(query: String) : Result<List<Movie>, Throwable>
 
+    suspend fun getMovieDetails(movieId: Int): Flow<MovieDetails>
 
-    fun getMoviesBySearch(query: String) : Flow<PagingData<Movie>>
+    suspend fun getActorsMovie(movieId: Int) : Flow<List<Actor>>
 
     fun periodicalBackgroundUpdateMovie()
 }

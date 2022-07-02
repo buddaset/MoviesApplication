@@ -1,15 +1,15 @@
 package com.example.movies.data
 
 
-sealed class Result<out S,  out E> {
+sealed class Result<out S, out E> {
 
-    data class Success< S>(val data: S) : Result<S, Nothing>()
+    data class Success<S>(val data: S) : Result<S, Nothing>()
 
-    data class Error< E>(val error: E) : Result<Nothing, E>()
+    data class Error<E>(val error: E) : Result<Nothing, E>()
 
 }
 
-inline fun <R> runOperationCatching(block : () -> R ) : Result<R, Throwable> {
+inline fun <R> runOperationCatching(block: () -> R): Result<R, Throwable> {
     return try {
         Result.Success(block())
     } catch (e: Throwable) {
@@ -17,4 +17,16 @@ inline fun <R> runOperationCatching(block : () -> R ) : Result<R, Throwable> {
     }
 }
 
+inline fun <S, E, R> Result<S, E>.mapResult(block: (S) -> R): Result<R, E> =
+    when (this) {
+        is Result.Success -> Result.Success(data = block(this.data))
+        is Result.Error -> Result.Error(error = this.error)
+    }
 
+inline fun <S, E> Result<S, E>.onSuccess(block: (S) -> Unit): Result<S, E> {
+    if (this is Result.Success) {
+        block(this.data)
+    }
+    return this
+
+}

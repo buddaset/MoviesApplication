@@ -1,12 +1,10 @@
 package com.example.movies.data.remote
 
-import com.example.movies.data.remote.model.MovieDto
 import com.example.movies.data.Result
 import com.example.movies.data.remote.model.ActorDto
 import com.example.movies.data.remote.model.GenreDto
-import com.example.movies.data.remote.response.ActorsResponse
-import com.example.movies.data.remote.response.GenresResponse
 import com.example.movies.data.remote.model.MovieDetailsDto
+import com.example.movies.data.remote.model.MovieDto
 import com.example.movies.data.runOperationCatching
 
 

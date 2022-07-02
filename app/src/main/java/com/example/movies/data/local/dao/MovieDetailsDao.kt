@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.movies.data.local.entity.MovieDetailsEntityDb
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -12,7 +13,7 @@ interface MovieDetailsDao {
 
 
     @Query("SELECT * FROM movies_detail WHERE id = :id")
-    suspend fun getMovieById(id: Int) : MovieDetailsEntityDb
+     fun getMovieById(id: Int) : Flow<MovieDetailsEntityDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovie(movie: MovieDetailsEntityDb)

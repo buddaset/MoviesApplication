@@ -16,7 +16,7 @@ data class ActorEntityDb(
     val imageUrl: String?
 
 ) {
-    fun toActorData() : Actor =
+    fun toDomain() : Actor =
         Actor(
             id = actorId,
             name = name,

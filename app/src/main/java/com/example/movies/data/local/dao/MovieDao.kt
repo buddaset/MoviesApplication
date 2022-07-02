@@ -14,6 +14,9 @@ interface MovieDao {
     @Query("SELECT * FROM movies WHERE :query =  '' OR title LIKE '%' || :query || '%' " )
     fun getMovies(query: String) : PagingSource<Int, MovieEntityDb>
 
+    @Query("SELECT * FROM movies ")
+    fun getPopularMovies(): PagingSource<Int, MovieEntityDb>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllMovie(list: List<MovieEntityDb>)
 

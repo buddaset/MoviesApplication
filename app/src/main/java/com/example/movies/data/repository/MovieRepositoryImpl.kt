@@ -4,175 +4,126 @@ import android.content.Context
 import androidx.paging.*
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
-import com.example.movies.domain.repository.MovieRepository
+import com.example.movies.core.dispatchers.IoDispatcher
+import com.example.movies.core.utils.*
 import com.example.movies.data.Result
-import com.example.movies.data.dispatchers.IoDispatcher
 import com.example.movies.data.local.MovieDatabase
 import com.example.movies.data.local.entity.ActorEntityDb
 import com.example.movies.data.local.entity.GenreEntityDb
 import com.example.movies.data.local.entity.MovieEntityDb
-import com.example.movies.data.local.entity.toMovieData
+import com.example.movies.data.local.entity.toDomain
+import com.example.movies.data.mapResult
+import com.example.movies.data.onSuccess
+
 import com.example.movies.data.paging.MoviePageLoader
 import com.example.movies.data.paging.MovieRemoteMediator
-import com.example.movies.data.remote.MovieService
-import com.example.movies.data.remote.response.MovieDetailsResponse
-import com.example.movies.data.remote.response.toGenreEntityDb
-import com.example.movies.data.utils.*
+import com.example.movies.data.remote.MovieApi
+import com.example.movies.data.remote.MoviesRemoteDataSource
+import com.example.movies.data.remote.model.MovieDto
 import com.example.movies.data.workers.RefreshMoviesWorker
 import com.example.movies.domain.model.Actor
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieDetails
+import com.example.movies.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
+
+
+typealias PagingSourceFactory = () -> PagingSource<Int, MovieEntityDb>
 
 class MovieRepositoryImpl(
     private val imageUrlAppender: ImageUrlAppender,
-    private val movieService: MovieService,
+    private val movieApi: MovieApi,
     private val dispatcher: IoDispatcher,
     private val movieDatabase: MovieDatabase,
-    private val applicationContext: Context
+    private val applicationContext: Context,
+    private val moviesRemoteDataSource: MoviesRemoteDataSource
 ) : MovieRepository {
 
-     @OptIn(ExperimentalPagingApi::class)
-     override fun getMoviesBySearch(query: String): Flow<PagingData<Movie>> {
-         val pagingSourceFactory = { movieDatabase.movieDao().getMovies(query) }
-
-         val loader: MoviePageLoader = { pageIndex, pageSize ->
-             loadListMovies(pageIndex, pageSize, query)
-         }
-         return Pager(
-             config = PagingConfig(
-                 pageSize = PAGE_SIZE,
-                 enablePlaceholders = false),
-             remoteMediator = MovieRemoteMediator(loader = loader, movieDatabase = movieDatabase),
-             pagingSourceFactory =  pagingSourceFactory
-         ).flow
-             .map { paging ->
-                 paging.map {
-                     it.toMovieData()
-                 }
-             }
-
-     }
-
-
-
-
-    private suspend fun loadListMovies(pageIndex: Int, pageSize: Int, query: String): List<MovieEntityDb> =
-        withContext(dispatcher.value) {
-
-        val moviesResponse = if(query.isBlank())
-            movieService.loadMoviesPopular(pageIndex, pageSize).results
-            else movieService.searchMovie(query, pageIndex,  pageSize).results
-
-        val genres = getGenres()
-        val moviesEntityDb = moviesResponse.map { it.toMovieEntityDb(genres) }
-        moviesEntityDb.forEach { it.imageUrl = imageUrlAppender.getPosterImageUrl(it.imageUrl) }
-        return@withContext moviesEntityDb
+    override fun getPopularMovies(): Flow<PagingData<Movie>> {
+        val pagingSourceFactory = { movieDatabase.movieDao().getPopularMovies() }
+        val loader: MoviePageLoader = { pageIndex, pageSize ->
+            loadPopularMovies(pageIndex, pageSize)
+        }
+        return createPagingDataFlow(pagingSourceFactory, loader)
     }
+
+    private suspend fun loadPopularMovies(
+        pageIndex: Int, pageSize: Int
+    ): Result<List<MovieDto>, Throwable> =
+        moviesRemoteDataSource.loadPopularMovies(pageIndex, pageSize)
+
+    @OptIn(ExperimentalPagingApi::class)
+    private fun createPagingDataFlow(
+        pagingSourceFactory: PagingSourceFactory,
+        loader: MoviePageLoader
+    ): Flow<PagingData<Movie>> =
+        Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+            remoteMediator = MovieRemoteMediator(loader = loader, movieDatabase = movieDatabase),
+            pagingSourceFactory = pagingSourceFactory
+        )
+            .flow
+            .map { pagingDb -> pagingDb.map { movieEntity -> movieEntity.toDomain() } }
+
+
+    override suspend fun getMoviesBySearch(query: String): Result<List<Movie>, Throwable> =
+        moviesRemoteDataSource.searchMovies(query)
+            .mapResult { moviesDto ->
+                moviesDto.map { movieDto ->
+                    movieDto.toDomain(getGenres(), imageUrlAppender.baseImageUrl)
+                }
+            }
 
 
     private suspend fun getGenres(): List<GenreEntityDb> {
-        var genres= movieDatabase.genreDao().getAllGenres()
+        var genres = movieDatabase.genreDao().getAllGenres()
         if (genres.isEmpty()) {
-           genres =  loadGenres()
+            genres = loadGenres()
             movieDatabase.genreDao().insertAll(genres)
         }
         return genres
     }
 
-
     private suspend fun loadGenres(): List<GenreEntityDb> =
-        movieService.loadGenres().genres.map { it.toGenreEntityDb() }
+        movieApi.loadGenres().genres.map { it.toGenreEntityDb() }
 
 
-    override  fun getMovieDetails(idMovie: Int): Flow<Result<MovieDetails>> = flow {
-        emit(getMovieDetailsFromDb(idMovie))
-        val movieDetails = loadMovieDetails(idMovie)
-        if(movieDetails is Result.Success) emit(movieDetails)
+    override suspend fun getMovieDetails(movieId: Int): Flow<MovieDetails> {
+        updateDataMovieDetails(movieId)
+        return movieDatabase.movieDetailDao().getMovieById(movieId)
+            .map { it.toMovieDetail() }
     }
-        .flowOn(dispatcher.value)
 
-
-    private suspend fun getMovieDetailsFromDb(idMovie: Int) : Result<MovieDetails> {
-        return try {
-            Result.Success(movieDatabase.movieDetailDao().getMovieById(idMovie).toMovieDetail())
-        } catch (ex: NullPointerException) {
-            loadMovieDetails(idMovie)
-        }
+    private suspend fun updateDataMovieDetails(idMovie: Int) {
+        moviesRemoteDataSource.loadMovieDetails(idMovie)
+            .mapResult { it.toEntity() }
+            .onSuccess { movieEntity -> movieDatabase.movieDetailDao().insertMovie(movieEntity) }
     }
 
 
-    private suspend fun loadMovieDetails(idMovie: Int): Result<MovieDetails> {
-        val movieDetailsResponse = try {
-
-            movieService.loadMovieDetails(idMovie)
-        } catch (ex: Exception) {
-            return Result.Error(error = ex)
-        }
-        cacheMovieDetails(movieDetailsResponse)
-        val movieDetails = transformToMovieDetails(movieDetailsResponse)
-        return Result.Success(data = movieDetails)
+    override suspend fun getActorsMovie(movieId: Int): Flow<List<Actor>> {
+        updateActors(movieId)
+        return movieDatabase.actorDao().getActorsByMovieId(movieId)
+            .map { actorsEntity -> actorsEntity.map { actorEntity -> actorEntity.toDomain() } }
     }
 
-    private suspend fun cacheMovieDetails(movieResponse: MovieDetailsResponse) {
-        movieDatabase.movieDetailDao().insertMovie(movieResponse.toMovieDetailEntityDb())
-    }
+    private suspend fun updateActors(movieId: Int) =
+        moviesRemoteDataSource.loadMovieActors(movieId)
+            .mapResult { listDto -> listDto.map { actorDto -> actorDto.toEntity(movieId) } }
+            .onSuccess { actorsEntity -> movieDatabase.actorDao().insertAllActors(actorsEntity) }
 
-
-    private suspend fun transformToMovieDetails(movie: MovieDetailsResponse): MovieDetails  =
-        movie.toMovieDetails().also {
-            it.detailImageUrl = imageUrlAppender.getDetailImageUrl(it.detailImageUrl)
-    }
-
-
-    override  fun getActorsMovie(idMovie: Int): Flow<Result<List<Actor>>> = flow {
-        emit(getActorsFromDb(idMovie))
-        val actors = loadActorsMovie(idMovie)
-        if(actors is Result.Success) emit(actors)
-    }
-        .flowOn(dispatcher.value)
-
-    private suspend fun getActorsFromDb(idMovie: Int) : Result<List<Actor>> {
-        val actorsEntityDb = movieDatabase.actorDao().getActorsByMovieId(idMovie)
-        if (actorsEntityDb.isEmpty()) return loadActorsMovie(idMovie)
-        return Result.Success(data = actorsEntityDb.map { it.toActorData() })
-    }
-
-
-    private suspend fun loadActorsMovie(idMovie: Int): Result<List<Actor>> {
-
-        val actorsResponse = try {
-            movieService.loadMovieCredits(idMovie).cast
-        } catch (ex: Exception) {
-            return Result.Error(error = ex)
-        }
-        actorsResponse.forEach {
-            it.imageActorPath = imageUrlAppender.getActorImageUrl(it.imageActorPath)
-        }
-        cacheActors(actorsResponse.map { it.toActorEntityDb(idMovie) })
-        val actorsData = actorsResponse.map { it.toActorData() }
-        return Result.Success(data = actorsData)
-    }
-
-    private suspend fun cacheActors(actorsEntityDb: List<ActorEntityDb>) {
-        movieDatabase.actorDao().insertAllActors(actorsEntityDb)
-    }
 
     override fun periodicalBackgroundUpdateMovie() {
-        val workManager  = WorkManager.getInstance(applicationContext)
+        val workManager = WorkManager.getInstance(applicationContext)
 
 
 
         workManager.enqueueUniquePeriodicWork(
             RefreshMoviesWorker.WORKER_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            RefreshMoviesWorker.makePeriodicWorkRequest())
-
-
+            RefreshMoviesWorker.makePeriodicWorkRequest()
+        )
 
 
     }

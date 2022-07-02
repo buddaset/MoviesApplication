@@ -6,16 +6,41 @@ import com.example.movies.data.local.entity.GenreEntityDb
 import com.example.movies.data.local.entity.MovieDetailsEntityDb
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.remote.model.ActorDto
+import com.example.movies.data.remote.model.GenreDto
 import com.example.movies.data.remote.model.MovieDetailsDto
 import com.example.movies.data.remote.model.MovieDto
 import com.example.movies.domain.model.Actor
 import com.example.movies.domain.model.Genre
+import com.example.movies.domain.model.Movie
 import com.example.movies.domain.model.MovieDetails
 
 const val PG_ADULT = 16
 const val PG_CHILDREN = 13
 
-fun MovieDto.toMovieEntityDb(genres: List<GenreEntityDb>) : MovieEntityDb =
+//todo Update with urlAppender
+
+fun MovieDto.toDomain(genres: List<GenreEntityDb>, baseUrl: String): Movie =
+    Movie(
+        id = id.toInt(),
+        title = title,
+        pgAge = setPgAge(adult),
+        imageUrl = getFullUrlImage(baseUrl, this.imagePath),
+        rating = rating.toInt(),
+        reviewCount = reviewCount,
+        storyLine = storyLine,
+        isLiked = false,
+        genres = genres
+            .filter { it.id in this.genresId }
+            .map {genreEntity -> genreEntity.toDomain() }
+
+    )
+
+fun getFullUrlImage(baseUrl: String, imagePath: String) =
+    "$baseUrl$imagePath"
+
+fun GenreDto.toDomain(): Genre = Genre(id = id, name = name)
+
+fun MovieDto.toMovieEntityDb(genres: List<GenreEntityDb>): MovieEntityDb =
     MovieEntityDb(
         id = id,
         title = title,
@@ -30,8 +55,7 @@ fun MovieDto.toMovieEntityDb(genres: List<GenreEntityDb>) : MovieEntityDb =
     )
 
 
-
-fun MovieDetailsDto.toMovieDetails() : MovieDetails =
+fun MovieDetailsDto.toMovieDetails(): MovieDetails =
     MovieDetails(
         id = id,
         title = title,
@@ -45,7 +69,7 @@ fun MovieDetailsDto.toMovieDetails() : MovieDetails =
         genres = genres.map { Genre(id = it.id, name = it.name) },
     )
 
-fun MovieDetailsDto.toMovieDetailEntityDb() : MovieDetailsEntityDb =
+fun MovieDetailsDto.toEntity(): MovieDetailsEntityDb =
     MovieDetailsEntityDb(
         id = id,
         title = title,
@@ -83,7 +107,7 @@ fun ActorDto.toActorData(): Actor =
         imageUrl = imageActorPath
     )
 
-fun ActorDto.toActorEntityDb(movieId: Int) : ActorEntityDb =
+fun ActorDto.toEntity(movieId: Int): ActorEntityDb =
     ActorEntityDb(
         movieId = movieId,
         actorId = id,

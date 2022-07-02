@@ -12,6 +12,6 @@ data class GenreEntityDb(
     val name: String
 ) {
 
-   fun toGenreData() : Genre =
+   fun toDomain() : Genre =
        Genre(id = id , name = name)
 }

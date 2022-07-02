@@ -16,3 +16,5 @@ data class MovieDetailsDto(
     @SerialName("genres") val genres: List<GenreDto>,
     @SerialName(" release_date") val release_date: String,
     )
+
+
