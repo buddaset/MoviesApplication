@@ -11,7 +11,7 @@ import com.example.movies.data.local.entity.GenreEntityDb
 interface GenreDao {
 
     @Query("SELECT * FROM genres")
-    suspend fun getAllGenres(): List<GenreEntityDb>
+fun getAllGenres(): List<GenreEntityDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(list: List<GenreEntityDb>)

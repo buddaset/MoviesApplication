@@ -30,3 +30,10 @@ inline fun <S, E> Result<S, E>.onSuccess(block: (S) -> Unit): Result<S, E> {
     return this
 
 }
+
+fun <S, E> Result<S, E>.getData(): S =
+    when (this) {
+        is Result.Success -> this.data
+        is Result.Error -> throw IllegalStateException(error.toString())
+    }
+

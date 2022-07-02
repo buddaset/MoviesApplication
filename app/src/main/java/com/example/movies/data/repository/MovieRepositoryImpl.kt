@@ -8,7 +8,7 @@ import com.example.movies.core.dispatchers.IoDispatcher
 import com.example.movies.core.utils.*
 import com.example.movies.data.Result
 import com.example.movies.data.local.MovieDatabase
-import com.example.movies.data.local.entity.ActorEntityDb
+
 import com.example.movies.data.local.entity.GenreEntityDb
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.toDomain
@@ -19,7 +19,7 @@ import com.example.movies.data.paging.MoviePageLoader
 import com.example.movies.data.paging.MovieRemoteMediator
 import com.example.movies.data.remote.MovieApi
 import com.example.movies.data.remote.MoviesRemoteDataSource
-import com.example.movies.data.remote.model.MovieDto
+import com.example.movies.data.remote.model.toEntity
 import com.example.movies.data.workers.RefreshMoviesWorker
 import com.example.movies.domain.model.Actor
 import com.example.movies.domain.model.Movie
@@ -33,7 +33,6 @@ typealias PagingSourceFactory = () -> PagingSource<Int, MovieEntityDb>
 
 class MovieRepositoryImpl(
     private val imageUrlAppender: ImageUrlAppender,
-    private val movieApi: MovieApi,
     private val dispatcher: IoDispatcher,
     private val movieDatabase: MovieDatabase,
     private val applicationContext: Context,
@@ -50,8 +49,12 @@ class MovieRepositoryImpl(
 
     private suspend fun loadPopularMovies(
         pageIndex: Int, pageSize: Int
-    ): Result<List<MovieDto>, Throwable> =
+    ): Result<List<MovieEntityDb>, Throwable> =
         moviesRemoteDataSource.loadPopularMovies(pageIndex, pageSize)
+            .mapResult { moviesDto -> moviesDto.map { movieDto ->
+                    movieDto.toEntity(getGenres(), imageUrlAppender.baseImageUrl)
+                }
+            }
 
     @OptIn(ExperimentalPagingApi::class)
     private fun createPagingDataFlow(
@@ -77,16 +80,14 @@ class MovieRepositoryImpl(
 
 
     private suspend fun getGenres(): List<GenreEntityDb> {
-        var genres = movieDatabase.genreDao().getAllGenres()
-        if (genres.isEmpty()) {
-            genres = loadGenres()
-            movieDatabase.genreDao().insertAll(genres)
-        }
-        return genres
+        updateGenres()
+        return movieDatabase.genreDao().getAllGenres()
     }
 
-    private suspend fun loadGenres(): List<GenreEntityDb> =
-        movieApi.loadGenres().genres.map { it.toGenreEntityDb() }
+    private suspend fun updateGenres() =
+        moviesRemoteDataSource.loadGenres()
+            .mapResult { genresGto -> genresGto.map { genreGto -> genreGto.toEntity() } }
+            .onSuccess { genresEntity -> movieDatabase.genreDao().insertAll(genresEntity) }
 
 
     override suspend fun getMovieDetails(movieId: Int): Flow<MovieDetails> {
@@ -97,7 +98,7 @@ class MovieRepositoryImpl(
 
     private suspend fun updateDataMovieDetails(idMovie: Int) {
         moviesRemoteDataSource.loadMovieDetails(idMovie)
-            .mapResult { it.toEntity() }
+            .mapResult { movieDto -> movieDto.toEntity() }
             .onSuccess { movieEntity -> movieDatabase.movieDetailDao().insertMovie(movieEntity) }
     }
 
@@ -117,20 +118,14 @@ class MovieRepositoryImpl(
     override fun periodicalBackgroundUpdateMovie() {
         val workManager = WorkManager.getInstance(applicationContext)
 
-
-
         workManager.enqueueUniquePeriodicWork(
             RefreshMoviesWorker.WORKER_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             RefreshMoviesWorker.makePeriodicWorkRequest()
         )
-
-
     }
 
     companion object {
         private const val PAGE_SIZE = 20
     }
-
-
 }

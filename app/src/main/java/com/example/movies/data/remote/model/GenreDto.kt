@@ -10,5 +10,5 @@ data class GenreDto(
     @SerialName("name") val name: String
 )
 
-fun GenreDto.toGenreEntityDb(): GenreEntityDb =
+fun GenreDto.toEntity(): GenreEntityDb =
     GenreEntityDb(id = this.id , name = this.name)

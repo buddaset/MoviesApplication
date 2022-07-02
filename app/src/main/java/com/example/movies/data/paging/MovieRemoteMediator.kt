@@ -9,8 +9,11 @@ import com.example.movies.data.local.MovieDatabase
 import com.example.movies.data.local.entity.MovieEntityDb
 import com.example.movies.data.local.entity.MovieRemoteKeys
 import androidx.room.withTransaction
+import com.example.movies.data.Result
+import com.example.movies.data.getData
+import com.example.movies.data.remote.model.MovieDto
 
-typealias MoviePageLoader = suspend (pageIndex: Int, pageSize: Int) -> List<MovieEntityDb>
+typealias MoviePageLoader = suspend (pageIndex: Int, pageSize: Int) -> Result<List<MovieEntityDb>, Throwable>
 
 @OptIn(ExperimentalPagingApi::class)
 class MovieRemoteMediator(
@@ -45,7 +48,7 @@ class MovieRemoteMediator(
             }
         return try {
             Log.d("Mediator", " page ---- $currentKey.  loadType ---- $loadType" )
-            val movies = loader( currentKey, state.config.pageSize)
+            val movies = loader( currentKey, state.config.pageSize).getData()
             val endOfPaginationReached = movies.isEmpty()
 
 

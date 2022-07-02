@@ -40,12 +40,12 @@ fun getFullUrlImage(baseUrl: String, imagePath: String) =
 
 fun GenreDto.toDomain(): Genre = Genre(id = id, name = name)
 
-fun MovieDto.toMovieEntityDb(genres: List<GenreEntityDb>): MovieEntityDb =
+fun MovieDto.toEntity(genres: List<GenreEntityDb>, baseUrl: String): MovieEntityDb =
     MovieEntityDb(
         id = id,
         title = title,
         pgAge = setPgAge(adult),
-        imageUrl = imagePath,
+        imageUrl = getFullUrlImage(baseUrl, imagePath),
         rating = rating.toInt(),
         reviewCount = reviewCount,
         storyLine = storyLine,
