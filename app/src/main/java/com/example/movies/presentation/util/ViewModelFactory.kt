@@ -1,4 +1,4 @@
-package com.example.movies.presentation
+package com.example.movies.presentation.util
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +10,7 @@ class ViewModelFactory(private val repository: MovieRepository) : ViewModelProvi
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
     when(modelClass) {
-         MoviesViewModel::class.java -> MoviesViewModel(repository)
+// todo        MoviesViewModel::class.java -> MoviesViewModel()
         DetailsMovieViewModel::class.java -> DetailsMovieViewModel(repository)
         else -> throw IllegalArgumentException("Unknown viewModel")
     }    as T

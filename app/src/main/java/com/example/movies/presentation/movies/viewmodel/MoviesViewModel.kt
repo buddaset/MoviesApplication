@@ -15,21 +15,22 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
 
-class MoviesViewModel(private val getMoviesBySearchUseCase: GetMoviesBySearchUseCase,
-private val getPopularMoviesUseCase: GetPopularMoviesUseCase) : ViewModel() {
+class MoviesViewModel(
+    private val getMoviesBySearchUseCase: GetMoviesBySearchUseCase,
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase
+) : ViewModel() {
 
     private val searchBy = MutableLiveData("")
 
     val movies: Flow<PagingData<Movie>> = getPopularMoviesUseCase()
 
 
-}
+    fun setSearchBy(query: String) {
+        if (searchBy.value == query) return
+        searchBy.value = query
+    }
 
-//    fun setSearchBy(query: String) {
-//        if (this.searchBy.value == query) return
-//        this.searchBy.value = query
-//    }
-//
+}
 //    @OptIn(ExperimentalCoroutinesApi::class, kotlinx.coroutines.FlowPreview::class)
 //    private fun getSearchMovie(): Flow<PagingData<Movie>> =
 //        searchBy.asFlow()

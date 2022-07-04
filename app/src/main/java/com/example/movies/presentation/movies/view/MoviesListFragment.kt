@@ -1,12 +1,12 @@
 package com.example.movies
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.CombinedLoadStates
@@ -14,54 +14,46 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.disneyperson.core.delegate.viewBinding
 import com.example.movies.core.application.App
-import com.example.movies.databinding.FragmentMoviesListBinding
-import com.example.movies.domain.model.Movie
-import com.example.movies.presentation.BaseFragment
-import com.example.movies.presentation.ViewModelFactory
-import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
+import com.example.movies.core.navigation.MovieDetailsScreen
+import com.example.movies.core.navigation.Navigator
+import com.example.movies.databinding.FragmentMoviesBinding
+import com.example.movies.presentation.util.ViewModelFactory
 import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingStateAdapter
 import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
-import com.example.movies.presentation.movies.view.movieAdapter.MovieListener
+import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class MoviesListFragment : BaseFragment(), MovieListener {
+class MoviesListFragment : Fragment(R.layout.fragment_movies) {
 
-    private lateinit var binding: FragmentMoviesListBinding
+    private val binding: FragmentMoviesBinding by viewBinding()
 
-    private lateinit var movieAdapter: MovieAdapter
-    private var listener: ClickMovieListener? = null
     private val viewModel: MoviesViewModel by viewModels {
         ViewModelFactory(
             (requireActivity().application as App).repository
         )
     }
 
+    private val movieAdapter = MovieAdapter { movie ->
+        navigator.navigateTo(MovieDetailsScreen(movie.id))
+
+    }
+
+    lateinit var navigator: Navigator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is ClickMovieListener)
-            listener = context
-    }
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentMoviesListBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupMovieAdapter()
+        observeMovies()
+        observeLoadState()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -93,7 +85,6 @@ class MoviesListFragment : BaseFragment(), MovieListener {
 
 
     private fun setupMovieAdapter() {
-        movieAdapter = MovieAdapter(this)
 
         val footerAdapter = DefaultLoadingStateAdapter { movieAdapter.retry() }
         val headerAdapter = DefaultLoadingStateAdapter { movieAdapter.retry() }
@@ -103,11 +94,16 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         )
         binding.movieRecyclerview.adapter = adapterWithLoadState
         binding.movieRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
-//            getLayoutManager(adapterWithLoadState, footerAdapter)
-
         binding.loadStateView.tryAgainButton.setOnClickListener { movieAdapter.retry() }
-        observeMovies()
-        observeLoadState()
+
+    }
+
+    private fun observeMovies() {
+        lifecycleScope.launch {
+            viewModel.movies.collectLatest { pagingData ->
+                movieAdapter.submitData(pagingData)
+            }
+        }
     }
 
     private fun getLayoutManager(
@@ -151,18 +147,10 @@ class MoviesListFragment : BaseFragment(), MovieListener {
         }
     }
 
-    private fun observeMovies() {
-        lifecycleScope.launch {
-            viewModel.movies.collectLatest { pagingData ->
-                movieAdapter.submitData(pagingData)
-            }
-        }
-    }
 
 
-    override fun onCLickMovie(movie: Movie) {
-        listener?.clickMovie(movie.id)
-    }
+
+
 
     companion object {
         const val ITEM_SPAN_SIZE = 2
@@ -172,9 +160,5 @@ class MoviesListFragment : BaseFragment(), MovieListener {
     }
 }
 
-
-interface ClickMovieListener {
-    fun clickMovie(movieId: Int)
-}
 
 
