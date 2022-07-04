@@ -19,10 +19,10 @@ import com.example.movies.databinding.FragmentMoviesListBinding
 import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.BaseFragment
 import com.example.movies.presentation.ViewModelFactory
-import com.example.movies.presentation.screen_movieslist.ListMovieViewModel
-import com.example.movies.presentation.screen_movieslist.movieAdapter.DefaultLoadingStateAdapter
-import com.example.movies.presentation.screen_movieslist.movieAdapter.MovieAdapter
-import com.example.movies.presentation.screen_movieslist.movieAdapter.MovieListener
+import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
+import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingStateAdapter
+import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
+import com.example.movies.presentation.movies.view.movieAdapter.MovieListener
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -33,7 +33,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
 
     private lateinit var movieAdapter: MovieAdapter
     private var listener: ClickMovieListener? = null
-    private val viewModel: ListMovieViewModel by viewModels {
+    private val viewModel: MoviesViewModel by viewModels {
         ViewModelFactory(
             (requireActivity().application as App).repository
         )
@@ -153,7 +153,7 @@ class MoviesListFragment : BaseFragment(), MovieListener {
 
     private fun observeMovies() {
         lifecycleScope.launch {
-            viewModel.listMovie.collectLatest { pagingData ->
+            viewModel.movies.collectLatest { pagingData ->
                 movieAdapter.submitData(pagingData)
             }
         }

@@ -41,9 +41,7 @@ class MovieRepositoryImpl(
         return createPagingDataFlow(pagingSourceFactory, loader)
     }
 
-    private suspend fun loadPopularMovies(
-        pageIndex: Int, pageSize: Int
-    ): Result<List<MovieEntityDb>, Throwable> =
+    private suspend fun loadPopularMovies(pageIndex: Int, pageSize: Int): Result<List<MovieEntityDb>, Throwable> =
         moviesRemoteDataSource.loadPopularMovies(pageIndex, pageSize)
             .mapResult { moviesDto -> moviesDto.map { movieDto ->
                     movieDto.toEntity(getGenres(), imageUrlAppender.baseImageUrl)

@@ -13,7 +13,7 @@ import com.example.movies.databinding.FragmentMoviesDetailsBinding
 import com.example.movies.domain.model.MovieDetails
 import com.example.movies.presentation.*
 import com.example.movies.presentation.screen_moviedetails.actorAdapter.ActorAdapter
-import com.example.movies.presentation.screen_movieslist.movieAdapter.MovieUtils
+import com.example.movies.presentation.movies.view.movieAdapter.MovieUtils
 
 
 class MoviesDetailsFragment : BaseFragment() {

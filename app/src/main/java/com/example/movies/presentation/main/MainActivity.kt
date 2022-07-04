@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity(), ClickMovieListener {
             supportFragmentManager.beginTransaction()
                 .add(R.id.container_fragment, MoviesListFragment.newInstance())
                 .commit()
+
+
         }
     }
 
