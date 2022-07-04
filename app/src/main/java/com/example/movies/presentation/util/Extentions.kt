@@ -2,6 +2,7 @@ package com.example.movies.presentation.util
 
 import android.view.View
 import android.widget.Button
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -12,6 +13,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.movies.R
 import com.example.movies.domain.model.Movie
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -44,6 +46,13 @@ fun Fragment.onTryAgain(root: View, onTryAgain: () -> Unit) {
     root.findViewById<Button>(R.id.tryAgainButton).setOnClickListener {
         onTryAgain()
     }
+}
+
+fun View.showSnackbar(
+    error:String,
+    duration: Int = Snackbar.LENGTH_SHORT,
+) {
+    Snackbar.make(this, error, duration).show()
 }
 
 
