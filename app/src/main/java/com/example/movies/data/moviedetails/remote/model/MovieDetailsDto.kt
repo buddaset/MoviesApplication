@@ -1,11 +1,12 @@
-package com.example.movies.data.remote.model
+package com.example.movies.data.moviedetails.remote.model
 
+import com.example.movies.data.movies.remote.model.GenreDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class MovieDetailsDto(
-    @SerialName("id") val id: Int,
+    @SerialName("id") val id: Long,
     @SerialName("title") val title: String,
     @SerialName("adult") val adult: Boolean,
     @SerialName("backdrop_path") val imageDetailPath: String,

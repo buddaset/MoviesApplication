@@ -1,4 +1,4 @@
-package com.example.movies.data.remote.model
+package com.example.movies.data.moviedetails.remote.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

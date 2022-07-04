@@ -1,6 +1,6 @@
-package com.example.movies.data.remote.response
+package com.example.movies.data.core.remote.response
 
-import com.example.movies.data.remote.model.ActorDto
+import com.example.movies.data.moviedetails.remote.model.ActorDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -8,4 +8,4 @@ import kotlinx.serialization.Serializable
 data class ActorsResponse(
     @SerialName("cast") val actors: List<ActorDto>,
 
-)
+    )

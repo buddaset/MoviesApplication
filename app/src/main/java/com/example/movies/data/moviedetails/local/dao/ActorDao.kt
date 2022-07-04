@@ -1,10 +1,10 @@
-package com.example.movies.data.local.dao
+package com.example.movies.data.moviedetails.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.movies.data.local.entity.ActorEntityDb
+import com.example.movies.data.moviedetails.local.model.ActorEntityDb
 import kotlinx.coroutines.flow.Flow
 
 
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface ActorDao {
 
     @Query("SELECT * FROM actors WHERE movie_id = :idMovie")
-   fun getActorsByMovieId(idMovie: Int): Flow<List<ActorEntityDb>>
+   fun getActorsByMovieId(idMovie: Long): Flow<List<ActorEntityDb>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllActors(list: List<ActorEntityDb>)

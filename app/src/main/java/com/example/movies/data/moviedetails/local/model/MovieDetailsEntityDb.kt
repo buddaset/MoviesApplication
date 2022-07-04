@@ -1,13 +1,14 @@
-package com.example.movies.data.local.entity
+package com.example.movies.data.moviedetails.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.movies.data.movies.local.model.GenreEntityDb
 
 
 @Entity(tableName = "movies_detail")
 data class MovieDetailsEntityDb(
     @PrimaryKey(autoGenerate = false)
-    val id: Int,
+    val id: Long,
     val title: String,
     val pgAge: Int,
     val detailImageUrl: String?,
