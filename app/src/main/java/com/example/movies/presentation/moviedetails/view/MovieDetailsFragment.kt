@@ -14,10 +14,11 @@ import com.example.movies.core.navigation.Navigator
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
 import com.example.movies.domain.model.MovieDetails
 import com.example.movies.presentation.moviedetails.view.actorAdapter.ActorAdapter
+import com.example.movies.presentation.moviedetails.viewmodel.DetailViewModelFactory
 import com.example.movies.presentation.moviedetails.viewmodel.DetailsMovieViewModel
 import com.example.movies.presentation.moviedetails.viewmodel.MovieDetailsState
 import com.example.movies.presentation.movies.view.movieAdapter.MovieUtils
-import com.example.movies.presentation.util.ViewModelFactory
+
 import com.example.movies.presentation.util.collectFlow
 import com.example.movies.presentation.util.onTryAgain
 
@@ -29,8 +30,9 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movies_details) {
     private val actorAdapter = ActorAdapter()
 
     private val viewModel: DetailsMovieViewModel by viewModels {
-        ViewModelFactory(
-            (requireActivity().application as App).repository
+        DetailViewModelFactory(
+            (requireActivity().application as App).useCase.getMovieDetailsUseCase(),
+            this
         )
     }
 

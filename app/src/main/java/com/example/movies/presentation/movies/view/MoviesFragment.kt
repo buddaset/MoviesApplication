@@ -8,7 +8,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
@@ -20,23 +19,22 @@ import com.example.movies.core.application.App
 import com.example.movies.core.navigation.MovieDetailsScreen
 import com.example.movies.core.navigation.Navigator
 import com.example.movies.databinding.FragmentMoviesBinding
-import com.example.movies.presentation.util.ViewModelFactory
+import com.example.movies.di.ViewModelFactory
 import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingStateAdapter
 import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
 import com.example.movies.presentation.util.collectPagingFlow
 import com.example.movies.presentation.util.textChange
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 
-class MoviesListFragment : Fragment(R.layout.fragment_movies) {
+class MoviesFragment : Fragment(R.layout.fragment_movies) {
 
     private val binding: FragmentMoviesBinding by viewBinding()
 
     private val viewModel: MoviesViewModel by viewModels {
         ViewModelFactory(
-            (requireActivity().application as App).repository
+            (requireActivity().application as App).useCase.getPopularMoviesUseCase(),
+            (requireActivity().application as App).useCase.getMoviesBySearchUseCase()
         )
     }
 
@@ -134,7 +132,7 @@ class MoviesListFragment : Fragment(R.layout.fragment_movies) {
         const val ITEM_SPAN_SIZE = 2
         const val ERROR_LOADING_SPAN_SIZE = 1
 
-        fun newInstance() = MoviesListFragment()
+        fun newInstance() = MoviesFragment()
     }
 }
 

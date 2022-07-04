@@ -1,34 +1,22 @@
 package com.example.movies.presentation.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.movies.ClickMovieListener
-import com.example.movies.presentation.movies.view.MoviesListFragment
+import androidx.appcompat.app.AppCompatActivity
 import com.example.movies.R
-import com.example.movies.databinding.ActivityMainBinding
-import com.example.movies.presentation.moviedetails.view.MovieDetailsFragment
+import com.example.movies.core.navigation.MoviesScreen
+import com.example.movies.core.navigation.Navigator
+import com.example.movies.core.navigation.NavigatorImpl
 
-class MainActivity : AppCompatActivity(), ClickMovieListener {
+class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+     private val navigator: Navigator by lazy { NavigatorImpl(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
+        setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .add(R.id.container_fragment, MoviesListFragment.newInstance())
-                .commit()
+        if (savedInstanceState == null)
+            navigator.navigateTo(screen = MoviesScreen(), addToBackStack = false)
 
-
-        }
     }
-
-    override fun clickMovie(movieId: Int) {
-        supportFragmentManager.beginTransaction()
-            .addToBackStack(null)
-            .replace(R.id.container_fragment, MovieDetailsFragment.newInstance(movieId))
-            .commit()
-    }
-
 }
