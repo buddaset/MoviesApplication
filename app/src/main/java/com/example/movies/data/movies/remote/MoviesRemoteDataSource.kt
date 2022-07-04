@@ -1,5 +1,6 @@
 package com.example.movies.data.movies.remote
 
+import android.util.Log
 import com.example.movies.core.util.Result
 import com.example.movies.core.util.runOperationCatching
 import com.example.movies.data.core.remote.MovieApi
@@ -28,8 +29,15 @@ class MoviesRemoteDataSourceImpl(
 
     override suspend fun loadPopularMovies(
         pageIndex: Int, pageSize: Int
-    ): Result<List<MovieDto>, Throwable> = runOperationCatching {
-        movieApi.loadMoviesPopular(page = pageIndex, pageSize = pageSize).results
+    ): Result<List<MovieDto>, Throwable> =
+
+     runOperationCatching {
+
+        Log.d("MoviesRepositoryImpl", "remoteSourse")
+       val res =  movieApi.loadMoviesPopular(page = pageIndex, pageSize = pageSize).results
+         Log.d("MoviesRepositoryImpl", "$res")
+          res
+
     }
 
     override suspend fun loadGenres(): Result<List<GenreDto>, Throwable> = runOperationCatching {

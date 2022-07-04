@@ -17,10 +17,10 @@ interface Navigator {
 
 class NavigatorImpl(private val context: Context) : Navigator {
 
-    override fun navigateTo(screen: Screen, backStack: Boolean) {
+    override fun navigateTo(screen: Screen, addToBackStack: Boolean) {
         getFragmentManager().commit {
-            replace(R.id.container, screen.destination(), screen.tag)
-            if (backStack)
+            replace(R.id.container_fragment, screen.destination(), screen.tag)
+            if (addToBackStack)
                 addToBackStack(screen.tag)
         }
     }

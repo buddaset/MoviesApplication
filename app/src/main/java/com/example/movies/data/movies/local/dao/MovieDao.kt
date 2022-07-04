@@ -5,16 +5,16 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.movies.data.moviedetails.local.model.MovieEntityDb
+import com.example.movies.data.movies.local.model.MovieEntityDb
 
 
 @Dao
 interface MovieDao {
 
-    @Query("SELECT * FROM movies WHERE :query =  '' OR title LIKE '%' || :query || '%' " )
-    fun getMovies(query: String) : PagingSource<Int, MovieEntityDb>
+//    @Query("SELECT * FROM movies WHERE :query =  '' OR title LIKE '%' || :query || '%' " )
+//    fun getMovies(query: String) : PagingSource<Int, MovieEntityDb>
 
-    @Query("SELECT * FROM movies ")
+    @Query("SELECT * FROM movies")
     fun getPopularMovies(): PagingSource<Int, MovieEntityDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

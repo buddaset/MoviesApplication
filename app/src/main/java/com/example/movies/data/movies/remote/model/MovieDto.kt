@@ -6,14 +6,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MovieDto(
-    @SerialName("id") val id: String,
-    @SerialName("title") val title: String,
     @SerialName("adult")  val adult: Boolean,
+    @SerialName("genre_ids") val genresId: List<Int> ,
+    @SerialName("id") val id: Long,
+    @SerialName("overview")  val storyLine: String,
     @SerialName("poster_path")  val imagePath: String,
+    @SerialName("release_date")  val releaseDate: String,
+    @SerialName("title") val title: String,
     @SerialName("vote_average") val rating: Double,
     @SerialName("vote_count") val reviewCount: Int,
-    @SerialName("overview")  val storyLine: String,
-    @SerialName("genre_ids") val genresId: List<Int>,
-    @SerialName("release_date")  val releaseDate: String,
 )
 

@@ -1,5 +1,7 @@
 package com.example.movies.core.util
 
+import android.util.Log
+
 
 sealed class Result<out S, out E> {
 
@@ -13,6 +15,7 @@ inline fun <R> runOperationCatching(block: () -> R): Result<R, Throwable> {
     return try {
         Result.Success(block())
     } catch (e: Throwable) {
+        Log.d("MoviesRepositoryImpl", "error catch  ----$e")
         Result.Error(e)
     }
 }

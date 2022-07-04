@@ -1,6 +1,7 @@
 package com.example.movies.data.movies.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.paging.*
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
@@ -39,12 +40,10 @@ class MoviesRepositoryImpl(
         return createPagingDataFlow(pagingSourceFactory, loader)
     }
 
-    private suspend fun loadPopularMovies(
-        pageIndex: Int,
-        pageSize: Int
-    ): Result<List<MovieEntityDb>, Throwable> =
+    private suspend fun loadPopularMovies(pageIndex: Int, pageSize: Int): Result<List<MovieEntityDb>, Throwable> =
         moviesRemoteDataSource.loadPopularMovies(pageIndex, pageSize)
             .mapResult { moviesDto ->
+                Log.d("MoviesRepositoryImpl", "$moviesDto")
                 moviesDto.map { movieDto ->
                     movieDto.toEntity(getGenres(), imageUrlAppender.baseImageUrl)
                 }
@@ -75,7 +74,9 @@ class MoviesRepositoryImpl(
 
     private suspend fun getGenres(): List<GenreEntityDb> {
         updateGenres()
-        return movieDatabase.genreDao().getAllGenres()
+        val genres = movieDatabase.genreDao().getAllGenres()
+        Log.d("MoviesRepositoryImpl", "$genres")
+        return genres
     }
 
     private suspend fun updateGenres() =

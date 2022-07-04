@@ -9,8 +9,7 @@ import com.example.movies.domain.model.Movie
 
 @Entity(tableName = "movies")
 data class MovieEntityDb(
-    @PrimaryKey
-    val id: String,
+    @PrimaryKey val id: Long,
     val title: String,
     val pgAge: Int,
     var imageUrl : String?,
@@ -25,7 +24,7 @@ data class MovieEntityDb(
 
 fun MovieEntityDb.toDomain() : Movie =
     Movie(
-        id = this.id.toLong(),
+        id = this.id,
         title = this.title,
         pgAge = this.pgAge,
         imageUrl = this.imageUrl,

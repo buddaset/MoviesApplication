@@ -49,6 +49,7 @@ class MoviesRemoteMediator(
         return try {
             Log.d("Mediator", " page ---- $currentKey.  loadType ---- $loadType" )
             val movies = loader( currentKey, state.config.pageSize).getData()
+            Log.d("Mediator", " page ---- $currentKey.  loadType ---- $loadType" )
             val endOfPaginationReached = movies.isEmpty()
 
 
