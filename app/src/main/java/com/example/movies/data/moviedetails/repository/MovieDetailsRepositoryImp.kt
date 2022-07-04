@@ -12,9 +12,11 @@ import com.example.movies.domain.repository.MovieDetailsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class MovieDetailsRepositoryImpl(private val remoteDataSource: MovieDetailsRemoteDataSource,
-private val localDataSource: MovieDetailsLocalDataSource,
-private val imageUrlAppender: ImageUrlAppender ) : MovieDetailsRepository {
+class MovieDetailsRepositoryImpl(
+    private val remoteDataSource: MovieDetailsRemoteDataSource,
+    private val localDataSource: MovieDetailsLocalDataSource,
+    private val imageUrlAppender: ImageUrlAppender
+) : MovieDetailsRepository {
 
 
     override suspend fun getMovieDetails(movieId: Long): Flow<MovieDetails> {
@@ -36,7 +38,6 @@ private val imageUrlAppender: ImageUrlAppender ) : MovieDetailsRepository {
         remoteDataSource.loadMovieActors(movieId)
             .mapResult { listDto -> listDto.map { actorDto -> actorDto.toEntity(movieId) } }
             .onSuccess { actorsEntity -> localDataSource.updateActors(actorsEntity) }
-
 
 
 }

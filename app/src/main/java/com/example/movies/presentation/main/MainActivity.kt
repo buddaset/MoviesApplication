@@ -6,7 +6,7 @@ import com.example.movies.ClickMovieListener
 import com.example.movies.presentation.movies.view.MoviesListFragment
 import com.example.movies.R
 import com.example.movies.databinding.ActivityMainBinding
-import com.example.movies.presentation.moviedetails.view.MoviesDetailsFragment
+import com.example.movies.presentation.moviedetails.view.MovieDetailsFragment
 
 class MainActivity : AppCompatActivity(), ClickMovieListener {
 
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), ClickMovieListener {
     override fun clickMovie(movieId: Int) {
         supportFragmentManager.beginTransaction()
             .addToBackStack(null)
-            .replace(R.id.container_fragment, MoviesDetailsFragment.newInstance(movieId))
+            .replace(R.id.container_fragment, MovieDetailsFragment.newInstance(movieId))
             .commit()
     }
 
