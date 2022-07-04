@@ -1,4 +1,4 @@
-package com.example.movies
+package com.example.movies.presentation.movies.view
 
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.disneyperson.core.delegate.viewBinding
+import com.example.movies.R
 import com.example.movies.core.application.App
 import com.example.movies.core.navigation.MovieDetailsScreen
 import com.example.movies.core.navigation.Navigator
@@ -23,6 +24,8 @@ import com.example.movies.presentation.util.ViewModelFactory
 import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingStateAdapter
 import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
+import com.example.movies.presentation.util.collectPagingFlow
+import com.example.movies.presentation.util.textChange
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -62,27 +65,10 @@ class MoviesListFragment : Fragment(R.layout.fragment_movies) {
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) queryMovie(query)
-                return true
-            }
-
-            override fun onQueryTextChange(query: String?): Boolean {
-                if (query != null) queryMovie(query)
-                return true
-            }
-        })
+        searchView.textChange(::queryMovie)
     }
 
-    private fun queryMovie(query: String) {
-        viewModel.setSearchBy(query)
-
-
-    }
-
+    private fun queryMovie(query: String) = viewModel.setSearchBy(query)
 
     private fun setupMovieAdapter() {
 
@@ -99,11 +85,7 @@ class MoviesListFragment : Fragment(R.layout.fragment_movies) {
     }
 
     private fun observeMovies() {
-        lifecycleScope.launch {
-            viewModel.movies.collectLatest { pagingData ->
-                movieAdapter.submitData(pagingData)
-            }
-        }
+        collectPagingFlow(viewModel.movies, movieAdapter::submitData)
     }
 
     private fun getLayoutManager(
@@ -146,10 +128,6 @@ class MoviesListFragment : Fragment(R.layout.fragment_movies) {
             Toast.makeText(requireContext(), "${it.error}", Toast.LENGTH_LONG).show()
         }
     }
-
-
-
-
 
 
     companion object {

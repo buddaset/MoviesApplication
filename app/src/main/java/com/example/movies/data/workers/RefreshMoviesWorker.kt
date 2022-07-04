@@ -5,11 +5,11 @@ import android.util.Log
 import androidx.room.withTransaction
 import androidx.work.*
 
-import com.example.movies.data.local.MovieDatabase
-import com.example.movies.data.local.entity.MovieEntityDb
-import com.example.movies.data.local.entity.MovieRemoteKeys
-import com.example.movies.data.remote.MovieApi
-import com.example.movies.data.remote.MovieApi.Companion.MAX_PAGE_SIZE
+import com.example.movies.data.core.local.MovieDatabase
+import com.example.movies.data.moviedetails.local.model.MovieEntityDb
+import com.example.movies.data.movies.local.model.MovieRemoteKeys
+import com.example.movies.data.core.remote.MovieApi
+import com.example.movies.data.core.remote.MovieApi.Companion.MAX_PAGE_SIZE
 import com.example.movies.core.util.toEntity
 import java.lang.Exception
 import java.util.concurrent.TimeUnit

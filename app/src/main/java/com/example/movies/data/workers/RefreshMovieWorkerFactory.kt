@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import com.example.movies.data.local.MovieDatabase
-import com.example.movies.data.remote.MovieApi
+import com.example.movies.data.core.local.MovieDatabase
+import com.example.movies.data.core.remote.MovieApi
 
 class RefreshMovieWorkerFactory(
     private val movieDatabase: MovieDatabase,

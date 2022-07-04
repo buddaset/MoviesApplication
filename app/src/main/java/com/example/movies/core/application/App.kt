@@ -2,14 +2,14 @@ package com.example.movies.core.application
 
 import android.app.Application
 import androidx.work.Configuration
-import com.example.movies.domain.repository.MovieRepository
-import com.example.movies.data.repository.MovieRepositoryImpl
+import com.example.movies.domain.repository.MoviesRepository
+import com.example.movies.data.movies.repository.MoviesRepositoryImpl
 import com.example.movies.core.dispatchers.IoDispatcher
-import com.example.movies.data.local.MovieDatabase
-import com.example.movies.data.remote.MovieApi
+import com.example.movies.data.core.local.MovieDatabase
+import com.example.movies.data.core.remote.MovieApi
 import com.example.movies.core.util.ImageUrlAppender
-import com.example.movies.data.remote.MoviesRemoteDataSource
-import com.example.movies.data.remote.MoviesRemoteDataSourceImpl
+import com.example.movies.data.movies.remote.MoviesRemoteDataSource
+import com.example.movies.data.movies.remote.MoviesRemoteDataSourceImpl
 import com.example.movies.data.workers.RefreshMovieWorkerFactory
 import com.example.movies.di.DatabaseModule
 import com.example.movies.di.NetworkModule
@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 
 class App : Application(), Configuration.Provider {
 
-    lateinit var repository: MovieRepository
+    lateinit var repository: MoviesRepository
     private val dispatcher = IoDispatcher(value = Dispatchers.IO)
     private lateinit var movieDatabase: MovieDatabase
     private lateinit var service: MovieApi
@@ -35,7 +35,7 @@ class App : Application(), Configuration.Provider {
 
 
         repository =
-            MovieRepositoryImpl(urlAppender, dispatcher, movieDatabase, applicationContext, moviesRemoteDataSource)
+            MoviesRepositoryImpl(urlAppender, dispatcher, movieDatabase, applicationContext, moviesRemoteDataSource)
     }
 
     override fun getWorkManagerConfiguration(): Configuration {
