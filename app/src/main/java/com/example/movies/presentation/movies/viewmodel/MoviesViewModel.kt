@@ -3,10 +3,13 @@ package com.example.movies.presentation.movies.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.movies.domain.model.Movie
 import com.example.movies.domain.usecase.GetMoviesBySearchUseCase
 import com.example.movies.domain.usecase.GetPopularMoviesUseCase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 
 
@@ -18,6 +21,7 @@ class MoviesViewModel(
     private val searchBy = MutableLiveData("")
 
     val movies: Flow<PagingData<Movie>> = getPopularMoviesUseCase()
+        .cachedIn(viewModelScope)
 
 
     fun setSearchBy(query: String) {

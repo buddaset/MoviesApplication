@@ -28,19 +28,28 @@
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/movie_recyclerview"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
-        android:scrollbarThumbVertical="@drawable/scrollbar_track"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintTop_toBottomOf="@id/movies_list_text"
-        android:scrollbars="vertical"
-        tools:itemCount="10"
-        tools:listitem="@layout/view_holder_movie" />
+        app:layout_constraintTop_toBottomOf="@id/movies_list_text">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/movie_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbarThumbVertical="@drawable/scrollbar_track"
+            android:scrollbars="vertical"
+            tools:itemCount="10"
+            tools:listitem="@layout/view_holder_movie" />
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
     <TextView
         android:id="@+id/emptyList"
@@ -58,8 +67,6 @@
 
 
 
-
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
         android:layout_height="wrap_content"
@@ -74,18 +81,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="14dp" />
 
-
-
-    <include
-
-        android:id="@+id/loadStateView"
-        layout="@layout/part_result"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

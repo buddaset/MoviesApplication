@@ -32,7 +32,7 @@ class MovieViewHolder(private val binding: ViewHolderMovieBinding) :
                 .placeholder(R.drawable.ic_placeholder)
                 .into(binding.moviePoster)
 
-//            onMovieClick.invoke(movie)
+            itemView.setOnClickListener {   onMovieClick.invoke(movie) }
 
         }
     }

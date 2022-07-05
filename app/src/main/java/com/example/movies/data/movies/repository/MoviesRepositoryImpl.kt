@@ -33,6 +33,9 @@ class MoviesRepositoryImpl(
     private val moviesRemoteDataSource: MoviesRemoteDataSource
 ) : MoviesRepository {
 
+    init {
+    }
+
     override fun getPopularMovies(): Flow<PagingData<Movie>> {
         val pagingSourceFactory = { movieDatabase.movieDao().getPopularMovies() }
         val loader: MoviePageLoader = { pageIndex, pageSize ->
@@ -61,7 +64,7 @@ class MoviesRepositoryImpl(
     ): Flow<PagingData<Movie>> =
         Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
-            remoteMediator = MoviesRemoteMediator(loader = loader, movieDatabase = movieDatabase),
+            remoteMediator = MoviesRemoteMediator(loader = loader, db = movieDatabase),
             pagingSourceFactory = pagingSourceFactory
         )
             .flow
@@ -78,16 +81,17 @@ class MoviesRepositoryImpl(
 
 
     private suspend fun getGenres(): List<GenreEntityDb> {
-        updateGenres()
         val genres = movieDatabase.genreDao().getAllGenres()
-        Log.d("MoviesRepositoryImpl", " getGenres -----    $genres")
+        if (genres.isEmpty())
+            return updateGenres()
         return genres
     }
 
-    private suspend fun updateGenres() =
+    private suspend fun updateGenres(): List<GenreEntityDb> =
         moviesRemoteDataSource.loadGenres()
             .mapResult { genresGto -> genresGto.map { genreGto -> genreGto.toEntity() } }
             .onSuccess { genresEntity -> movieDatabase.genreDao().insertAll(genresEntity) }
+            .getData()
 
 
     override fun periodicalBackgroundUpdateMovie() {

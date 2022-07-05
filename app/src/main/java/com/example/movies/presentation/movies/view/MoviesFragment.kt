@@ -11,11 +11,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.example.disneyperson.core.delegate.viewBinding
 import com.example.movies.R
 import com.example.movies.core.application.App
@@ -29,6 +28,10 @@ import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
 import com.example.movies.presentation.util.collectPagingFlow
 import com.example.movies.presentation.util.textChange
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 
 class MoviesFragment : Fragment(R.layout.fragment_movies) {
@@ -55,7 +58,6 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     }
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -64,8 +66,12 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupMovieAdapter()
+        setupRefreshLayout()
         observeMovies()
+
+        observeLoadState2()
         observeLoadState()
+        initSwipeToRefresh()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -80,21 +86,33 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     private fun queryMovie(query: String) = viewModel.setSearchBy(query)
 
     private fun setupMovieAdapter() {
-
         val footerAdapter = DefaultLoadingStateAdapter { movieAdapter.retry() }
-        val headerAdapter = DefaultLoadingStateAdapter { movieAdapter.retry() }
-        val adapterWithLoadState = movieAdapter.withLoadStateHeaderAndFooter(
-            footer = footerAdapter,
-            header = headerAdapter
+        val adapterWithLoadState = movieAdapter.withLoadStateFooter(footer = footerAdapter)
+        binding.movieRecyclerview.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
         )
         binding.movieRecyclerview.adapter = adapterWithLoadState
-        binding.movieRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.loadStateView.tryAgainButton.setOnClickListener { movieAdapter.retry() }
+        binding.movieRecyclerview.itemAnimator = null
+        binding.movieRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+//            GridLayoutManager(requireContext(), 2)
 
+    }
+
+    private fun setupRefreshLayout() {
+        binding.swipeRefresh.setOnRefreshListener {
+            movieAdapter.refresh()
+        }
     }
 
     private fun observeMovies() {
         collectPagingFlow(viewModel.movies, movieAdapter::submitData)
+    }
+
+    private fun initSwipeToRefresh() {
+        binding.swipeRefresh.setOnRefreshListener { movieAdapter.refresh() }
     }
 
     private fun getLayoutManager(
@@ -111,18 +129,32 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
         return layoutManager
     }
 
+    private fun observeLoadState2() {
+
+        movieAdapter.loadStateFlow
+            .debounce(300)
+            .onEach { updateState(it.refresh) }
+            .launchIn(lifecycleScope)
+    }
+
+
+    private fun updateState(loadState: LoadState) = with(binding) {
+        swipeRefresh.isRefreshing = loadState is LoadState.Loading
+    }
+
+
     private fun observeLoadState() {
 
+
         movieAdapter.addLoadStateListener { loadState ->
-            val refreshState = loadState.source.refresh
+
+            val refreshState = loadState.mediator?.refresh
+            Log.d("LoadState", "loadState --- $refreshState")
+
             val isListEmpty =
                 loadState.refresh is LoadState.NotLoading && movieAdapter.itemCount == 0
-            Log.d("StateUI", "$isListEmpty")
             binding.movieRecyclerview.isVisible = !isListEmpty
             binding.emptyList.isVisible = isListEmpty
-            binding.loadStateView.progressBar.isVisible = refreshState is LoadState.Loading
-            binding.loadStateView.tryAgainButton.isVisible = refreshState is LoadState.Error
-            binding.loadStateView.messageTextView.isVisible = refreshState is LoadState.Error
             handleError(loadState)
         }
 

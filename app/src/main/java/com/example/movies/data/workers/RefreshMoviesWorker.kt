@@ -40,22 +40,9 @@ class RefreshMoviesWorker(
                 Log.d("Worker", "start loader")
                 val moviesEntityDb =
                     movieApi.loadMoviesPopular(page = i).results.map { it.toEntity(genres, "test") } // todo  change baseUrl
-                val keysPage = moviesEntityDb.map {
-                    MovieRemoteKeys(
-                        id = it.id,
-                        prevKey = if (i == START_PAGE) null else i - 1,
-                        nextKey = if (moviesEntityDb.size < MAX_PAGE_SIZE) null else i + 1
-                    )
-                }
                 movies.addAll(moviesEntityDb)
-                keys.addAll(keysPage)
 
-            }
-            movieDatabase.withTransaction {
-                movieDao.clearAllMovie()
-                movieRemoteKeysDao.deleteAllRemoteKeys()
-                movieDao.insertAllMovie(movies)
-                movieRemoteKeysDao.addAllRemoteKeys(keys)
+
             }
             Log.d("Worker", "movies  --- $movies")
             return Result.success()
