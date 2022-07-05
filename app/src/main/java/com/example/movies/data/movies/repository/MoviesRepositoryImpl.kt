@@ -20,6 +20,7 @@ import com.example.movies.domain.model.Movie
 import com.example.movies.domain.repository.MoviesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 
 typealias PagingSourceFactory = () -> PagingSource<Int, MovieEntityDb>
@@ -40,14 +41,18 @@ class MoviesRepositoryImpl(
         return createPagingDataFlow(pagingSourceFactory, loader)
     }
 
-    private suspend fun loadPopularMovies(pageIndex: Int, pageSize: Int): Result<List<MovieEntityDb>, Throwable> =
+    private suspend fun loadPopularMovies(
+        pageIndex: Int,
+        pageSize: Int
+    ): Result<List<MovieEntityDb>, Throwable> = withContext(dispatcher.value) {
         moviesRemoteDataSource.loadPopularMovies(pageIndex, pageSize)
             .mapResult { moviesDto ->
-                Log.d("MoviesRepositoryImpl", "$moviesDto")
+                Log.d("MoviesRepositoryImpl", " loadPopularMovies --- $moviesDto")
                 moviesDto.map { movieDto ->
                     movieDto.toEntity(getGenres(), imageUrlAppender.baseImageUrl)
                 }
             }
+    }
 
     @OptIn(ExperimentalPagingApi::class)
     private fun createPagingDataFlow(
@@ -75,7 +80,7 @@ class MoviesRepositoryImpl(
     private suspend fun getGenres(): List<GenreEntityDb> {
         updateGenres()
         val genres = movieDatabase.genreDao().getAllGenres()
-        Log.d("MoviesRepositoryImpl", "$genres")
+        Log.d("MoviesRepositoryImpl", " getGenres -----    $genres")
         return genres
     }
 

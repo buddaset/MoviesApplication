@@ -1,9 +1,6 @@
 package com.example.movies.data.moviedetails.local.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.movies.data.moviedetails.local.model.MovieDetailsEntityDb
 import com.example.movies.data.moviedetails.local.model.MovieDetailsWithActorsEntity
 import kotlinx.coroutines.flow.Flow
@@ -13,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface MovieDetailsDao {
 
 
+    @Transaction
     @Query("SELECT * FROM movies_detail WHERE id = :id")
      fun getMovieById(id: Long) : Flow<MovieDetailsWithActorsEntity>
 

@@ -9,7 +9,7 @@ import com.example.movies.core.navigation.NavigatorImpl
 
 class MainActivity : AppCompatActivity() {
 
-     private val navigator: Navigator by lazy { NavigatorImpl(this) }
+      val navigator: Navigator by lazy { NavigatorImpl(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

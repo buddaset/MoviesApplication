@@ -1,5 +1,6 @@
 package com.example.movies.presentation.moviedetails.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -13,6 +14,7 @@ import com.example.movies.core.application.App
 import com.example.movies.core.navigation.Navigator
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
 import com.example.movies.domain.model.MovieDetails
+import com.example.movies.presentation.main.MainActivity
 import com.example.movies.presentation.moviedetails.view.actorAdapter.ActorAdapter
 import com.example.movies.presentation.moviedetails.viewmodel.DetailViewModelFactory
 import com.example.movies.presentation.moviedetails.viewmodel.DetailsMovieViewModel
@@ -32,11 +34,18 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movies_details) {
     private val viewModel: DetailsMovieViewModel by viewModels {
         DetailViewModelFactory(
             (requireActivity().application as App).useCase.getMovieDetailsUseCase(),
-            this
+            this,
+            this.arguments
         )
     }
 
     lateinit var navigator: Navigator
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity)
+            navigator = context.navigator
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

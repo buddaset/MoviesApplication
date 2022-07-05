@@ -47,7 +47,8 @@ class MoviesRemoteMediator(
                 }
             }
         return try {
-            Log.d("Mediator", " page ---- $currentKey.  loadType ---- $loadType" )
+
+            Log.d("MoviesRepositoryImpl", "mediator ---- page ---- $currentKey.  loadType ---- $loadType")
             val movies = loader( currentKey, state.config.pageSize).getData()
             Log.d("Mediator", " page ---- $currentKey.  loadType ---- $loadType" )
             val endOfPaginationReached = movies.isEmpty()
@@ -70,6 +71,7 @@ class MoviesRemoteMediator(
             }
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
+            Log.d("MoviesRepositoryImpl", "mediator ---- exception block   ---- $e")
             return MediatorResult.Error(e)
         }
     }

@@ -1,8 +1,11 @@
 package com.example.movies.presentation.movies.view
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
@@ -20,6 +23,7 @@ import com.example.movies.core.navigation.MovieDetailsScreen
 import com.example.movies.core.navigation.Navigator
 import com.example.movies.databinding.FragmentMoviesBinding
 import com.example.movies.di.ViewModelFactory
+import com.example.movies.presentation.main.MainActivity
 import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingStateAdapter
 import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
@@ -30,6 +34,7 @@ import com.example.movies.presentation.util.textChange
 class MoviesFragment : Fragment(R.layout.fragment_movies) {
 
     private val binding: FragmentMoviesBinding by viewBinding()
+    lateinit var navigator: Navigator
 
     private val viewModel: MoviesViewModel by viewModels {
         ViewModelFactory(
@@ -43,7 +48,13 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
 
     }
 
-    lateinit var navigator: Navigator
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity)
+            navigator = context.navigator
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

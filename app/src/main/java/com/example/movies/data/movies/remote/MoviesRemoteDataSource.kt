@@ -34,9 +34,8 @@ class MoviesRemoteDataSourceImpl(
      runOperationCatching {
 
         Log.d("MoviesRepositoryImpl", "remoteSourse")
-       val res =  movieApi.loadMoviesPopular(page = pageIndex, pageSize = pageSize).results
-         Log.d("MoviesRepositoryImpl", "$res")
-          res
+       movieApi.loadMoviesPopular(page = pageIndex, pageSize = pageSize).results
+
 
     }
 
