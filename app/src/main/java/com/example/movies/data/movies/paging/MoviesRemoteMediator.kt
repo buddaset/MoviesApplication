@@ -49,8 +49,8 @@ class MoviesRemoteMediator(
 
             Log.d("Mediator", "mediator ---- page ---- $pageIndex.  loadType ---- $loadType")
 
-            val pageSize =  if(loadType == LoadType.REFRESH) state.config.initialLoadSize else state.config.pageSize
-            val movies = loader( pageIndex,pageSize).getData()
+
+            val movies = loader( pageIndex, state.config.pageSize).getData()
             Log.d("Mediator", "mediator --- count movie --- ${movies.size}")
             val nextPageKey = pageIndex + 1
 

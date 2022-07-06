@@ -96,8 +96,7 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
         )
         binding.movieRecyclerview.adapter = adapterWithLoadState
         binding.movieRecyclerview.itemAnimator = null
-        binding.movieRecyclerview.layoutManager = LinearLayoutManager(requireContext())
-//            GridLayoutManager(requireContext(), 2)
+        binding.movieRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
 
     }
 

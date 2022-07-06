@@ -7,9 +7,11 @@ import com.example.movies.domain.model.Genre
 
 import com.example.movies.domain.model.Movie
 
-@Entity(tableName = "movies")
+@Entity(tableName = "movies",
+primaryKeys = ["id","title"])
+
 data class MovieEntityDb(
-    @PrimaryKey val id: Long,
+    val id: Long,
     val title: String,
     val pgAge: Int,
     var imageUrl : String?,
