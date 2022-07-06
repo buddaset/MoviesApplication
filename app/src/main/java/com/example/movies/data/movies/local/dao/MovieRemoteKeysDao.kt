@@ -9,13 +9,13 @@ import com.example.movies.data.movies.local.model.MovieRemoteKeys
 @Dao
 interface MovieRemoteKeysDao {
 
-    @Query("SELECT * FROM movie_remote_keys WHERE movies = :movies")
-    suspend fun getRemoteKey(movies: String): MovieRemoteKeys
+    @Query("SELECT * FROM movie_remote_keys WHERE movieId = :movieId")
+    suspend fun getRemoteKeysByMovieId(movieId: Long): MovieRemoteKeys
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(keys: MovieRemoteKeys)
+    suspend fun insert(keys: List<MovieRemoteKeys>)
 
-    @Query("DELETE FROM movie_remote_keys  WHERE movies = :movies")
-    suspend fun delete(movies: String)
+    @Query("DELETE FROM movie_remote_keys")
+    suspend fun delete()
 
 }
