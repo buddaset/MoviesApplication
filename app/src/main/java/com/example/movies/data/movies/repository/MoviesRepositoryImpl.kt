@@ -12,7 +12,9 @@ import com.example.movies.data.movies.local.model.GenreEntityDb
 import com.example.movies.data.movies.local.model.MovieEntityDb
 import com.example.movies.data.movies.local.model.toDomain
 import com.example.movies.data.movies.paging.MoviePageLoader
+import com.example.movies.data.movies.paging.MoviePageSource
 import com.example.movies.data.movies.paging.MoviesRemoteMediator
+import com.example.movies.data.movies.paging.SearchMovieLoader
 import com.example.movies.data.movies.remote.MoviesRemoteDataSource
 import com.example.movies.data.movies.remote.model.toEntity
 import com.example.movies.data.workers.RefreshMoviesWorker
@@ -21,8 +23,6 @@ import com.example.movies.domain.repository.MoviesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-
-
 
 
 class MoviesRepositoryImpl(
@@ -40,7 +40,7 @@ class MoviesRepositoryImpl(
         val loader: MoviePageLoader = { pageIndex, pageSize ->
             loadPopularMovies(pageIndex, pageSize)
         }
-        return  Pager(
+        return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
             remoteMediator = MoviesRemoteMediator(loader = loader, db = movieDatabase),
             pagingSourceFactory = pagingSourceFactory
@@ -55,7 +55,6 @@ class MoviesRepositoryImpl(
     ): Result<List<MovieEntityDb>, Throwable> = withContext(dispatcher.value) {
         moviesRemoteDataSource.loadPopularMovies(pageIndex, pageSize)
             .mapResult { moviesDto ->
-                Log.d("MoviesRepositoryImpl", " loadPopularMovies --- $moviesDto")
                 moviesDto.map { movieDto ->
                     movieDto.toEntity(getGenres(), imageUrlAppender.baseImageUrl)
                 }
@@ -63,16 +62,26 @@ class MoviesRepositoryImpl(
     }
 
 
+    override fun getMoviesBySearch(query: String): Flow<PagingData<Movie>> {
+        val loader: SearchMovieLoader = { pageIndex, pageSize ->
+            loadMoviesBySearch(query, pageIndex, pageSize)
+        }
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+            pagingSourceFactory = { MoviePageSource(loader, PAGE_SIZE) }
+        ).flow
+    }
 
-    override suspend fun getMoviesBySearch(query: String): Flow<PagingData<Movie>> =
-        moviesRemoteDataSource.searchMovies(query)
+
+    private suspend fun loadMoviesBySearch(query: String, pageIndex: Int, pageSize: Int) :  Result<List<Movie>, Throwable> = withContext(dispatcher.value) {
+        moviesRemoteDataSource.searchMovies(query, pageIndex, pageSize)
             .mapResult { moviesDto ->
                 moviesDto.map { movieDto ->
                     movieDto.toDomain(getGenres(), imageUrlAppender.baseImageUrl)
                 }
             }
+}
 
-    private val loadMoviesBySearch(query: String):
 
 
     private suspend fun getGenres(): List<GenreEntityDb> {

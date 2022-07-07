@@ -1,6 +1,7 @@
 package com.example.movies.presentation.movies.viewmodel
 
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
@@ -12,10 +13,7 @@ import com.example.movies.domain.usecase.GetMoviesBySearchUseCase
 import com.example.movies.domain.usecase.GetPopularMoviesUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.*
 
 
 class MoviesViewModel(

@@ -10,7 +10,7 @@ import com.example.movies.data.movies.remote.model.MovieDto
 
 interface MoviesRemoteDataSource {
 
-    suspend fun searchMovies(query: String, pageIndex: Int): Result<List<MovieDto>, Throwable>
+    suspend fun searchMovies(query: String, page: Int, pageSize: Int): Result<List<MovieDto>, Throwable>
 
     suspend fun loadPopularMovies(pageIndex: Int, pageSize: Int): Result<List<MovieDto>, Throwable>
 
@@ -22,9 +22,9 @@ class MoviesRemoteDataSourceImpl(
     private val movieApi: MovieApi
 ) : MoviesRemoteDataSource {
 
-    override suspend fun searchMovies(query: String, pageIndex: Int = 1): Result<List<MovieDto>, Throwable> =
+    override suspend fun searchMovies(query: String, page: Int, pageSize: Int): Result<List<MovieDto>, Throwable> =
         runOperationCatching {
-            movieApi.searchMovie(query = query).results
+            movieApi.searchMovie(query = query, page = page, pageSize = pageSize).results
         }
 
     override suspend fun loadPopularMovies(

@@ -21,7 +21,7 @@ const val PG_CHILDREN = 13
 
 fun MovieDto.toDomain(genres: List<GenreEntityDb>, baseUrl: String): Movie =
     Movie(
-        id = id.toLong(),
+        id = id,
         title = title,
         pgAge = setPgAge(adult),
         imageUrl = getFullUrlImage(baseUrl, this.imagePath),
@@ -35,7 +35,7 @@ fun MovieDto.toDomain(genres: List<GenreEntityDb>, baseUrl: String): Movie =
 
     )
 
-fun getFullUrlImage(baseUrl: String, imagePath: String) =
+fun getFullUrlImage(baseUrl: String, imagePath: String?) =
     "$baseUrl$imagePath"
 
 fun GenreDto.toDomain(): Genre = Genre(id = id, name = name)
