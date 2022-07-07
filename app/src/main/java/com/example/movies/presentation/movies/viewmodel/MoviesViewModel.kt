@@ -1,7 +1,6 @@
 package com.example.movies.presentation.movies.viewmodel
 
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
@@ -21,16 +20,12 @@ class MoviesViewModel(
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase
 ) : ViewModel() {
 
-    private val searchBy = MutableLiveData("")
+    private val searchBy = MutableStateFlow("")
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val movies: Flow<PagingData<Movie>> = searchBy
-        .asFlow()
         .debounce(TEXT_ENTERED_DEBOUNCE_MILLIS)
-        .flatMapLatest { query ->
-            if (query.isEmpty()) getPopularMoviesUseCase()  // use default
-            else getMoviesBySearchUseCase(query)
-        }
+        .flatMapLatest { choiceSourceFlow(it)}
         .distinctUntilChanged()
         .cachedIn(viewModelScope)
 
@@ -38,6 +33,11 @@ class MoviesViewModel(
         if (searchBy.value == query) return
         searchBy.value = query
     }
+
+
+    private fun choiceSourceFlow(query: String)  =
+        if (query.isEmpty()) getPopularMoviesUseCase() else getMoviesBySearchUseCase(query)
+
 
     companion object {
 

@@ -9,6 +9,6 @@ import kotlinx.coroutines.flow.Flow
 class GetMoviesBySearchUseCase(private val repository: MoviesRepository) {
 
 
-    suspend operator fun invoke(query: String) : Flow<PagingData<Movie>> =
+    operator fun invoke(query: String): Flow<PagingData<Movie>> =
         repository.getMoviesBySearch(query)
 }
