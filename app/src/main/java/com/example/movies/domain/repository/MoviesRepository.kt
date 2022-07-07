@@ -9,7 +9,7 @@ interface MoviesRepository {
 
     fun getPopularMovies() : Flow<PagingData<Movie>>
 
-    suspend fun getMoviesBySearch(query: String) : Result<List<Movie>, Throwable>
+    fun getMoviesBySearch(query: String) :  Flow<PagingData<Movie>>
 
     fun periodicalBackgroundUpdateMovie()
 }

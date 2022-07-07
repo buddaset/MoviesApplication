@@ -27,8 +27,7 @@ import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingSt
 import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
 import com.example.movies.presentation.util.collectPagingFlow
-import com.example.movies.presentation.util.textChange
-import kotlinx.coroutines.flow.collectLatest
+import com.example.movies.presentation.util.onTextChange
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -80,21 +79,17 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
-        searchView.textChange(::queryMovie)
+        searchView.onTextChange(::queryMovie)
     }
 
     private fun queryMovie(query: String) = viewModel.setSearchBy(query)
 
     private fun setupMovieAdapter() {
-        val footerAdapter = DefaultLoadingStateAdapter { movieAdapter.retry() }
-        val adapterWithLoadState = movieAdapter.withLoadStateFooter(footer = footerAdapter)
-        binding.movieRecyclerview.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
-        )
-        binding.movieRecyclerview.adapter = adapterWithLoadState
+
+
+
+        binding.movieRecyclerview.adapter = movieAdapter
+            .withLoadStateFooter(DefaultLoadingStateAdapter { movieAdapter.retry()})
         binding.movieRecyclerview.itemAnimator = null
         binding.movieRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
 

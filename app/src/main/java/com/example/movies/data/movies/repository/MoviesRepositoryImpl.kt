@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 
-typealias PagingSourceFactory = () -> PagingSource<Int, MovieEntityDb>
+
 
 class MoviesRepositoryImpl(
     private val imageUrlAppender: ImageUrlAppender,
@@ -33,15 +33,20 @@ class MoviesRepositoryImpl(
     private val moviesRemoteDataSource: MoviesRemoteDataSource
 ) : MoviesRepository {
 
-    init {
-    }
 
+    @OptIn(ExperimentalPagingApi::class)
     override fun getPopularMovies(): Flow<PagingData<Movie>> {
         val pagingSourceFactory = { movieDatabase.movieDao().getPopularMovies() }
         val loader: MoviePageLoader = { pageIndex, pageSize ->
             loadPopularMovies(pageIndex, pageSize)
         }
-        return createPagingDataFlow(pagingSourceFactory, loader)
+        return  Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+            remoteMediator = MoviesRemoteMediator(loader = loader, db = movieDatabase),
+            pagingSourceFactory = pagingSourceFactory
+        )
+            .flow
+            .map { pagingDb -> pagingDb.map { movieEntity -> movieEntity.toDomain() } }
     }
 
     private suspend fun loadPopularMovies(
@@ -57,27 +62,17 @@ class MoviesRepositoryImpl(
             }
     }
 
-    @OptIn(ExperimentalPagingApi::class)
-    private fun createPagingDataFlow(
-        pagingSourceFactory: PagingSourceFactory,
-        loader: MoviePageLoader
-    ): Flow<PagingData<Movie>> =
-        Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
-            remoteMediator = MoviesRemoteMediator(loader = loader, db = movieDatabase),
-            pagingSourceFactory = pagingSourceFactory
-        )
-            .flow
-            .map { pagingDb -> pagingDb.map { movieEntity -> movieEntity.toDomain() } }
 
 
-    override suspend fun getMoviesBySearch(query: String): Result<List<Movie>, Throwable> =
+    override suspend fun getMoviesBySearch(query: String): Flow<PagingData<Movie>> =
         moviesRemoteDataSource.searchMovies(query)
             .mapResult { moviesDto ->
                 moviesDto.map { movieDto ->
                     movieDto.toDomain(getGenres(), imageUrlAppender.baseImageUrl)
                 }
             }
+
+    private val loadMoviesBySearch(query: String):
 
 
     private suspend fun getGenres(): List<GenreEntityDb> {

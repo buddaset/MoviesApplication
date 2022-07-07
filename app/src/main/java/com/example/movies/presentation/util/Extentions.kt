@@ -64,7 +64,7 @@ fun View.toVisible() {
     visibility = View.VISIBLE
 }
 
-fun SearchView.textChange(textChange: (String) -> Unit) {
+fun SearchView.onTextChange(textChange: (String) -> Unit) {
     this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean = false
         // do nothing
