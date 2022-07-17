@@ -107,15 +107,15 @@ fun ActorDto.toActorData(): Actor =
         imageUrl = imageActorPath
     )
 
-fun ActorDto.toEntity(movieId: Long): ActorEntityDb =
+fun ActorDto.toEntity(movieId: Long, baseUrl: String): ActorEntityDb =
     ActorEntityDb(
         movieId = movieId,
         actorId = id,
         name = name,
-        imageUrl = imageActorPath
+        imageUrl = fullUrl(baseUrl, imageActorPath)
     )
 
-private fun fullUrl(baseUrl: String, path: String) = "$baseUrl$path"
+private fun fullUrl(baseUrl: String, path: String?) = "$baseUrl$path"
 
 private fun setPgAge(isAdult: Boolean): Int = if (isAdult) PG_ADULT else PG_CHILDREN
 

@@ -15,7 +15,7 @@ data class MovieDetailsDto(
     @SerialName("vote_count")  val reviewCount: Int,
     @SerialName("overview") val storyLine: String,
     @SerialName("genres") val genres: List<GenreDto>,
-    @SerialName(" release_date") val release_date: String,
+    @SerialName("release_date") val release_date: String,
     )
 
 

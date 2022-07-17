@@ -1,6 +1,7 @@
 package com.example.movies.presentation.moviedetails.viewmodel
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -22,7 +23,12 @@ class DetailsMovieViewModel(
     private val _movie = MutableStateFlow<MovieDetailsState>(MovieDetailsState.Loading)
     val movie: StateFlow<MovieDetailsState> = _movie.asStateFlow()
 
+    init {
+        getMovieDetail()
+    }
+
     private fun getMovieDetail() {
+        Log.d("DetailMov", "movieId -- $movieId" )
         viewModelScope.launch {
             getMovieDetailsUseCase(movieId)
                 .catch { error -> _movie.value = MovieDetailsState.Error(error) }
@@ -36,6 +42,11 @@ class DetailsMovieViewModel(
     }
 
 }
+
+
+
+
+
 
 class DetailViewModelFactory(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,

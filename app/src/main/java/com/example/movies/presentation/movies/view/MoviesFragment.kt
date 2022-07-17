@@ -2,7 +2,6 @@ package com.example.movies.presentation.movies.view
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
@@ -13,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.disneyperson.core.delegate.viewBinding
 import com.example.movies.R
 import com.example.movies.core.application.App
@@ -31,7 +30,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 
 class MoviesFragment : Fragment(R.layout.fragment_movies) {
