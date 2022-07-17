@@ -18,7 +18,7 @@ class MoviesViewModel(
     private val getPopularMoviesUseCase: GetPopularMoviesUseCase
 ) : ViewModel() {
 
-    private val searchBy = MutableStateFlow("")
+    private val searchBy = MutableStateFlow(DEFAULT_QUERY)
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val movies: Flow<PagingData<Movie>> = searchBy
@@ -38,7 +38,7 @@ class MoviesViewModel(
 
 
     companion object {
-
+        private const val DEFAULT_QUERY = ""
         private const val TEXT_ENTERED_DEBOUNCE_MILLIS = 500L
     }
 

@@ -1,6 +1,8 @@
 package com.example.movies.presentation.util
 
+import android.content.Context
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.SearchView
@@ -48,21 +50,7 @@ fun Fragment.onTryAgain(root: View, onTryAgain: () -> Unit) {
     }
 }
 
-fun View.showSnackbar(
-    error:String,
-    duration: Int = Snackbar.LENGTH_SHORT,
-) {
-    Snackbar.make(this, error, duration).show()
-}
 
-
-fun View.toGone() {
-    visibility = View.GONE
-}
-
-fun View.toVisible() {
-    visibility = View.VISIBLE
-}
 
 fun SearchView.onTextChange(textChange: (String) -> Unit) {
     this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -75,4 +63,9 @@ fun SearchView.onTextChange(textChange: (String) -> Unit) {
             return true
         }
     })
+}
+
+fun View.hideKeyboard() {
+    val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(windowToken, 0)
 }
