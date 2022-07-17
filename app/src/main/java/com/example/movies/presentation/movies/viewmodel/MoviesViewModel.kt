@@ -1,9 +1,7 @@
 package com.example.movies.presentation.movies.viewmodel
 
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -35,7 +33,7 @@ class MoviesViewModel(
     }
 
 
-    private fun choiceSourceFlow(query: String)  =
+    private fun choiceSourceFlow(query: String) : Flow<PagingData<Movie>>  =
         if (query.isEmpty()) getPopularMoviesUseCase() else getMoviesBySearchUseCase(query)
 
 

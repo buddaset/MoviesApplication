@@ -12,7 +12,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.*
 import com.example.disneyperson.core.delegate.viewBinding
@@ -28,9 +27,11 @@ import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
 import com.example.movies.presentation.util.collectPagingFlow
 import com.example.movies.presentation.util.onTextChange
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 
 class MoviesFragment : Fragment(R.layout.fragment_movies) {
@@ -64,13 +65,12 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupMovieAdapter()
         setupRefreshLayout()
         observeMovies()
-
-        observeLoadState2()
         observeLoadState()
-        initSwipeToRefresh()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,89 +85,40 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     private fun queryMovie(query: String) = viewModel.setSearchBy(query)
 
     private fun setupMovieAdapter() {
-
-
-
         binding.movieRecyclerview.adapter = movieAdapter
             .withLoadStateFooter(DefaultLoadingStateAdapter { movieAdapter.retry()})
         binding.movieRecyclerview.itemAnimator = null
         binding.movieRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
-
     }
 
-    private fun setupRefreshLayout() {
-        binding.swipeRefresh.setOnRefreshListener {
-            movieAdapter.refresh()
-        }
-    }
-
-    private fun observeMovies() {
-        collectPagingFlow(viewModel.movies, movieAdapter::submitData)
-    }
-
-    private fun initSwipeToRefresh() {
+    private fun setupRefreshLayout() =
         binding.swipeRefresh.setOnRefreshListener { movieAdapter.refresh() }
-    }
 
-    private fun getLayoutManager(
-        concatAdapter: ConcatAdapter,
-        footerAdapter: DefaultLoadingStateAdapter
-    ): RecyclerView.LayoutManager {
-        val layoutManager = GridLayoutManager(requireContext(), 2)
-        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int =
-                if (position == 0 && footerAdapter.itemCount > 0) ITEM_SPAN_SIZE
-                else if (position == concatAdapter.itemCount - 1 && footerAdapter.itemCount > 0) ITEM_SPAN_SIZE
-                else ERROR_LOADING_SPAN_SIZE
-        }
-        return layoutManager
-    }
+    private fun observeMovies() =
+        collectPagingFlow(viewModel.movies, movieAdapter::submitData)
 
-    private fun observeLoadState2() {
-
+    private fun observeLoadState() =
         movieAdapter.loadStateFlow
-            .debounce(300)
-            .onEach { updateState(it.refresh) }
+            .debounce(DEBOUNCE_UPDATE_STATE_MILLIS)
+            .onEach { updateState(it.mediator?.refresh) }
+            .catch { handleError(it) }
             .launchIn(lifecycleScope)
-    }
 
+    private fun updateState(loadState: LoadState?) = with(binding) {
 
-    private fun updateState(loadState: LoadState) = with(binding) {
+        val isListEmpty =  movieAdapter.itemCount == 0
+        movieRecyclerview.isVisible = !isListEmpty
+        emptyList.isVisible = isListEmpty
         swipeRefresh.isRefreshing = loadState is LoadState.Loading
     }
 
+    private fun handleError(error: Throwable) =
+            Toast.makeText(requireContext(), "$error", Toast.LENGTH_LONG).show()
 
-    private fun observeLoadState() {
-
-
-        movieAdapter.addLoadStateListener { loadState ->
-
-            val refreshState = loadState.mediator?.refresh
-            Log.d("LoadState", "loadState --- $refreshState")
-
-            val isListEmpty =
-                loadState.refresh is LoadState.NotLoading && movieAdapter.itemCount == 0
-            binding.movieRecyclerview.isVisible = !isListEmpty
-            binding.emptyList.isVisible = isListEmpty
-            handleError(loadState)
-        }
-
-    }
-
-
-    private fun handleError(loadState: CombinedLoadStates) {
-        val errorState = loadState.source.append as? LoadState.Error
-            ?: loadState.source.prepend as? LoadState.Error
-
-        errorState?.let {
-            Toast.makeText(requireContext(), "${it.error}", Toast.LENGTH_LONG).show()
-        }
-    }
 
 
     companion object {
-        const val ITEM_SPAN_SIZE = 2
-        const val ERROR_LOADING_SPAN_SIZE = 1
+        const val DEBOUNCE_UPDATE_STATE_MILLIS = 300L
 
         fun newInstance() = MoviesFragment()
     }
