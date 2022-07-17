@@ -104,7 +104,9 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
 
     private fun updateState(loadState: LoadState?) = with(binding) {
 
-        val isListEmpty =  movieAdapter.itemCount == 0
+        val isListEmpty = (loadState is LoadState.NotLoading || loadState == null)
+                && movieAdapter.itemCount == 0
+
         movieRecyclerview.isVisible = !isListEmpty
         emptyList.isVisible = isListEmpty
         swipeRefresh.isRefreshing = loadState is LoadState.Loading

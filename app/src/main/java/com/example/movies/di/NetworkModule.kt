@@ -31,7 +31,10 @@ class NetworkModule {
         .addInterceptor(ApiKeyInterception())
         .build()
 
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
     private val contentType = "application/json".toMediaType()
 
     @OptIn(ExperimentalSerializationApi::class)

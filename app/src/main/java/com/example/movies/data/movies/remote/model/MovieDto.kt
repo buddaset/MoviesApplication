@@ -11,9 +11,11 @@ data class MovieDto(
     @SerialName("id") val id: Long,
     @SerialName("overview")  val storyLine: String,
     @SerialName("poster_path")  val imagePath: String?,
-    @SerialName("release_date")  val releaseDate: String,
+    @SerialName("release_date")  val releaseDate: String= UNKNOWN_DATA_RELEASE,
     @SerialName("title") val title: String,
     @SerialName("vote_average") val rating: Double,
     @SerialName("vote_count") val reviewCount: Int,
 )
+
+private const val UNKNOWN_DATA_RELEASE = "Release date of movie is unknown"
 

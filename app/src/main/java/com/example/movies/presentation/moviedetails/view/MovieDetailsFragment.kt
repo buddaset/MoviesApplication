@@ -63,6 +63,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movies_details) {
     }
 
     private fun renderState(state: MovieDetailsState) {
+        binding.groupMovieDetails.isVisible = state is MovieDetailsState.Success
         binding.loadStateView.progressBar.isVisible = state is MovieDetailsState.Loading
         binding.loadStateView.messageTextView.isVisible = state is MovieDetailsState.Error
         binding.loadStateView.tryAgainButton.isVisible = state is MovieDetailsState.Error

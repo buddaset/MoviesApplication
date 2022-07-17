@@ -9,7 +9,7 @@ data class MovieDetailsDto(
     @SerialName("id") val id: Long,
     @SerialName("title") val title: String,
     @SerialName("adult") val adult: Boolean,
-    @SerialName("backdrop_path") val imageDetailPath: String,
+    @SerialName("backdrop_path") val imageDetailPath: String?,
     @SerialName("runtime") val runningTime: Int,
     @SerialName("vote_average") val rating: Double,
     @SerialName("vote_count")  val reviewCount: Int,

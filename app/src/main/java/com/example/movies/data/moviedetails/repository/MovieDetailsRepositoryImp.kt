@@ -1,6 +1,5 @@
 package com.example.movies.data.moviedetails.repository
 
-import android.util.Log
 import com.example.movies.core.util.ImageUrlAppender
 import com.example.movies.core.util.mapResult
 import com.example.movies.core.util.onSuccess
@@ -12,7 +11,6 @@ import com.example.movies.domain.model.MovieDetails
 import com.example.movies.domain.repository.MovieDetailsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 
 class MovieDetailsRepositoryImpl(
     private val remoteDataSource: MovieDetailsRemoteDataSource,
@@ -25,9 +23,6 @@ class MovieDetailsRepositoryImpl(
         updateMovieDetails(movieId)
         updateActors(movieId)
         return localDataSource.getMovieDetailsWithActors(movieId)
-            .onEach {
-                Log.d("DetailMov", "repository --  FlowMovieDetails ---  $it")
-            }
             .map { it.toDomain() }
     }
 
@@ -35,9 +30,7 @@ class MovieDetailsRepositoryImpl(
     private suspend fun updateMovieDetails(idMovie: Long) {
         remoteDataSource.loadMovieDetails(idMovie)
             .mapResult { movieDto -> movieDto.toEntity(imageUrlAppender.baseImageUrl) }
-            .onSuccess { movieEntity ->
-                Log.d("DetailMov", "repository --  movieDb ---  $movieEntity")
-                localDataSource.updateMovieDetails(movieEntity) }
+            .onSuccess { movieEntity -> localDataSource.updateMovieDetails(movieEntity) }
     }
 
 
