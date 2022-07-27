@@ -2,8 +2,7 @@ package com.example.movies.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.movies.data.local.MovieDatabase
-import com.example.movies.models.MovieData
+import com.example.movies.data.core.local.MovieDatabase
 
 class DatabaseModule {
         private var INSTANCE : MovieDatabase? = null

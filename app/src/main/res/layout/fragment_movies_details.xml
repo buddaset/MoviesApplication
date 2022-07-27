@@ -13,12 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/dark_blue"
-        tools:context=".ui.screen_moviedetails.MoviesDetailsFragment">
+        tools:context=".presentation.moviedetails.view.MovieDetailsFragment">
 
 
 
         <include
-
             android:id="@+id/loadStateView"
             layout="@layout/part_result"
             android:layout_width="0dp"
@@ -41,6 +40,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_end="16dp" />
+        
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_movie_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="poster,mask_poster, back_press, pg_age, title, genre, rating_bar, count_review, story_line, storyline_textView ,cast, actor_recycler"
+            />
+
+
 
 
         <ImageView
@@ -55,6 +63,7 @@
             tools:src="@drawable/img"/>
 
         <View
+            android:id="@+id/mask_poster"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/ic_mask_detail"

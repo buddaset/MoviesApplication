@@ -1,12 +1,15 @@
 package com.example.movies.di
 
-import com.example.movies.data.remote.MovieService
+import com.example.movies.data.core.remote.MovieApi
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import java.util.concurrent.TimeUnit
 
@@ -28,13 +31,20 @@ class NetworkModule {
         .addInterceptor(ApiKeyInterception())
         .build()
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
+    private val contentType = "application/json".toMediaType()
+
+    @OptIn(ExperimentalSerializationApi::class)
     private val retrofit = Retrofit.Builder()
         .client(client)
         .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(json.asConverterFactory(contentType))
         .build()
 
-    val movieService: MovieService by lazy { retrofit.create() }
+    val movieApi: MovieApi by lazy { retrofit.create() }
 }
 
 
