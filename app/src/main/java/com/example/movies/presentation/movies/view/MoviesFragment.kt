@@ -5,12 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -31,13 +35,14 @@ import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
 import com.example.movies.presentation.util.collectPagingFlow
 import com.example.movies.presentation.util.hideKeyboard
 import com.example.movies.presentation.util.onTextChange
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 
-class MoviesFragment : Fragment(R.layout.fragment_movies) {
+class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
 
     private val binding: FragmentMoviesBinding by viewBinding()
     lateinit var navigator: Navigator
@@ -61,29 +66,35 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     }
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupTabMenu()
         setupMovieAdapter()
         setupRefreshLayout()
         observeMovies()
         observeLoadState()
-
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_menu, menu)
-
-        val searchItem = menu.findItem(R.id.action_search)
-        val searchView = searchItem.actionView as SearchView
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.search_menu, menu)
+        val searchMenu =
+        val searchView = menuItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
         searchView.onTextChange(::queryMovie)
+
     }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
+
+
+
+    private fun setupTabMenu() {
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+
 
     private fun queryMovie(query: String) = viewModel.setSearchBy(query)
 
@@ -96,7 +107,7 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
         movieRecyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if(newState == SCROLL_STATE_DRAGGING)
+                if (newState == SCROLL_STATE_DRAGGING)
                     recyclerView.hideKeyboard()
             }
         })
@@ -108,6 +119,7 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     private fun observeMovies() =
         collectPagingFlow(viewModel.movies, movieAdapter::submitData)
 
+    @OptIn(FlowPreview::class)
     private fun observeLoadState() =
         movieAdapter.loadStateFlow
             .debounce(DEBOUNCE_UPDATE_STATE_MILLIS)
@@ -138,8 +150,9 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     companion object {
         const val DEBOUNCE_UPDATE_STATE_MILLIS = 300L
 
-        fun newInstance() = MoviesFragment()
     }
+
+
 }
 
 

@@ -95,9 +95,7 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movies_details) {
     companion object {
         const val MOVIE_ID = "movieId"
 
-        fun newInstance(movieId: Long): MovieDetailsFragment =
-            MovieDetailsFragment().apply {
-                arguments = bundleOf(MOVIE_ID to movieId)
-            }
+        fun args(movieId: Long): Bundle = bundleOf(MOVIE_ID to movieId)
+
     }
 }
