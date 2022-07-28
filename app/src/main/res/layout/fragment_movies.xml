@@ -45,6 +45,8 @@
             android:scrollbars="vertical"
             tools:itemCount="10"
             tools:listitem="@layout/view_holder_movie"
+            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:spanCount="2"
             />
 
 

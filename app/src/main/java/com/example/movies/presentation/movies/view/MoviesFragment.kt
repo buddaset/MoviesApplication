@@ -78,11 +78,11 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.search_menu, menu)
-        val searchMenu =
-        val searchView = menuItem.actionView as SearchView
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
         searchView.isSubmitButtonEnabled = true
         searchView.onTextChange(::queryMovie)
-
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
