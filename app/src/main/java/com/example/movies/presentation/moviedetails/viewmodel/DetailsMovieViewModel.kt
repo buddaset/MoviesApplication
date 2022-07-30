@@ -28,7 +28,6 @@ class DetailsMovieViewModel(
     }
 
     private fun getMovieDetail() {
-        Log.d("DetailMov", "movieId -- $movieId" )
         viewModelScope.launch {
             getMovieDetailsUseCase(movieId)
                 .catch { error -> _movie.value = MovieDetailsState.Error(error) }

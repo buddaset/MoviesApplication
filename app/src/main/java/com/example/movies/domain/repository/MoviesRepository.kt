@@ -11,5 +11,7 @@ interface MoviesRepository {
 
     fun getMoviesBySearch(query: String) :  Flow<PagingData<Movie>>
 
+    fun getFavoriteMovies() : Flow<List<Movie>>
+
     fun periodicalBackgroundUpdateMovie()
 }

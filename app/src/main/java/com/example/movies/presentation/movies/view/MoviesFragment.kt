@@ -123,10 +123,7 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
     private fun observeLoadState() =
         movieAdapter.loadStateFlow
             .debounce(DEBOUNCE_UPDATE_STATE_MILLIS)
-            .onEach {
-                updateState(it)
-                Log.d("StateMov", "compinestate ---- $it")
-            }
+            .onEach { updateState(it) }
             .catch { handleError(it) }
             .launchIn(lifecycleScope)
 
