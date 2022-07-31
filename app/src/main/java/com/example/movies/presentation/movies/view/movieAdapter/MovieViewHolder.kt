@@ -12,7 +12,7 @@ class MovieViewHolder(private val binding: ViewHolderMovieBinding) :
 
     private val context = itemView.context
 
-    fun bind(movie: Movie, onMovieClick: (Movie) -> Unit) {
+    fun bind(movie: Movie, listener: MovieClickListener) {
 
         with(binding) {
             title.text = movie.title
@@ -32,7 +32,8 @@ class MovieViewHolder(private val binding: ViewHolderMovieBinding) :
                 .placeholder(R.drawable.ic_placeholder)
                 .into(binding.moviePoster)
 
-            itemView.setOnClickListener {   onMovieClick.invoke(movie) }
+            itemView.setOnClickListener {   listener.onClickMovie(movie) }
+            likedMovie.setOnClickListener { listener.onClickFavorite(!movie.isLiked) } // change like and unlike movie state
 
         }
     }

@@ -2,7 +2,6 @@ package com.example.movies.presentation.movies.view
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -28,21 +27,24 @@ import com.example.movies.core.navigation.MovieDetailsScreen
 import com.example.movies.core.navigation.Navigator
 import com.example.movies.databinding.FragmentMoviesBinding
 import com.example.movies.di.ViewModelFactory
+import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.main.MainActivity
 import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingStateAdapter
-import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
+import com.example.movies.presentation.movies.view.movieAdapter.MovieClickListener
+import com.example.movies.presentation.movies.view.movieAdapter.PagingMovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
 import com.example.movies.presentation.util.collectPagingFlow
 import com.example.movies.presentation.util.hideKeyboard
 import com.example.movies.presentation.util.onTextChange
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 
-class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
+class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider, MovieClickListener {
 
     private val binding: FragmentMoviesBinding by viewBinding()
     lateinit var navigator: Navigator
@@ -50,14 +52,14 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
     private val viewModel: MoviesViewModel by viewModels {
         ViewModelFactory(
             (requireActivity().application as App).useCase.getPopularMoviesUseCase(),
-            (requireActivity().application as App).useCase.getMoviesBySearchUseCase()
+            (requireActivity().application as App).useCase.getMoviesBySearchUseCase(),
+            (requireActivity().application as App).useCase.getChangeFavoriteFlagMovie()
         )
     }
 
-    private val movieAdapter = MovieAdapter { movie ->
-        navigator.navigateTo(MovieDetailsScreen(movie.id))
+    private val pagingMovieAdapter = PagingMovieAdapter(this)
 
-    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -87,7 +89,13 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
 
+    override fun onClickMovie(movie: Movie) {
+        navigator.navigateTo(MovieDetailsScreen(movieId = movie.id))
+    }
 
+    override fun onClickFavorite(movie: Movie) {
+        viewModel.changeFavoriteFlagMovie(movie)
+    }
 
     private fun setupTabMenu() {
         val menuHost: MenuHost = requireActivity()
@@ -95,12 +103,11 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
     }
 
 
-
     private fun queryMovie(query: String) = viewModel.setSearchBy(query)
 
     private fun setupMovieAdapter() = with(binding) {
-        movieRecyclerview.adapter = movieAdapter
-            .withLoadStateFooter(DefaultLoadingStateAdapter { movieAdapter.retry() })
+        movieRecyclerview.adapter = pagingMovieAdapter
+            .withLoadStateFooter(DefaultLoadingStateAdapter { pagingMovieAdapter.retry() })
         movieRecyclerview.itemAnimator = null
         movieRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
 
@@ -114,14 +121,14 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
     }
 
     private fun setupRefreshLayout() =
-        binding.swipeRefresh.setOnRefreshListener { movieAdapter.refresh() }
+        binding.swipeRefresh.setOnRefreshListener { pagingMovieAdapter.refresh() }
 
     private fun observeMovies() =
-        collectPagingFlow(viewModel.movies, movieAdapter::submitData)
+        collectPagingFlow(viewModel.movies, pagingMovieAdapter::submitData)
 
     @OptIn(FlowPreview::class)
     private fun observeLoadState() =
-        movieAdapter.loadStateFlow
+        pagingMovieAdapter.loadStateFlow
             .debounce(DEBOUNCE_UPDATE_STATE_MILLIS)
             .onEach { updateState(it) }
             .catch { handleError(it) }
@@ -130,7 +137,7 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
     private fun updateState(combinedLoadState: CombinedLoadStates) = with(binding) {
         val loadState = combinedLoadState.mediator?.refresh
         val isListEmpty = (loadState is LoadState.NotLoading || loadState == null)
-                && movieAdapter.itemCount == 0
+                && pagingMovieAdapter.itemCount == 0
 
         movieRecyclerview.isVisible = !isListEmpty
         emptyList.isVisible = isListEmpty
@@ -148,6 +155,8 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider {
         const val DEBOUNCE_UPDATE_STATE_MILLIS = 300L
 
     }
+
+
 
 
 }

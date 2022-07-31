@@ -45,7 +45,7 @@
 
 
     <TextView
-        android:id="@+id/emptyList"
+        android:id="@+id/empty_list"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -72,6 +72,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_end="14dp" />
+
+    <include
+        android:id="@+id/loadStateView"
+        layout="@layout/part_result"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

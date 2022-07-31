@@ -17,9 +17,7 @@ import com.example.movies.data.workers.RefreshMovieWorkerFactory
 import com.example.movies.di.DatabaseModule
 import com.example.movies.di.NetworkModule
 import com.example.movies.domain.repository.MovieDetailsRepository
-import com.example.movies.domain.usecase.GetMovieDetailsUseCase
-import com.example.movies.domain.usecase.GetMoviesBySearchUseCase
-import com.example.movies.domain.usecase.GetPopularMoviesUseCase
+import com.example.movies.domain.usecase.*
 import com.example.movies.presentation.moviedetails.viewmodel.DetailsMovieViewModel
 import kotlinx.coroutines.Dispatchers
 
@@ -76,6 +74,9 @@ class UseCase(
     private val movieDetailRepository: MovieDetailsRepository
 ) {
 
+    fun getChangeFavoriteFlagMovie() = ChangeFavoriteFlagMovieUseCase(moviesRepository)
+
+    fun getFavoriteMoviesUseCase() = GetFavoriteMoviesUseCase(moviesRepository)
 
     fun getPopularMoviesUseCase() = GetPopularMoviesUseCase(moviesRepository)
 
