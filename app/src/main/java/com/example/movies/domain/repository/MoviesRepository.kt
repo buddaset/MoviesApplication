@@ -14,4 +14,6 @@ interface MoviesRepository {
     fun getFavoriteMovies() : Flow<List<Movie>>
 
     fun periodicalBackgroundUpdateMovie()
+
+    suspend fun changeFavoriteFlagMovie(movieId: Long, isLiked: Boolean)
 }
