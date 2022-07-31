@@ -74,7 +74,11 @@ class UseCase(
     private val movieDetailRepository: MovieDetailsRepository
 ) {
 
-    fun getChangeFavoriteFlagMovie() = ChangeFavoriteFlagMovieUseCase(moviesRepository)
+
+
+    fun getFavoriteMovieIdsUseCase() = GetFavoriteMovieIdsUseCase(moviesRepository)
+
+    fun getChangeFavoriteFlagMovieUseCase() = ChangeFavoriteFlagMovieUseCase(moviesRepository)
 
     fun getFavoriteMoviesUseCase() = GetFavoriteMoviesUseCase(moviesRepository)
 

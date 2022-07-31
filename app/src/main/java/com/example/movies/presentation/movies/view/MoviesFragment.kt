@@ -28,6 +28,7 @@ import com.example.movies.core.navigation.Navigator
 import com.example.movies.databinding.FragmentMoviesBinding
 import com.example.movies.di.ViewModelFactory
 import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.core.model.MovieUI
 import com.example.movies.presentation.main.MainActivity
 import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingStateAdapter
 import com.example.movies.presentation.movies.view.movieAdapter.MovieClickListener
@@ -37,7 +38,6 @@ import com.example.movies.presentation.util.collectPagingFlow
 import com.example.movies.presentation.util.hideKeyboard
 import com.example.movies.presentation.util.onTextChange
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
@@ -53,7 +53,8 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider, MovieCl
         ViewModelFactory(
             (requireActivity().application as App).useCase.getPopularMoviesUseCase(),
             (requireActivity().application as App).useCase.getMoviesBySearchUseCase(),
-            (requireActivity().application as App).useCase.getChangeFavoriteFlagMovie()
+            (requireActivity().application as App).useCase.getChangeFavoriteFlagMovieUseCase(),
+            (requireActivity().application as App).useCase.getFavoriteMovieIdsUseCase()
         )
     }
 
@@ -89,12 +90,12 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider, MovieCl
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
 
-    override fun onClickMovie(movie: Movie) {
-        navigator.navigateTo(MovieDetailsScreen(movieId = movie.id))
+    override fun onClickMovie(movieUI: MovieUI) {
+        navigator.navigateTo(MovieDetailsScreen(movieId = movieUI.movie.id))
     }
 
-    override fun onClickFavorite(movie: Movie) {
-        viewModel.changeFavoriteFlagMovie(movie)
+    override fun onClickFavorite(movieUI: MovieUI) {
+        viewModel.changeFavoriteFlagMovie(movieUI)
     }
 
     private fun setupTabMenu() {

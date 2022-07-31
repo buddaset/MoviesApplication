@@ -8,6 +8,7 @@ import androidx.work.WorkManager
 import com.example.movies.core.dispatchers.IoDispatcher
 import com.example.movies.core.util.*
 import com.example.movies.data.core.local.MovieDatabase
+import com.example.movies.data.favoritemovies.local.model.FavoriteIdEntity
 import com.example.movies.data.movies.local.model.GenreEntityDb
 import com.example.movies.data.movies.local.model.MovieEntityDb
 import com.example.movies.data.movies.local.model.toDomain
@@ -32,6 +33,9 @@ class MoviesRepositoryImpl(
     private val applicationContext: Context,
     private val moviesRemoteDataSource: MoviesRemoteDataSource
 ) : MoviesRepository {
+
+    private val movieDao = movieDatabase.movieDao()
+    private val favoriteDao = movieDatabase.favoriteDao()
 
 
     @OptIn(ExperimentalPagingApi::class)
@@ -72,6 +76,22 @@ class MoviesRepositoryImpl(
         ).flow
     }
 
+    override fun getFavoriteMovies(): Flow<List<Movie>> =
+        movieDao.getFavoriteMovies()
+            .map { moviesEntity -> moviesEntity.map { movieEntity -> movieEntity.toDomain() }
+            }
+
+
+    override fun getFavoriteIds(): Flow<List<Long>> =
+        favoriteDao.getFavoriteIds()
+
+
+
+    override suspend fun changeFavoriteFlagMovie(movieId: Long, isFavorite: Boolean) =
+        if(isFavorite) favoriteDao.insert(FavoriteIdEntity(movieId = movieId))
+        else favoriteDao.delete(FavoriteIdEntity(movieId = movieId))
+
+
 
     private suspend fun loadMoviesBySearch(query: String, pageIndex: Int, pageSize: Int) :  Result<List<Movie>, Throwable> = withContext(dispatcher.value) {
         moviesRemoteDataSource.searchMovies(query, pageIndex, pageSize)
@@ -107,6 +127,7 @@ class MoviesRepositoryImpl(
             RefreshMoviesWorker.makePeriodicWorkRequest()
         )
     }
+
 
     companion object {
         private const val PAGE_SIZE = 20

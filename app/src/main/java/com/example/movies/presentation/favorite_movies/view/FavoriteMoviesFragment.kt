@@ -10,10 +10,11 @@ import com.example.movies.R
 import com.example.movies.core.application.App
 import com.example.movies.databinding.FragmentFavoriteMoviesBinding
 import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.core.model.MovieUI
 import com.example.movies.presentation.favorite_movies.viewmodel.FavoriteMoviesState
 import com.example.movies.presentation.favorite_movies.viewmodel.FavoriteMoviesViewModel
 import com.example.movies.presentation.favorite_movies.viewmodel.FavoriteMoviesViewModelFactory
-import com.example.movies.presentation.favorite_movies.view.favoritemovieadapter.FavoriteMoviesAdapter
+
 import com.example.movies.presentation.movies.view.movieAdapter.MovieClickListener
 import com.example.movies.presentation.util.collectFlow
 
@@ -24,11 +25,11 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorite_movies), Movi
     private val viewModel: FavoriteMoviesViewModel by viewModels {
         FavoriteMoviesViewModelFactory(
             (requireActivity().application as App).useCase.getFavoriteMoviesUseCase(),
-            (requireActivity().application as App).useCase.getChangeFavoriteFlagMovie()
+            (requireActivity().application as App).useCase.getChangeFavoriteFlagMovieUseCase()
         )
     }
 
-    private val moviesAdapter by lazy {   FavoriteMoviesAdapter(this) }
+    private val moviesAdapter by lazy {   FavoriteMovieAdapter(this) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,12 +40,12 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorite_movies), Movi
 
     }
 
-    override fun onClickMovie(movie: Movie) {
+    override fun onClickMovie(movieUI: MovieUI) {
         TODO("Not yet implemented")
     }
 
-    override fun onClickFavorite(movie: Movie) {
-        viewModel.changeFavoriteFlagMovie(movie)
+    override fun onClickFavorite(movieUI: MovieUI) {
+        viewModel.changeFavoriteFlagMovie(movieUI)
     }
 
     private fun renderState(state: FavoriteMoviesState) = with(binding) {
@@ -58,7 +59,7 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorite_movies), Movi
             updateMovies(state.data)
     }
 
-    private fun updateMovies(movies: List<Movie>) =
+    private fun updateMovies(movies: List<MovieUI>) =
         moviesAdapter.submitList(movies)
 
 

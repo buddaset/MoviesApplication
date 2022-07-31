@@ -6,8 +6,9 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.example.movies.databinding.ViewHolderMovieBinding
 import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.core.model.MovieUI
 
-class PagingMovieAdapter(private val listener: MovieClickListener) : PagingDataAdapter<Movie, MovieViewHolder>(MovieCallback()) {
+class PagingMovieAdapter(private val listener: MovieClickListener) : PagingDataAdapter<MovieUI, MovieViewHolder>(MovieCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder =
         MovieViewHolder(ViewHolderMovieBinding.inflate(

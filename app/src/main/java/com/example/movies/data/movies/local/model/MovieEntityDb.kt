@@ -18,7 +18,7 @@ data class MovieEntityDb(
     val rating: Int,
     val reviewCount : Int,
     val storyLine: String,
-    val isLiked: Boolean,
+
     val genres: List<GenreEntityDb>
 )
 
@@ -33,7 +33,7 @@ fun MovieEntityDb.toDomain() : Movie =
         rating = this.rating,
         reviewCount =this.reviewCount,
         storyLine = this.storyLine,
-        isLiked = this.isLiked,
+
         genres = genres.map {
             Genre(id = it.id , name = it.name)
         }

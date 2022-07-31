@@ -28,7 +28,6 @@ fun MovieDto.toDomain(genres: List<GenreEntityDb>, baseUrl: String): Movie =
         rating = rating.toInt(),
         reviewCount = reviewCount,
         storyLine = storyLine,
-        isLiked = false,
         genres = genres
             .filter { it.id in this.genresId }
             .map {genreEntity -> genreEntity.toDomain() }
@@ -49,7 +48,6 @@ fun MovieDto.toEntity(genres: List<GenreEntityDb>, baseUrl: String): MovieEntity
         rating = rating.toInt(),
         reviewCount = reviewCount,
         storyLine = storyLine,
-        isLiked = false,
         genres = genres.filter { it.id in genresId }
 
     )

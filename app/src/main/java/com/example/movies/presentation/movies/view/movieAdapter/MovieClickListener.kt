@@ -1,10 +1,11 @@
 package com.example.movies.presentation.movies.view.movieAdapter
 
 import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.core.model.MovieUI
 
 interface MovieClickListener {
 
-    fun onClickMovie(movie: Movie)
+    fun onClickMovie(movieUI: MovieUI)
 
-    fun onClickFavorite(movie: Movie)
+    fun onClickFavorite(movieUI: MovieUI)
 }
