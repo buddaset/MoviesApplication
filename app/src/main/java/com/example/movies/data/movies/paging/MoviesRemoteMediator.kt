@@ -61,7 +61,7 @@ class MoviesRemoteMediator(
                     MovieRemoteKeys(movieId = it.id, nextKey = nextKey, prevKey = prevKey)
                 }
                 remoteKeysDao.insert(keys)
-                movieDao.insertAllMovie(movies)
+                movieDao.insertMovies(movies)
             }
 
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)

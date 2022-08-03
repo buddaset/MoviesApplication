@@ -46,7 +46,7 @@ class MoviesViewModel(
 
     fun changeFavoriteFlagMovie(movieUI: MovieUI) = viewModelScope.launch {
         val newFlag = !movieUI.isFavorite
-        changeFavoriteFlagMovieUseCase(movieUI.movie.id, newFlag)
+        changeFavoriteFlagMovieUseCase(movieUI.movie, newFlag)
     }
 
     private fun merge(pagingData: PagingData<Movie>, favoriteIds: List<Long>) : PagingData<MovieUI> =

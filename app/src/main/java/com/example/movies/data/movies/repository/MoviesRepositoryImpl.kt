@@ -12,6 +12,7 @@ import com.example.movies.data.favoritemovies.local.model.FavoriteIdEntity
 import com.example.movies.data.movies.local.model.GenreEntityDb
 import com.example.movies.data.movies.local.model.MovieEntityDb
 import com.example.movies.data.movies.local.model.toDomain
+import com.example.movies.data.movies.local.model.toEntity
 import com.example.movies.data.movies.paging.MoviePageLoader
 import com.example.movies.data.movies.paging.MoviePageSource
 import com.example.movies.data.movies.paging.MoviesRemoteMediator
@@ -78,7 +79,9 @@ class MoviesRepositoryImpl(
 
     override fun getFavoriteMovies(): Flow<List<Movie>> =
         movieDao.getFavoriteMovies()
-            .map { moviesEntity -> moviesEntity.map { movieEntity -> movieEntity.toDomain() }
+            .map { moviesEntity ->
+
+                moviesEntity.map { movieEntity -> movieEntity.toDomain() }
             }
 
 
@@ -87,9 +90,18 @@ class MoviesRepositoryImpl(
 
 
 
-    override suspend fun changeFavoriteFlagMovie(movieId: Long, isFavorite: Boolean) =
-        if(isFavorite) favoriteDao.insert(FavoriteIdEntity(movieId = movieId))
-        else favoriteDao.delete(FavoriteIdEntity(movieId = movieId))
+    override suspend fun changeFavoriteFlagMovie(movie: Movie, isFavorite: Boolean) {
+        if (isFavorite) {
+            favoriteDao.insert(FavoriteIdEntity(movieId = movie.id))
+            cacheMovie(movie)
+        }
+        else favoriteDao.delete(FavoriteIdEntity(movieId = movie.id))
+    }
+
+    private suspend fun cacheMovie(movie: Movie) =
+        movieDao.insertMovie(movie.toEntity())
+
+
 
 
 

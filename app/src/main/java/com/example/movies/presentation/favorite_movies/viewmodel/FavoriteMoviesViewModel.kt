@@ -21,7 +21,6 @@ class FavoriteMoviesViewModel(
     val favoriteMovies: StateFlow<FavoriteMoviesState> =
         getFavoriteMoviesUseCase()
             .catch { error -> FavoriteMoviesState.Error(error) }
-
             .mapLatest { movies -> handleEmptyOrNotListMovies(movies) }
             .stateIn(
                 scope = viewModelScope,
@@ -38,7 +37,7 @@ class FavoriteMoviesViewModel(
 
     fun changeFavoriteFlagMovie(movieUI: MovieUI) = viewModelScope.launch {
         val newFlag = !movieUI.isFavorite
-        changeFavoriteFlagMovieUseCase(movieUI.movie.id, newFlag)
+        changeFavoriteFlagMovieUseCase(movieUI.movie, newFlag)
 
     }
 

@@ -3,31 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_graph"
-    app:startDestination="@id/moviesNavigationGraph">
+    app:startDestination="@id/moviesFragment">
 
-    <navigation android:id="@+id/moviesNavigationGraph"
-        app:startDestination="@id/moviesFragment">
-        <fragment
-            android:id="@+id/moviesFragment"
-            android:name="com.example.movies.presentation.movies.view.MoviesFragment"
-            android:label="fragment_movies"
-            tools:layout="@layout/fragment_movies">
-            <action
-                android:id="@+id/action_moviesFragment_to_movieDetailsFragment"
-                app:destination="@id/movieDetailsFragment" />
-        </fragment>
-        <fragment
-            android:id="@+id/movieDetailsFragment"
-            android:name="com.example.movies.presentation.moviedetails.view.MovieDetailsFragment"
-            android:label="MovieDetailsFragment" >
-            <argument
-                android:name="movieId"
-                app:argType="long" />
-        </fragment>
-    </navigation>
+    <fragment
+        android:id="@+id/moviesFragment"
+        android:name="com.example.movies.presentation.movies.view.MoviesFragment"
+        android:label="fragment_movies"
+        tools:layout="@layout/fragment_movies">
+        <action
+            android:id="@+id/action_moviesFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/favoriteMoviesFragment"
         android:name="com.example.movies.presentation.favorite_movies.view.FavoriteMoviesFragment"
         android:label="fragment_favorite_movies"
-        tools:layout="@layout/fragment_favorite_movies" />
+        tools:layout="@layout/fragment_favorite_movies" >
+        <action
+            android:id="@+id/action_favoriteMoviesFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/movieDetailsFragment"
+        android:name="com.example.movies.presentation.moviedetails.view.MovieDetailsFragment"
+        android:label="fragment_movies_details"
+        tools:layout="@layout/fragment_movies_details" />
 </navigation>

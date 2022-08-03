@@ -18,20 +18,20 @@ class MovieViewHolder(private val binding: ViewHolderMovieBinding) :
             val isFavorite = if (movieUI.isFavorite) R.drawable.ic_like_on else R.drawable.ic_like_off
             likedMovie.setImageResource(isFavorite)
          //todo utils move to viewModel
-            genre.text = MovieUtils.getGenreOfMovie(movieUI.genres)
-            ratingBar.rating = MovieUtils.getRating(movieUI.rating)
-            countReview.text = context.getString(R.string.reviews, movieUI.reviewCount)
+            genre.text = MovieUtils.getGenreOfMovie(movieUI.movie.genres)
+            ratingBar.rating = MovieUtils.getRating(movieUI.movie.rating)
+            countReview.text = context.getString(R.string.reviews, movieUI.movie.reviewCount)
             //todo correct runningTime
             runningTime.text = context.getString(R.string.movie_minutes, 100)
             Glide
                 .with(context)
-                .load(movieUI.imageUrl)
+                .load(movieUI.movie.imageUrl)
                 .centerCrop()
                 .placeholder(R.drawable.ic_placeholder)
                 .into(binding.moviePoster)
 
             itemView.setOnClickListener {   listener.onClickMovie(movieUI) }
-            likedMovie.setOnClickListener { listener.onClickFavorite(!movieUI.isLiked) } // change like and unlike movie state
+            likedMovie.setOnClickListener { listener.onClickFavorite(movieUI) } // change like and unlike movie state
 
         
     }

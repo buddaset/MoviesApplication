@@ -1,10 +1,7 @@
 package com.example.movies.data.movies.local.dao
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.movies.data.movies.local.model.MovieEntityDb
 import kotlinx.coroutines.flow.Flow
 
@@ -19,7 +16,10 @@ interface MovieDao {
     fun getPopularMovies(): PagingSource<Int, MovieEntityDb>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllMovie(list: List<MovieEntityDb>)
+    suspend fun insertMovies(list: List<MovieEntityDb>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertMovie(movie: MovieEntityDb)
 
     @Query("DELETE FROM movies")
     suspend fun clearAllMovie()
@@ -27,6 +27,7 @@ interface MovieDao {
     @Query("SELECT COUNT('id') FROM movies")
     suspend fun getCountMovies() : Int
 
+    @Transaction
     @Query("SELECT * FROM movies WHERE movies.id IN (SELECT movie_id FROM favorites)")
     fun getFavoriteMovies(): Flow<List<MovieEntityDb>>
 }
