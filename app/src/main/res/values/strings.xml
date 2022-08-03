@@ -26,4 +26,5 @@
     <string name="favorite">Favorite</string>
     <string name="favorite_movies">Favorite movies</string>
     <string name="no_favorite_movies">No favorite movies</string>
+    <string name="home">Home</string>
 </resources>

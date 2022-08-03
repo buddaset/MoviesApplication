@@ -40,7 +40,6 @@ class MoviesViewModel(
 
 
     fun setSearchBy(query: String) {
-        if (searchBy.value == query) return
         searchBy.value = query // todo state flow distict value check
     }
 
@@ -64,7 +63,7 @@ class MoviesViewModel(
 
 
     companion object {
-        private const val DEFAULT_QUERY = ""
+         val DEFAULT_QUERY = ""
         private const val TEXT_ENTERED_DEBOUNCE_MILLIS = 500L
     }
 

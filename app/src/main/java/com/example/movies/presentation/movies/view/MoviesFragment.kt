@@ -34,6 +34,7 @@ import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingSt
 import com.example.movies.presentation.movies.view.movieAdapter.MovieClickListener
 import com.example.movies.presentation.movies.view.movieAdapter.PagingMovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
+import com.example.movies.presentation.movies.viewmodel.MoviesViewModel.Companion.DEFAULT_QUERY
 import com.example.movies.presentation.util.collectPagingFlow
 import com.example.movies.presentation.util.hideKeyboard
 import com.example.movies.presentation.util.onTextChange
@@ -88,7 +89,14 @@ class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider, MovieCl
         searchView.onTextChange(::queryMovie)
     }
 
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+        if (menuItem.itemId == R.id.home) {
+
+            viewModel.setSearchBy(DEFAULT_QUERY)
+            true
+        } else
+            false
+
 
     override fun onClickMovie(movieUI: MovieUI) {
         navigator.navigateTo(MovieDetailsScreen(movieId = movieUI.movie.id))
