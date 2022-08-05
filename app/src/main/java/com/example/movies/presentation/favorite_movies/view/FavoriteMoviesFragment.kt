@@ -2,7 +2,6 @@ package com.example.movies.presentation.favorite_movies.view
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -21,7 +20,7 @@ import com.example.movies.presentation.favorite_movies.viewmodel.FavoriteMoviesV
 import com.example.movies.presentation.main.MainActivity
 
 import com.example.movies.presentation.movies.view.movieAdapter.MovieClickListener
-import com.example.movies.presentation.util.collectFlow
+import com.example.movies.presentation.core.util.collectFlow
 
 class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorite_movies), MovieClickListener {
 
@@ -48,11 +47,8 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorite_movies), Movi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         collectFlow(viewModel.favoriteMovies,::renderState)
         setupAdapter()
-
-
     }
 
     override fun onClickMovie(movieUI: MovieUI) =
@@ -80,12 +76,7 @@ class FavoriteMoviesFragment : Fragment(R.layout.fragment_favorite_movies), Movi
 
     }
 
-    private fun updateMovies(movies: List<MovieUI>) {
-        Log.d("favMovie", "movies --- $movies")
+    private fun updateMovies(movies: List<MovieUI>) =
         moviesAdapter.submitList(movies)
-    }
-
-
-
 
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.movies.domain.usecase.GetMovieDetailsUseCase
+import com.example.movies.presentation.moviedetails.model.MovieDetailsUI
 import com.example.movies.presentation.moviedetails.view.MovieDetailsFragment.Companion.MOVIE_ID
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -27,24 +28,24 @@ class DetailsMovieViewModel(
         getMovieDetail()
     }
 
-    private fun getMovieDetail() {
-        viewModelScope.launch {
-            getMovieDetailsUseCase(movieId)
-                .catch { error -> _movie.value = MovieDetailsState.Error(error) }
-                .collectLatest { movie -> _movie.value = MovieDetailsState.Success(movie) }
-        }
-    }
-
     fun tryAgain() {
         _movie.value = MovieDetailsState.Loading
         getMovieDetail()
     }
 
+    private fun getMovieDetail() {
+        viewModelScope.launch {
+            getMovieDetailsUseCase(movieId)
+                .catch { error -> _movie.value = MovieDetailsState.Error(error) }
+                .collectLatest { movie ->
+                    _movie.value = MovieDetailsState.Success(MovieDetailsUI(details = movie)) }
+        }
+    }
+
+
+
+
 }
-
-
-
-
 
 
 class DetailViewModelFactory(

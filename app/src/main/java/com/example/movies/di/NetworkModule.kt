@@ -15,11 +15,6 @@ import retrofit2.create
 import java.util.concurrent.TimeUnit
 
 class NetworkModule {
-
-    private val baseUrl = "https://api.themoviedb.org/3/"
-
-
-
     private val loggingInterceptor =  HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -41,15 +36,12 @@ class NetworkModule {
     @OptIn(ExperimentalSerializationApi::class)
     private val retrofit = Retrofit.Builder()
         .client(client)
-        .baseUrl(baseUrl)
+        .baseUrl(BuildConfig.BASE_URL)
         .addConverterFactory(json.asConverterFactory(contentType))
         .build()
 
     val movieApi: MovieApi by lazy { retrofit.create() }
 }
-
-
-
 
 class ApiKeyInterception : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {

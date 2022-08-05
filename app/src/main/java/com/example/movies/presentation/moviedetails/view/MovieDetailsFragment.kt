@@ -1,5 +1,6 @@
 package com.example.movies.presentation.moviedetails.view
 
+
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -13,16 +14,15 @@ import com.example.movies.R
 import com.example.movies.core.application.App
 import com.example.movies.core.navigation.Navigator
 import com.example.movies.databinding.FragmentMoviesDetailsBinding
-import com.example.movies.domain.model.MovieDetails
+import com.example.movies.domain.model.Actor
+import com.example.movies.presentation.core.util.collectFlow
+import com.example.movies.presentation.core.util.onTryAgain
 import com.example.movies.presentation.main.MainActivity
+import com.example.movies.presentation.moviedetails.model.MovieDetailsUI
 import com.example.movies.presentation.moviedetails.view.actorAdapter.ActorAdapter
 import com.example.movies.presentation.moviedetails.viewmodel.DetailViewModelFactory
 import com.example.movies.presentation.moviedetails.viewmodel.DetailsMovieViewModel
 import com.example.movies.presentation.moviedetails.viewmodel.MovieDetailsState
-import com.example.movies.presentation.movies.view.movieAdapter.MovieUtils
-
-import com.example.movies.presentation.util.collectFlow
-import com.example.movies.presentation.util.onTryAgain
 
 
 class MovieDetailsFragment : Fragment(R.layout.fragment_movies_details) {
@@ -49,16 +49,19 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movies_details) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.actorRecycler.adapter = actorAdapter
 
+
+        setupAdapter()
         setupListeners()
-
         collectFlow(viewModel.movie, ::renderState)
+    }
+
+    private fun setupAdapter() {
+        binding.actorRecycler.adapter = actorAdapter
     }
 
     private fun setupListeners() {
         binding.backPress.setOnClickListener { navigator.back() }
-
         onTryAgain(binding.root) { viewModel.tryAgain() }
     }
 
@@ -73,17 +76,22 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movies_details) {
     }
 
 
-    private fun showMovieDetails(movie: MovieDetails) = with(binding) {
+    private fun showMovieDetails(movie: MovieDetailsUI) = with(binding) {
         val context = requireContext()
-        title.text = movie.title
-        pgAge.text = context.getString(R.string.pg_age, movie.pgAge)
-        genre.text = MovieUtils.getGenreOfMovie(movie.genres)
-        ratingBar.rating = MovieUtils.getRating(movie.rating)
-        countReview.text = context.getString(R.string.reviews, movie.reviewCount)
-        storyLine.text = movie.storyLine
-        actorAdapter.submitList(movie.actors)
-        updatePoster(movie.detailImageUrl)
+        title.text = movie.details.title
+        pgAge.text = context.getString(R.string.pg_age, movie.details.pgAge)
+        genre.text = movie.genres
+        ratingBar.rating = movie.rating
+        countReview.text = context.getString(R.string.reviews, movie.details.reviewCount)
+        storyLine.text = movie.details.storyLine
+       updateActors(movie.details.actors)
+        updatePoster(movie.details.detailImageUrl)
     }
+
+    private fun  updateActors(actors: List<Actor>) =
+        actorAdapter.submitList(actors)
+
+
 
     private fun updatePoster(url: String?) =
         Glide.with(requireContext())
@@ -93,9 +101,9 @@ class MovieDetailsFragment : Fragment(R.layout.fragment_movies_details) {
 
 
     companion object {
+
         const val MOVIE_ID = "movieId"
 
         fun args(movieId: Long): Bundle = bundleOf(MOVIE_ID to movieId)
-
     }
 }

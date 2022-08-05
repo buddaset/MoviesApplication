@@ -11,12 +11,9 @@ interface FavoriteDao {
     @Query("SELECT movie_id FROM favorites")
     fun getFavoriteIds(): Flow<List<Long>>
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(favoriteMovie: FavoriteIdEntity)
 
     @Delete
     suspend fun delete(favoriteMovie: FavoriteIdEntity)
-
-
 }

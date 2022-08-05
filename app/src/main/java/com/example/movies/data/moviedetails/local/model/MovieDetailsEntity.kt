@@ -2,11 +2,11 @@ package com.example.movies.data.moviedetails.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.movies.data.movies.local.model.GenreEntityDb
+import com.example.movies.data.movies.local.model.GenreEntity
 
 
 @Entity(tableName = "movies_detail")
-data class MovieDetailsEntityDb(
+data class MovieDetailsEntity(
     @PrimaryKey(autoGenerate = false)
     val id: Long,
     val title: String,
@@ -17,5 +17,5 @@ data class MovieDetailsEntityDb(
     val reviewCount: Int,
     val storyLine: String,
     val isLiked : Boolean = false,
-    val genres: List<GenreEntityDb>,
+    val genres: List<GenreEntity>,
 )

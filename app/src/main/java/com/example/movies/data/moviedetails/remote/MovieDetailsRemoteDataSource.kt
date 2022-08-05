@@ -1,7 +1,7 @@
 package com.example.movies.data.moviedetails.remote
 
-import com.example.movies.core.util.Result
-import com.example.movies.core.util.runOperationCatching
+import com.example.movies.data.core.util.Result
+import com.example.movies.data.core.util.runOperationCatching
 import com.example.movies.data.core.remote.MovieApi
 import com.example.movies.data.moviedetails.remote.model.ActorDto
 import com.example.movies.data.moviedetails.remote.model.MovieDetailsDto

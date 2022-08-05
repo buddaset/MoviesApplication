@@ -27,7 +27,6 @@ import com.example.movies.core.navigation.MovieDetailsScreen
 import com.example.movies.core.navigation.Navigator
 import com.example.movies.databinding.FragmentMoviesBinding
 import com.example.movies.di.ViewModelFactory
-import com.example.movies.domain.model.Movie
 import com.example.movies.presentation.core.model.MovieUI
 import com.example.movies.presentation.main.MainActivity
 import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingStateAdapter
@@ -35,9 +34,9 @@ import com.example.movies.presentation.movies.view.movieAdapter.MovieClickListen
 import com.example.movies.presentation.movies.view.movieAdapter.PagingMovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel.Companion.DEFAULT_QUERY
-import com.example.movies.presentation.util.collectPagingFlow
-import com.example.movies.presentation.util.hideKeyboard
-import com.example.movies.presentation.util.onTextChange
+import com.example.movies.presentation.core.util.collectPagingFlow
+import com.example.movies.presentation.core.util.hideKeyboard
+import com.example.movies.presentation.core.util.onTextChange
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce

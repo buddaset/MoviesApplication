@@ -17,9 +17,8 @@ class MovieViewHolder(private val binding: ViewHolderMovieBinding) :
             pgAge.text = context.getString(R.string.pg_age, movieUI.movie.pgAge)
             val isFavorite = if (movieUI.isFavorite) R.drawable.ic_like_on else R.drawable.ic_like_off
             likedMovie.setImageResource(isFavorite)
-         //todo utils move to viewModel
-            genre.text = MovieUtils.getGenreOfMovie(movieUI.movie.genres)
-            ratingBar.rating = MovieUtils.getRating(movieUI.movie.rating)
+            genre.text = movieUI.genres
+            ratingBar.rating = movieUI.rating
             countReview.text = context.getString(R.string.reviews, movieUI.movie.reviewCount)
             //todo correct runningTime
             runningTime.text = context.getString(R.string.movie_minutes, 100)

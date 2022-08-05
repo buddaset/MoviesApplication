@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import com.example.movies.R
 
 
@@ -18,17 +19,21 @@ interface Navigator {
     fun back()
 }
 
+
+
 class NavigatorImpl(private val context: Context) : Navigator {
 
+
+
+
     override val navController: NavController
-    get() = navController()
+        get() = navController()
+
+
 
     override fun navigateTo(screen: Screen, addToBackStack: Boolean) {
         navController().navigate(screen.destination(), screen.args())
     }
-
-
-
 
     override fun backTo(screen: Screen) {
         navController().popBackStack(screen.destination(), inclusive = false)
@@ -37,8 +42,6 @@ class NavigatorImpl(private val context: Context) : Navigator {
     override fun back() {
         navController().popBackStack()
     }
-
-
 
 
     private fun navController(): NavController {

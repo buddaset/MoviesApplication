@@ -1,4 +1,4 @@
-package com.example.movies.core.util
+package com.example.movies.data.core.util
 
 import android.util.Log
 

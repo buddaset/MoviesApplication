@@ -16,11 +16,11 @@ import com.example.movies.data.movies.local.model.*
 
 @Database(
     entities = [
-        MovieEntityDb::class,
+        MovieEntity::class,
         MovieRemoteKeys::class,
-        GenreEntityDb::class,
-        MovieDetailsEntityDb::class,
-        ActorEntityDb::class,
+        GenreEntity::class,
+        MovieDetailsEntity::class,
+        ActorEntity::class,
         FavoriteIdEntity::class],
 
     version = 1,
