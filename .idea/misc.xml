@@ -6,8 +6,11 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.23578595317725753" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable-v24/ic_mask.xml" value="0.24581939799331104" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable-v24/ic_mask_detail.xml" value="0.20236486486486485" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable/bottom_color_selector.xml" value="0.248" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable/custom_ratingbar.xml" value="0.23578595317725753" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable/ic_combined_shape.xml" value="0.24097222222222223" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable/ic_favorite.xml" value="0.248" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable/ic_home.xml" value="0.248" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable/ic_launcher_background.xml" value="0.23578595317725753" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable/ic_like.xml" value="0.11319444444444444" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/drawable/ic_like_off.xml" value="0.11319444444444444" />
@@ -23,16 +26,20 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout-land/activity_movie_details.xml" value="0.2168918918918919" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout-land/fragment_movies_details.xml" value="0.2168918918918919" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout-land/fragment_movies_list.xml" value="0.2168918918918919" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/activity_main.xml" value="0.19114583333333332" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/activity_movie_details.xml" value="0.25" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/fragment_movies.xml" value="0.20885416666666667" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/fragment_favorite_movies.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/fragment_movies.xml" value="0.33" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/fragment_movies_details.xml" value="0.25" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/fragment_movies_list.xml" value="0.22" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/part_result.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/search_item.xml" value="0.17708333333333334" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/view_holder_actor.xml" value="0.1918918918918919" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/layout/view_holder_movie.xml" value="0.22" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/menu-v26/bottom_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/menu/bottom_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/menu/search_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/AndroidAcademy/Movies/app/src/main/res/xml/network_security_config.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -1,5 +1,6 @@
 package com.example.movies.di
 
+import com.example.movies.BuildConfig
 import com.example.movies.data.core.remote.MovieApi
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -14,11 +15,6 @@ import retrofit2.create
 import java.util.concurrent.TimeUnit
 
 class NetworkModule {
-
-    private val baseUrl = "https://api.themoviedb.org/3/"
-
-
-
     private val loggingInterceptor =  HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -40,15 +36,12 @@ class NetworkModule {
     @OptIn(ExperimentalSerializationApi::class)
     private val retrofit = Retrofit.Builder()
         .client(client)
-        .baseUrl(baseUrl)
+        .baseUrl(BuildConfig.BASE_URL)
         .addConverterFactory(json.asConverterFactory(contentType))
         .build()
 
     val movieApi: MovieApi by lazy { retrofit.create() }
 }
-
-
-
 
 class ApiKeyInterception : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -56,7 +49,7 @@ class ApiKeyInterception : Interceptor {
         val originalRequest = chain.request()
         val originalUrl = originalRequest.url
         val url = originalUrl.newBuilder()
-            .addQueryParameter(API_QUERY, API_KEY )
+            .addQueryParameter(API_QUERY, BuildConfig.API_KEY )
             .build()
 
         val request = originalRequest.newBuilder()
@@ -71,6 +64,6 @@ class ApiKeyInterception : Interceptor {
 
     companion object {
         private const val API_QUERY = "api_key"
-        private const val API_KEY= "fbdee813c00d13b3212ef90e8b9ba074"
+
     }
 }

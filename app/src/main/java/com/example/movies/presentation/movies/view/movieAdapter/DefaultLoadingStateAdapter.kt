@@ -18,9 +18,7 @@ class DefaultLoadingStateAdapter(
         holder.bind(loadState)
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        loadState: LoadState
+    override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState
     ): Holder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = PartResultBinding.inflate(inflater, parent, false)

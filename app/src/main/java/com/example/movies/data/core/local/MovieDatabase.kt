@@ -3,6 +3,8 @@ package com.example.movies.data.core.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.movies.data.favoritemovies.local.dao.FavoriteDao
+import com.example.movies.data.favoritemovies.local.model.FavoriteIdEntity
 import com.example.movies.data.moviedetails.local.dao.ActorDao
 import com.example.movies.data.moviedetails.local.dao.MovieDetailsDao
 import com.example.movies.data.moviedetails.local.model.*
@@ -12,14 +14,14 @@ import com.example.movies.data.movies.local.dao.MovieRemoteKeysDao
 import com.example.movies.data.movies.local.model.*
 
 
-
 @Database(
     entities = [
-        MovieEntityDb::class,
+        MovieEntity::class,
         MovieRemoteKeys::class,
-        GenreEntityDb::class,
-        MovieDetailsEntityDb::class,
-        ActorEntityDb::class],
+        GenreEntity::class,
+        MovieDetailsEntity::class,
+        ActorEntity::class,
+        FavoriteIdEntity::class],
 
     version = 1,
 )
@@ -31,6 +33,7 @@ abstract class MovieDatabase : RoomDatabase() {
     abstract fun genreDao(): GenreDao
     abstract fun movieDetailDao(): MovieDetailsDao
     abstract fun actorDao(): ActorDao
+    abstract fun favoriteDao(): FavoriteDao
 
 }
 

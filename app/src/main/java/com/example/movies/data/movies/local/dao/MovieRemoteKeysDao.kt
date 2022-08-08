@@ -9,7 +9,7 @@ import com.example.movies.data.movies.local.model.MovieRemoteKeys
 @Dao
 interface MovieRemoteKeysDao {
 
-    @Query("SELECT * FROM movie_remote_keys WHERE movieId = :movieId")
+    @Query("SELECT * FROM movie_remote_keys WHERE movie_id = :movieId")
     suspend fun getRemoteKeysByMovieId(movieId: Long): MovieRemoteKeys
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

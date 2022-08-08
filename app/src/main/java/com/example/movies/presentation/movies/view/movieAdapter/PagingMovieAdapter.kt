@@ -6,8 +6,9 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.example.movies.databinding.ViewHolderMovieBinding
 import com.example.movies.domain.model.Movie
+import com.example.movies.presentation.core.model.MovieUI
 
-class MovieAdapter(private var onMovieClick: (Movie) -> Unit) : PagingDataAdapter<Movie, MovieViewHolder>(MovieCallback()) {
+class PagingMovieAdapter(private val listener: MovieClickListener) : PagingDataAdapter<MovieUI, MovieViewHolder>(MovieCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder =
         MovieViewHolder(ViewHolderMovieBinding.inflate(
@@ -15,18 +16,10 @@ class MovieAdapter(private var onMovieClick: (Movie) -> Unit) : PagingDataAdapte
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = getItem(position) ?: return
-        holder.bind(movie, onMovieClick)
+        holder.bind(movie, listener)
     }
 }
 
 
-private class MovieCallback: DiffUtil.ItemCallback<Movie>() {
 
-    override fun areItemsTheSame(oldData: Movie, newData: Movie): Boolean =
-        oldData.id == newData.id
-
-    override fun areContentsTheSame(oldData: Movie, newData: Movie): Boolean =
-        oldData == newData
-
-}
 

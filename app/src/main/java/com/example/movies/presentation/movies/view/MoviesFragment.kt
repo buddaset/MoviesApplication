@@ -2,15 +2,18 @@ package com.example.movies.presentation.movies.view
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -24,20 +27,24 @@ import com.example.movies.core.navigation.MovieDetailsScreen
 import com.example.movies.core.navigation.Navigator
 import com.example.movies.databinding.FragmentMoviesBinding
 import com.example.movies.di.ViewModelFactory
+import com.example.movies.presentation.core.model.MovieUI
 import com.example.movies.presentation.main.MainActivity
 import com.example.movies.presentation.movies.view.movieAdapter.DefaultLoadingStateAdapter
-import com.example.movies.presentation.movies.view.movieAdapter.MovieAdapter
+import com.example.movies.presentation.movies.view.movieAdapter.MovieClickListener
+import com.example.movies.presentation.movies.view.movieAdapter.PagingMovieAdapter
 import com.example.movies.presentation.movies.viewmodel.MoviesViewModel
-import com.example.movies.presentation.util.collectPagingFlow
-import com.example.movies.presentation.util.hideKeyboard
-import com.example.movies.presentation.util.onTextChange
+import com.example.movies.presentation.movies.viewmodel.MoviesViewModel.Companion.DEFAULT_QUERY
+import com.example.movies.presentation.core.util.collectPagingFlow
+import com.example.movies.presentation.core.util.hideKeyboard
+import com.example.movies.presentation.core.util.onTextChange
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 
-class MoviesFragment : Fragment(R.layout.fragment_movies) {
+class MoviesFragment : Fragment(R.layout.fragment_movies), MenuProvider, MovieClickListener {
 
     private val binding: FragmentMoviesBinding by viewBinding()
     lateinit var navigator: Navigator
@@ -45,14 +52,15 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     private val viewModel: MoviesViewModel by viewModels {
         ViewModelFactory(
             (requireActivity().application as App).useCase.getPopularMoviesUseCase(),
-            (requireActivity().application as App).useCase.getMoviesBySearchUseCase()
+            (requireActivity().application as App).useCase.getMoviesBySearchUseCase(),
+            (requireActivity().application as App).useCase.getChangeFavoriteFlagMovieUseCase(),
+            (requireActivity().application as App).useCase.getFavoriteMovieIdsUseCase()
         )
     }
 
-    private val movieAdapter = MovieAdapter { movie ->
-        navigator.navigateTo(MovieDetailsScreen(movie.id))
+    private val pagingMovieAdapter = PagingMovieAdapter(this)
 
-    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -61,23 +69,18 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     }
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupTabMenu()
         setupMovieAdapter()
         setupRefreshLayout()
         observeMovies()
         observeLoadState()
-
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_menu, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.search_menu, menu)
 
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
@@ -85,43 +88,64 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
         searchView.onTextChange(::queryMovie)
     }
 
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+        if (menuItem.itemId == R.id.home) {
+
+            viewModel.setSearchBy(DEFAULT_QUERY)
+            true
+        } else
+            false
+
+
+    override fun onClickMovie(movieUI: MovieUI) {
+        navigator.navigateTo(MovieDetailsScreen(movieId = movieUI.movie.id))
+    }
+
+    override fun onClickFavorite(movieUI: MovieUI) {
+        viewModel.changeFavoriteFlagMovie(movieUI)
+    }
+
+    private fun setupTabMenu() {
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+
     private fun queryMovie(query: String) = viewModel.setSearchBy(query)
 
     private fun setupMovieAdapter() = with(binding) {
-        movieRecyclerview.adapter = movieAdapter
-            .withLoadStateFooter(DefaultLoadingStateAdapter { movieAdapter.retry() })
+        movieRecyclerview.adapter = pagingMovieAdapter
+            .withLoadStateFooter(DefaultLoadingStateAdapter { pagingMovieAdapter.retry() })
         movieRecyclerview.itemAnimator = null
         movieRecyclerview.layoutManager = GridLayoutManager(requireContext(), 2)
 
         movieRecyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if(newState == SCROLL_STATE_DRAGGING)
+                if (newState == SCROLL_STATE_DRAGGING)
                     recyclerView.hideKeyboard()
             }
         })
     }
 
     private fun setupRefreshLayout() =
-        binding.swipeRefresh.setOnRefreshListener { movieAdapter.refresh() }
+        binding.swipeRefresh.setOnRefreshListener { pagingMovieAdapter.refresh() }
 
     private fun observeMovies() =
-        collectPagingFlow(viewModel.movies, movieAdapter::submitData)
+        collectPagingFlow(viewModel.movies, pagingMovieAdapter::submitData)
 
+    @OptIn(FlowPreview::class)
     private fun observeLoadState() =
-        movieAdapter.loadStateFlow
+        pagingMovieAdapter.loadStateFlow
             .debounce(DEBOUNCE_UPDATE_STATE_MILLIS)
-            .onEach {
-                updateState(it)
-                Log.d("StateMov", "compinestate ---- $it")
-            }
+            .onEach { updateState(it) }
             .catch { handleError(it) }
             .launchIn(lifecycleScope)
 
     private fun updateState(combinedLoadState: CombinedLoadStates) = with(binding) {
         val loadState = combinedLoadState.mediator?.refresh
         val isListEmpty = (loadState is LoadState.NotLoading || loadState == null)
-                && movieAdapter.itemCount == 0
+                && pagingMovieAdapter.itemCount == 0
 
         movieRecyclerview.isVisible = !isListEmpty
         emptyList.isVisible = isListEmpty
@@ -138,8 +162,11 @@ class MoviesFragment : Fragment(R.layout.fragment_movies) {
     companion object {
         const val DEBOUNCE_UPDATE_STATE_MILLIS = 300L
 
-        fun newInstance() = MoviesFragment()
     }
+
+
+
+
 }
 
 

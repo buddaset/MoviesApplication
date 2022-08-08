@@ -44,7 +44,10 @@
             android:scrollbarThumbVertical="@drawable/scrollbar_track"
             android:scrollbars="vertical"
             tools:itemCount="10"
-            tools:listitem="@layout/view_holder_movie" />
+            tools:listitem="@layout/view_holder_movie"
+            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:spanCount="2"
+            />
 
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -5,25 +5,25 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.example.movies.core.util.Result
-import com.example.movies.core.util.getData
+import com.example.movies.data.core.util.Result
+import com.example.movies.data.core.util.getData
 import com.example.movies.data.core.local.MovieDatabase
-import com.example.movies.data.movies.local.model.MovieEntityDb
+import com.example.movies.data.movies.local.model.MovieEntity
 import com.example.movies.data.movies.local.model.MovieRemoteKeys
 
-typealias MoviePageLoader = suspend (pageIndex: Int, pageSize: Int) -> Result<List<MovieEntityDb>, Throwable>
+typealias MoviePageLoader = suspend (pageIndex: Int, pageSize: Int) -> Result<List<MovieEntity>, Throwable>
 
 @OptIn(ExperimentalPagingApi::class)
 class MoviesRemoteMediator(
     private val loader: MoviePageLoader,
     private val db: MovieDatabase
-) : RemoteMediator<Int, MovieEntityDb>() {
+) : RemoteMediator<Int, MovieEntity>() {
 
     private val movieDao = db.movieDao()
     private val remoteKeysDao = db.movieRemoteKeysDao()
 
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, MovieEntityDb>): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, MovieEntity>): MediatorResult {
 
         val pageIndex: Int = when (loadType) {
 
@@ -47,6 +47,7 @@ class MoviesRemoteMediator(
 
         return try {
             val movies = loader(pageIndex, state.config.pageSize).getData()
+                .map { it.copy(isPopular = true) }
             val endOfPaginationReached = movies.isEmpty()
 
 
@@ -61,7 +62,7 @@ class MoviesRemoteMediator(
                     MovieRemoteKeys(movieId = it.id, nextKey = nextKey, prevKey = prevKey)
                 }
                 remoteKeysDao.insert(keys)
-                movieDao.insertAllMovie(movies)
+                movieDao.insertMovies(movies)
             }
 
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
@@ -70,22 +71,20 @@ class MoviesRemoteMediator(
         }
     }
 
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, MovieEntityDb>): MovieRemoteKeys? {
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, MovieEntity>): MovieRemoteKeys? {
         return state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { movie ->
                 remoteKeysDao.getRemoteKeysByMovieId(movie.id)
             }
     }
 
-
-    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, MovieEntityDb>): MovieRemoteKeys? {
+    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, MovieEntity>): MovieRemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { movieId ->
                 remoteKeysDao.getRemoteKeysByMovieId(movieId)
             }
         }
     }
-
 
     companion object {
         private const val START_PAGE = 1

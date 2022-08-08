@@ -9,7 +9,6 @@ data class Movie(
     val rating: Int,
     val reviewCount : Int,
     val storyLine: String,
-    val isLiked: Boolean,
     val genres: List<Genre>
 )
 

@@ -2,12 +2,13 @@ package com.example.movies.core.application
 
 import android.app.Application
 import androidx.work.Configuration
+import com.example.movies.BuildConfig
+import com.example.movies.core.util.MovieUrlProvider
+import com.example.movies.core.dispatchers.Dispatcher
 import com.example.movies.domain.repository.MoviesRepository
 import com.example.movies.data.movies.repository.MoviesRepositoryImpl
-import com.example.movies.core.dispatchers.IoDispatcher
 import com.example.movies.data.core.local.MovieDatabase
 import com.example.movies.data.core.remote.MovieApi
-import com.example.movies.core.util.ImageUrlAppender
 import com.example.movies.data.moviedetails.local.MovieDetailsLocalDataSourceImpl
 import com.example.movies.data.moviedetails.remote.MovieDetailsRemoteDataSourceImpl
 import com.example.movies.data.moviedetails.repository.MovieDetailsRepositoryImpl
@@ -17,16 +18,13 @@ import com.example.movies.data.workers.RefreshMovieWorkerFactory
 import com.example.movies.di.DatabaseModule
 import com.example.movies.di.NetworkModule
 import com.example.movies.domain.repository.MovieDetailsRepository
-import com.example.movies.domain.usecase.GetMovieDetailsUseCase
-import com.example.movies.domain.usecase.GetMoviesBySearchUseCase
-import com.example.movies.domain.usecase.GetPopularMoviesUseCase
-import com.example.movies.presentation.moviedetails.viewmodel.DetailsMovieViewModel
+import com.example.movies.domain.usecase.*
 import kotlinx.coroutines.Dispatchers
 
 class App : Application(), Configuration.Provider {
 
     lateinit var useCase: UseCase
-    private val dispatcher = IoDispatcher(value = Dispatchers.IO)
+    private val dispatcher = Dispatcher(value = Dispatchers.IO)
     private lateinit var movieDatabase: MovieDatabase
     private lateinit var service: MovieApi
 
@@ -35,7 +33,7 @@ class App : Application(), Configuration.Provider {
 
         val networkModule = NetworkModule()
         service = networkModule.movieApi
-        val urlAppender = ImageUrlAppender(service)
+        val urlProvider = MovieUrlProvider(baseUrl = BuildConfig.BASE_URL , baseImageUrl = BuildConfig.BASE_IMAGE_URL)
         movieDatabase = DatabaseModule().provideDatabase(context = applicationContext)
 
         val moviesRemoteDataSource: MoviesRemoteDataSource = MoviesRemoteDataSourceImpl(service)
@@ -47,7 +45,7 @@ class App : Application(), Configuration.Provider {
 
 
         val moviesRepository = MoviesRepositoryImpl(
-            urlAppender,
+            urlProvider,
             dispatcher,
             movieDatabase,
             applicationContext,
@@ -56,7 +54,7 @@ class App : Application(), Configuration.Provider {
         val movieDetailRepository = MovieDetailsRepositoryImpl(
             movieDetailRemoteDataSource,
             movieDetailLocalDataSource,
-            urlAppender
+            urlProvider
         )
         useCase = UseCase(moviesRepository, movieDetailRepository)
 
@@ -76,6 +74,13 @@ class UseCase(
     private val movieDetailRepository: MovieDetailsRepository
 ) {
 
+
+
+    fun getFavoriteMovieIdsUseCase() = GetFavoriteMovieIdsUseCase(moviesRepository)
+
+    fun getChangeFavoriteFlagMovieUseCase() = ChangeFavoriteFlagMovieUseCase(moviesRepository)
+
+    fun getFavoriteMoviesUseCase() = GetFavoriteMoviesUseCase(moviesRepository)
 
     fun getPopularMoviesUseCase() = GetPopularMoviesUseCase(moviesRepository)
 

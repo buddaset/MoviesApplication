@@ -6,12 +6,8 @@ import com.example.movies.domain.model.Genre
 
 
 @Entity(tableName = "genres")
-data class GenreEntityDb(
+data class GenreEntity(
     @PrimaryKey(autoGenerate = false)
     val id: Int,
     val name: String
-) {
-
-   fun toDomain() : Genre =
-       Genre(id = id , name = name)
-}
+)
