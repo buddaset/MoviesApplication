@@ -14,7 +14,7 @@ interface Screen {
 
 class MovieDetailsScreen(val movieId: Long) : Screen {
 
-    override fun destination(): Int = R.id.movieDetailsFragment
+    override fun destination(): Int = R.id.details_navigation
 
     override fun args(): Bundle = MovieDetailsFragment.args(movieId)
 }

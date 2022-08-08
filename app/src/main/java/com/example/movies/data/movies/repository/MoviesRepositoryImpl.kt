@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.paging.*
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
-import com.example.movies.core.MovieUrlProvider
+import com.example.movies.core.util.MovieUrlProvider
 import com.example.movies.core.dispatchers.Dispatcher
 import com.example.movies.data.core.local.MovieDatabase
 import com.example.movies.data.core.util.*

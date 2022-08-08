@@ -1,6 +1,6 @@
 package com.example.movies.data.moviedetails.repository
 
-import com.example.movies.core.MovieUrlProvider
+Chaimport com.example.movies.core.util.MovieUrlProvider
 import com.example.movies.data.core.util.mapResult
 import com.example.movies.data.core.util.onSuccess
 import com.example.movies.data.core.util.toDomain

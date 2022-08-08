@@ -3,7 +3,7 @@ package com.example.movies.core.application
 import android.app.Application
 import androidx.work.Configuration
 import com.example.movies.BuildConfig
-import com.example.movies.core.MovieUrlProvider
+import com.example.movies.core.util.MovieUrlProvider
 import com.example.movies.core.dispatchers.Dispatcher
 import com.example.movies.domain.repository.MoviesRepository
 import com.example.movies.data.movies.repository.MoviesRepositoryImpl
